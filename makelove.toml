@@ -1,0 +1,20 @@
+name = "FennelSkeleton"
+default_targets = ["win32", "win64", "appimage"]
+build_directory = "makelove-build"
+
+love_files = [
+    "./source/*.lua",
+    "./source/lib/*",
+    "./source/assets/*",
+    "./main.lua",
+    "./conf.lua"
+]
+
+[hooks]
+prebuild = [
+	"./run.py -s -l"
+]
+
+postbuild = [
+    "./run.py -l"
+]

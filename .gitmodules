@@ -1,0 +1,3 @@
+[submodule "source/lib/batteries"]
+	path = source/lib/batteries
+	url = https://github.com/1bardesign/batteries
