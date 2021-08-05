@@ -1,16 +1,16 @@
+local Player = require "source.player"
 local game = {}
 
-local directions = {down = vec2(0, 1), left = vec2(-1, 0), right = vec2(1, 0), up = vec2(0, -1)}
-local player = {position = vec2(1, 1)}
+local directions = {down = Vec2(0, 1), left = Vec2(-1, 0), right = Vec2(1, 0), up = Vec2(0, -1)}
+local player = Player()
 
 function game:draw()
-    love.graphics.setLineWidth(4)
-    love.graphics.rectangle("line", 32 * player.position.x, 32 * player.position.y, 32, 32)
+    player:draw()
 end
 
 function game:keypressed(key)
   if directions[key] then
-    player.position = (player.position + directions[key])
+    player.position = player.position + directions[key]
   end
 end
 
