@@ -8,13 +8,19 @@ local bomb = Bomb(4, 4, 7)
 
 function game:draw()
     player:draw()
-    bomb:draw()
+    if bomb then bomb:draw() end
 end
 
 function game:keypressed(key)
-  if directions[key] then
-    player.position = player.position + directions[key]
-  end
+    if directions[key] then
+        player.position = player.position + directions[key]
+        if bomb then
+            bomb:tick()
+            if bomb.timer == 0 then
+                bomb = nil
+            end
+        end
+    end
 end
 
 return game

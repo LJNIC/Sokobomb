@@ -13,4 +13,8 @@ function Bomb:draw()
     love.graphics.print(self.timer, tileWidth * self.position.x + 7, tileWidth * self.position.y)
 end
 
+function Bomb:tick()
+    self.timer = self.timer - 1
+end
+
 return Bomb
