@@ -1,3 +1,9 @@
 [submodule "source/lib/batteries"]
 	path = source/lib/batteries
 	url = https://github.com/1bardesign/batteries/
+[submodule "editor/lib/Slab"]
+	path = editor/lib/Slab
+	url = https://github.com/flamendless/Slab
+[submodule "editor/lib/batteries"]
+	path = editor/lib/batteries
+	url = https://github.com/1bardesign/batteries/
