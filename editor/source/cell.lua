@@ -1,6 +1,9 @@
+local Dialog = require("source.dialog")
+
 local Cell = class()
 
 local format = string.format
+local min = math.min
 
 local fnt = love.graphics.newFont(10)
 fnt:setFilter("nearest", "nearest")
@@ -17,7 +20,16 @@ end
 
 function Cell:set_tile(tile, fnt)
 	self.fnt = fnt
-	self.tile = tile
+	self.tile = tablex.copy(tile, {})
+
+	if self.tile.is_bomb then
+		Dialog.open_bomb_timer(self)
+	end
+end
+
+function Cell:remove_tile()
+	self.fnt = nil
+	self.tile = nil
 end
 
 function Cell:draw(line)
@@ -27,13 +39,18 @@ function Cell:draw(line)
 
 	if self.tile then
 		love.graphics.setFont(self.fnt)
-		local fw = self.fnt:getWidth(self.tile.symbol)
+		local str = self.tile.symbol
+		if self.tile.is_bomb then
+			str = str .. self.tile.timer
+		end
+		local fw = self.fnt:getWidth(str)
 		local fh = self.fnt:getHeight()
+		local scale = min((self.tile_size/fw), (self.tile_size/fh))
 		love.graphics.setColor(self.tile.color)
-		love.graphics.print(self.tile.symbol,
+		love.graphics.print(str,
 			self.px + self.tile_size * 0.5,
 			self.py + self.tile_size * 0.5,
-			0, 1, 1, fw * 0.5, fh * 0.5
+			0, scale, scale, fw * 0.5, fh * 0.5
 		)
 	end
 

@@ -1,6 +1,8 @@
 local Slab = require("lib.Slab")
 
 local Cell = require("source.cell")
+local ContextMenu = require("source.context_menu")
+local Dialog = require("source.dialog")
 local Helper = require("source.helper")
 local Level = require("source.level")
 local Tiles = require("source.tiles")
@@ -34,6 +36,45 @@ function Editor.new_level(data)
 			local cell = Cell(x, y, tile_size)
 			insert(Editor.current_level.cells, cell)
 		end
+	end
+end
+
+function Editor.interact_cell(mx, my, mb)
+	if ContextMenu.is_open then return end
+	if Dialog.is_open then return end
+	local cl = Editor.current_level
+	local mx, my = love.mouse.getPosition()
+	local tmx, tmy = Editor.translate_mouse(mx, my)
+	for _, c in ipairs(cl.cells) do
+		if c.hovered then
+			local ac = Tiles.get_active_tile()
+			if ac and mb == 1 then
+				c:set_tile(ac, fnt_tile)
+			elseif love.keyboard.isDown("lctrl") and mb == 2 then
+				c:remove_tile()
+			elseif c.tile and mb == 2 then
+				ContextMenu.open(c)
+			end
+			return
+		end
+	end
+end
+
+function Editor.save()
+end
+
+function Editor.update(dt)
+	if not Editor.current_level then return end
+	if not (Tiles.get_mode() == "Continuous") then return end
+	local mb
+	if love.mouse.isDown(1) then
+		mb = 1
+	elseif love.mouse.isDown(2) then
+		mb = 2
+	end
+	if mb then
+		local mx, my = love.mouse.getPosition()
+		Editor.interact_cell(mx, my, mb)
 	end
 end
 
@@ -182,16 +223,8 @@ end
 
 function Editor.mousepressed(mx, my, mb)
 	if not Editor.current_level then return end
-	local cl = Editor.current_level
-	local tmx, tmy = Editor.translate_mouse(mx, my)
-
-	for _, c in ipairs(cl.cells) do
-		if c.hovered then
-			local ac = Tiles.get_active_tile()
-			c:set_tile(ac, fnt_tile)
-			break
-		end
-	end
+	if not (Tiles.get_mode() == "Single") then return end
+	Editor.interact_cell(mx, my, mb)
 end
 
 function Editor.wheelmoved(wx, wy)

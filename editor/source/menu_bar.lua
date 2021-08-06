@@ -21,9 +21,17 @@ function MenuBar.draw()
 				end
 				Slab.EndMenu()
 			end
+
+			if Slab.MenuItem("Save", {
+				Enabled = Editor.current_level ~= nil,
+			}) then
+				Editor.save()
+			end
+
 			if Slab.MenuItem("Restart") then
 				love.event.quit("restart")
 			end
+
 			if Slab.MenuItem("Exit") then
 				love.event.quit()
 			end
@@ -32,6 +40,10 @@ function MenuBar.draw()
 
 		if Slab.BeginMenu("Shortcuts") then
 			Slab.MenuItem("ctrl + n > New File")
+			Slab.MenuItem("left click in grid > Place Tile")
+			Slab.MenuItem("right click in grid > Open Context Menu")
+			Slab.MenuItem("shift + left click in grid > Continuous Place Tile")
+			Slab.MenuItem("ctrl + right click in grid > Remove Tile")
 			Slab.EndMenu()
 		end
 
