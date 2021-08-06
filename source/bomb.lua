@@ -10,7 +10,7 @@ end
 
 function Bomb:draw()
     love.graphics.setFont(font)
-    love.graphics.print(self.timer, tileWidth * self.position.x + 7, tileWidth * self.position.y)
+    love.graphics.print(self.timer, tile_width * self.position.x + 7, tile_width * self.position.y)
 end
 
 function Bomb:tick()
