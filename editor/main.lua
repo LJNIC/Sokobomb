@@ -27,6 +27,10 @@ function love.draw()
 	Slab.Draw()
 end
 
+function love.mousepressed(mx, my, mb)
+	Editor.mousepressed(mx, my, mb)
+end
+
 function love.wheelmoved(wx, wy)
 	Editor.wheelmoved(wx, wy)
 end

@@ -26,9 +26,9 @@ function LevelData.draw_get_sizes()
 		}) then
 			data.name = Slab.GetInputText()
 		end
-		data.tile_size = Helper.get_input_int("in_tile_size", tostring(data.tile_size))
-		data.rows = Helper.get_input_int("in_rows", tostring(data.rows))
-		data.cols = Helper.get_input_int("in_cols", tostring(data.cols))
+		data.tile_size = Helper.get_input_int("in_tile_size", data.tile_size)
+		data.rows = Helper.get_input_int("in_rows", data.rows)
+		data.cols = Helper.get_input_int("in_cols", data.cols)
 	Slab.EndLayout()
 end
 
