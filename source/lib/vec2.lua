@@ -40,7 +40,9 @@ local max   = math.max
 
 local sign  = math.sign
 local lerp  = math.lerp
-local near  = math.near
+local near = function(a, b)
+  return math.abs(a - b) < 1e-9
+end
 
 local vec = {}
 vec.__index = vec
