@@ -1,22 +1,26 @@
 local Slab = require("lib.Slab")
 
+local concat = table.concat
+
 local Dialog = {
 	opened_s = false,
 	opened_bt = false,
 }
 
 local active_cell
-local message
+local messages = {}
+local serialized
 
 function Dialog.is_open()
 	return Dialog.opened_s or Dialog.opened_bt
 end
 
-function Dialog.open_saved(filename, success, msg)
+function Dialog.open_saved(filename, success, msg, ser)
 	if success then
-		message = "File saved to: " .. love.filesystem.getSaveDirectory() .. "/" .. filename
+		messages[1] = "File saved to: " .. love.filesystem.getSaveDirectory() .. "/" .. filename
+		serialized = ser
 	else
-		message = "Error: " .. msg
+		messages[1] = "Error: " .. msg
 	end
 	Slab.OpenDialog("saved_dialog")
 end
@@ -32,11 +36,18 @@ function Dialog.draw()
 	})
 	if Dialog.opened_s then
 		Slab.BeginLayout("saved_layout", {AlignX = "center"})
-			Slab.Text(message)
+			for _, str in ipairs(messages) do
+				Slab.Text(str)
+			end
 		Slab.EndLayout()
 		Slab.Separator()
 		if Slab.Button("OK") then
 			Slab.CloseDialog()
+		end
+		Slab.SameLine()
+		if Slab.Button("Copy To Clipboard") then
+			love.system.setClipboardText(serialized)
+			messages[2] = "Copied to clipboard"
 		end
 		Slab.EndDialog()
 	end

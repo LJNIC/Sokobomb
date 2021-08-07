@@ -67,7 +67,7 @@ function Editor.save()
 	local filename = data.metadata.name .. ".lua"
 	local serialized = Serpent.dump(data, {compact = false, indent = "\t"})
 	local success, message = love.filesystem.write(filename, serialized)
-	Dialog.open_saved(filename, success, message)
+	Dialog.open_saved(filename, success, message, serialized)
 end
 
 function Editor.update(dt)
