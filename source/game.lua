@@ -16,6 +16,19 @@ tiles[7][3] = 1
 tiles[3][7] = 1
 tiles[9][6] = 1
 
+local function tile_at(position)
+    return tiles[position.x] and tiles[position.x][position.y] or 1
+end
+
+local function move_object(object, direction)
+    local new_position = object.position + direction
+    if tile_at(new_position) == 1 then
+        return false
+    end
+    object:move(new_position)
+    return true
+end
+
 love.keyboard.setKeyRepeat(true)
 
 function game:update(dt)
@@ -26,7 +39,7 @@ function game:draw()
     local width, height = love.graphics.getDimensions()
     local x = width / 2 - (#tiles / 2) * tile_width - tile_width - 4
     local y = height / 2 - (#tiles / 2) * tile_width - tile_width - 4
-    print(x, y)
+
     love.graphics.translate(x, y)
 
     for x = 1, 15 do
@@ -62,30 +75,33 @@ local function turn(direction)
         return
     end
 
-    if tiles[new_position.x][new_position.y] == 1 then
+    if tile_at(new_position) == 1 then
         return
     end
 
-
-    player:move(new_position)
-
     for i = 1, #boxes do
         local box = boxes[i]
-        if player.position == box.position then
-            box:move(box.position + direction)
+        if new_position == box.position then
+            if not move_object(box, direction) then
+                return
+            end
         end
     end
 
     for i = #bombs, 1, -1 do
         local bomb = bombs[i]
         bomb:tick()
-        if player.position == bomb.position then
-            bomb:move(bomb.position + direction)
+        if new_position == bomb.position then
+            if not move_object(bomb, direction) then
+                return
+            end
         end
         if bomb.timer == 0 then
             table.remove(bombs, i)
         end
     end
+
+    player:move(new_position)
 end
 
 function game:keypressed(key)
