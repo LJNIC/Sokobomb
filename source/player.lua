@@ -3,8 +3,9 @@ local flux = require "source.lib.flux"
 local Player = Base:extend()
 
 function Player:new(x, y)
-    Player.super.new(self, x, y, Vec2(2, 2))
-    self.width = 28
+    Player.super.new(self, x, y)
+    self.offset = Vec2(4, 4)
+    self.width = 24
     self.moving = false
 end
 

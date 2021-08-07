@@ -5,7 +5,8 @@ local Bomb = Base:extend()
 local font = love.graphics.newFont(28)
 
 function Bomb:new(x, y, timer)
-    Bomb.super.new(self, x, y, Vec2(7, 0))
+    Bomb.super.new(self, x, y)
+    self.offset = Vec2(7, 0)
     self.timer = timer
 end
 

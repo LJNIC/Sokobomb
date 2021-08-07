@@ -1,11 +1,15 @@
 local Player = require "source.player"
 local Bomb = require "source.bomb"
+local Box = require "source.box"
 local flux = require "source.lib.flux"
 local game = {}
 
 local directions = {down = Vec2(0, 1), left = Vec2(-1, 0), right = Vec2(1, 0), up = Vec2(0, -1)}
+
 local player = Player()
 local bombs = {Bomb(4, 4, 9)}
+local boxes = {Box(5, 7)}
+
 local tiles = functional.generate(15, function(x) return functional.generate(15, function(y) return 0 end) end)
 tiles[3][3] = 1
 tiles[7][3] = 1
@@ -20,13 +24,19 @@ function game:draw()
     for x = 1, 15 do
         for y = 1, 15 do
             if tiles[x][y] == 1 then
-                love.graphics.ellipse("line", x * tile_width + 16, y * tile_width + 16, 5, 5)
+                love.graphics.ellipse("line", x * tile_width + 16, y * tile_width + 16, 7, 7)
             end
         end
     end
+
     player:draw()
+
     for _, bomb in ipairs(bombs) do
         bomb:draw()
+    end
+
+    for _, box in ipairs(boxes) do
+        box:draw()
     end
 end
 
@@ -42,6 +52,13 @@ local function turn(direction)
     end
 
     player:move(new_position)
+
+    for i = 1, #boxes do
+        local box = boxes[i]
+        if player.position == box.position then
+            box:move(box.position + direction)
+        end
+    end
 
     for i = #bombs, 1, -1 do
         local bomb = bombs[i]

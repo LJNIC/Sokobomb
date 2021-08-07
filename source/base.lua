@@ -3,10 +3,9 @@ local flux = require "source.lib.flux"
 
 local Base = Object:extend()
 
-function Base:new(x, y, offset)
+function Base:new(x, y)
     self.position = Vec2(x, y)
     self.drawn_position = tile_width * self.position
-    self.offset = offset
     self.moving = false
 end
 
