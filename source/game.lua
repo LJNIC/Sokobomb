@@ -6,21 +6,29 @@ local game = {}
 
 local directions = {down = Vec2(0, 1), left = Vec2(-1, 0), right = Vec2(1, 0), up = Vec2(0, -1)}
 
-local player = Player()
+local player = Player(1, 1)
 local bombs = {Bomb(4, 4, 9)}
 local boxes = {Box(5, 7)}
 
-local tiles = functional.generate(15, function(x) return functional.generate(15, function(y) return 0 end) end)
+local tiles = functional.generate(16, function(x) return functional.generate(16, function(y) return 0 end) end)
 tiles[3][3] = 1
 tiles[7][3] = 1
 tiles[3][7] = 1
 tiles[9][6] = 1
+
+love.keyboard.setKeyRepeat(true)
 
 function game:update(dt)
     flux.update(dt)
 end
 
 function game:draw()
+    local width, height = love.graphics.getDimensions()
+    local x = width / 2 - (#tiles / 2) * tile_width - tile_width - 4
+    local y = height / 2 - (#tiles / 2) * tile_width - tile_width - 4
+    print(x, y)
+    love.graphics.translate(x, y)
+
     for x = 1, 15 do
         for y = 1, 15 do
             if tiles[x][y] == 1 then
@@ -38,6 +46,9 @@ function game:draw()
     for _, box in ipairs(boxes) do
         box:draw()
     end
+
+    love.graphics.setLineWidth(2)
+    love.graphics.rectangle("line", tile_width - 2, tile_width - 2, tile_width * #tiles + 4, tile_width * #tiles + 4)
 end
 
 local function turn(direction)
@@ -47,9 +58,14 @@ local function turn(direction)
 
     local new_position = player.position + direction
 
+    if new_position.x < 1 or new_position.x > #tiles or new_position.y < 1 or new_position.y > #tiles then
+        return
+    end
+
     if tiles[new_position.x][new_position.y] == 1 then
         return
     end
+
 
     player:move(new_position)
 
