@@ -1,10 +1,25 @@
 local Slab = require("lib.Slab")
 
 local Dialog = {
-	is_open = false,
+	opened_s = false,
+	opened_bt = false,
 }
 
 local active_cell
+local message
+
+function Dialog.is_open()
+	return Dialog.opened_s or Dialog.opened_bt
+end
+
+function Dialog.open_saved(filename, success, msg)
+	if success then
+		message = "File saved to: " .. love.filesystem.getSaveDirectory() .. "/" .. filename
+	else
+		message = "Error: " .. msg
+	end
+	Slab.OpenDialog("saved_dialog")
+end
 
 function Dialog.open_bomb_timer(cell)
 	active_cell = cell
@@ -12,11 +27,24 @@ function Dialog.open_bomb_timer(cell)
 end
 
 function Dialog.draw()
-	Dialog.is_open = active_cell ~= nil
+	Dialog.opened_s = Slab.BeginDialog("saved_dialog", {
+		Title = "File Saved",
+	})
+	if Dialog.opened_s then
+		Slab.BeginLayout("saved_layout", {AlignX = "center"})
+			Slab.Text(message)
+		Slab.EndLayout()
+		Slab.Separator()
+		if Slab.Button("OK") then
+			Slab.CloseDialog()
+		end
+		Slab.EndDialog()
+	end
 
-	if Slab.BeginDialog("bomb_timer_dialog", {
+	Dialog.opened_bt = Slab.BeginDialog("bomb_timer_dialog", {
 		Title = "Bomb Timer",
-	}) then
+	})
+	if Dialog.opened_bt then
 		Slab.BeginLayout("layout", {Columns = 2})
 			Slab.SetLayoutColumn(1)
 			Slab.Text("Timer: ")
@@ -35,8 +63,6 @@ function Dialog.draw()
 		end
 
 		Slab.EndDialog()
-	else
-		active_cell = nil
 	end
 end
 

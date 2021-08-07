@@ -7,3 +7,6 @@
 [submodule "editor/lib/batteries"]
 	path = editor/lib/batteries
 	url = https://github.com/1bardesign/batteries/
+[submodule "editor/lib/serpent"]
+	path = editor/lib/serpent
+	url = https://github.com/pkulchenko/serpent

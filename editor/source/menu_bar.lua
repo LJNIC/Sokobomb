@@ -39,7 +39,8 @@ function MenuBar.draw()
 		end
 
 		if Slab.BeginMenu("Shortcuts") then
-			Slab.MenuItem("ctrl + n > New File")
+			Slab.MenuItem("ctrl + n > New Level")
+			Slab.MenuItem("ctrl + s > Save Level")
 			Slab.MenuItem("left click in grid > Place Tile")
 			Slab.MenuItem("right click in grid > Open Context Menu")
 			Slab.MenuItem("shift + left click in grid > Continuous Place Tile")

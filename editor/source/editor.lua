@@ -1,3 +1,4 @@
+local Serpent = require("lib.serpent.src.serpent")
 local Slab = require("lib.Slab")
 
 local Cell = require("source.cell")
@@ -41,7 +42,7 @@ end
 
 function Editor.interact_cell(mx, my, mb)
 	if ContextMenu.is_open then return end
-	if Dialog.is_open then return end
+	if Dialog.is_open() then return end
 	local cl = Editor.current_level
 	local mx, my = love.mouse.getPosition()
 	local tmx, tmy = Editor.translate_mouse(mx, my)
@@ -61,10 +62,21 @@ function Editor.interact_cell(mx, my, mb)
 end
 
 function Editor.save()
+	if not Editor.current_level then return end
+	local data = Editor.current_level:serialize()
+	local filename = data.metadata.name .. ".lua"
+	local serialized = Serpent.dump(data, {compact = false, indent = "\t"})
+	local success, message = love.filesystem.write(filename, serialized)
+	Dialog.open_saved(filename, success, message)
 end
 
 function Editor.update(dt)
 	if not Editor.current_level then return end
+
+	if Slab.IsKeyDown("lctrl") and Slab.IsKeyPressed("s") then
+		Editor.save()
+	end
+
 	if not (Tiles.get_mode() == "Continuous") then return end
 	local mb
 	if love.mouse.isDown(1) then

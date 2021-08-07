@@ -7,13 +7,50 @@ local mode = modes[1]
 local active_tile_index = 0
 
 local tiles = {
-	{symbol = "P", name = "Player", color = {0.11, 0.75, 0.69}},
-	{symbol = "-", name = "Floor", color = {0.5, 0.5, 0.5}},
-	{symbol = "#", name = "Wall", color = {1, 0, 0}},
-	{symbol = "G", name = "Goal", color = {0, 1, 0}},
-	{symbol = "~", name = "Destructible Wall", color = {0, 0, 1}},
-	{symbol = "b", name = "Box", color = {0.57, 0.24, 0.11}},
-	{symbol = "B", name = "Bomb", color = {0, 0, 0}, timer = 5, is_bomb = true},
+	-- {symbol = "-", name = "Floor", color = {0.5, 0.5, 0.5}},
+	{
+		symbol = "P",
+		name = "Player",
+		color = {0.11, 0.75, 0.69},
+		is_player = true,
+		kind = "player"
+	},
+	{
+		symbol = "#",
+		name = "Wall",
+		color = {1, 0, 0},
+		is_wall = true,
+		kind = "tiles"
+	},
+	{
+		symbol = "G",
+		name = "Goal",
+		color = {0, 1, 0},
+		is_goal = true,
+		kind = "tiles"
+	},
+	{
+		symbol = "~",
+		name = "Destructible Wall",
+		color = {0, 0, 1},
+		is_d_wall = true,
+		kind = "tiles"
+	},
+	{
+		symbol = "b",
+		name = "Box",
+		color = {0.57, 0.24, 0.11},
+		is_box = true,
+		kind = "boxes"
+	},
+	{
+		symbol = "B",
+		name = "Bomb",
+		color = {0, 0, 0},
+		timer = 5,
+		is_bomb = true,
+		kind = "bombs"
+	},
 }
 
 function Tiles.init()

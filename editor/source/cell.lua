@@ -18,6 +18,26 @@ function Cell:new(x, y, tile_size)
 	self.tile = nil
 end
 
+function Cell:serialize()
+	local tile
+	if self.tile then
+		tile = tablex.copy(self.tile, {})
+		tile.name = nil
+		tile.color = nil
+	end
+
+	local s = {
+		x = self.x,
+		y = self.y,
+		px = self.px,
+		py = self.py,
+		symbol = self.symbol,
+		data = tile,
+	}
+	local kind = self.tile and self.tile.kind or "tiles"
+	return s, kind
+end
+
 function Cell:set_tile(tile, fnt)
 	self.fnt = fnt
 	self.tile = tablex.copy(tile, {})
