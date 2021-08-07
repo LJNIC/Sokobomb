@@ -8,6 +8,7 @@ function Bomb:new(x, y, timer)
     Bomb.super.new(self, x, y)
     self.offset = Vec2(7, 0)
     self.timer = timer
+    self.alive = true
 end
 
 function Bomb:draw()
@@ -17,6 +18,9 @@ end
 
 function Bomb:tick()
     self.timer = self.timer - 1
+    if self.timer == 0 then
+        self.alive = false
+    end
 end
 
 return Bomb

@@ -6,6 +6,7 @@ function Box:new(x, y)
     Box.super.new(self, x, y)
     self.offset = Vec2(4, 4)
     self.width = 24
+    self.alive = true
 end
 
 function Box:draw()

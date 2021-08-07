@@ -8,13 +8,12 @@ local game = {}
 local directions = {down = Vec2(0, 1), left = Vec2(-1, 0), right = Vec2(1, 0), up = Vec2(0, -1)}
 
 local player = Player(1, 1)
-local bombs = {Bomb(4, 4, 9)}
-local boxes = {Box(5, 7), Box(6, 7)}
+local objects = {Box(5, 7), Box(6, 7), Bomb(4, 4, 9)}
 local level = Level()
 
 local function move_object(object, direction)
     local new_position = object.position + direction
-    if level:tile_at(new_position) == 1 then
+    if level:tile_at(new_position) == 1 or functional.any(objects, function(object) return object.position == new_position end) then
         return false
     end
     object:move(new_position)
@@ -44,12 +43,10 @@ function game:draw()
 
     player:draw()
 
-    for _, bomb in ipairs(bombs) do
-        bomb:draw()
-    end
-
-    for _, box in ipairs(boxes) do
-        box:draw()
+    for _, object in ipairs(objects) do
+        if object.alive then
+            object:draw()
+        end
     end
 
     love.graphics.setLineWidth(2)
@@ -71,29 +68,18 @@ local function turn(direction)
         return
     end
 
-    for i = 1, #boxes do
-        local box = boxes[i]
-        if new_position == box.position then
-            if not move_object(box, direction) then
-                return
-            end
+    local moved = true
+    for _, object in ipairs(objects) do
+        object:tick()
+        if object.alive and object.position == new_position then
+            moved = move_object(object, direction)
+            break
         end
     end
 
-    for i = #bombs, 1, -1 do
-        local bomb = bombs[i]
-        bomb:tick()
-        if new_position == bomb.position then
-            if not move_object(bomb, direction) then
-                return
-            end
-        end
-        if bomb.timer == 0 then
-            table.remove(bombs, i)
-        end
+    if moved then
+        player:move(new_position)
     end
-
-    player:move(new_position)
 end
 
 function game:keypressed(key)
