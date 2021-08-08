@@ -1,7 +1,8 @@
 local Base = require "source.base"
 local flux = require "source.lib.flux"
-local Bomb = Base:extend()
+local directions = require("source.utilities").directions
 
+local Bomb = Base:extend()
 local font = love.graphics.newFont(18)
 
 function Bomb:new(x, y, timer)
@@ -10,6 +11,7 @@ function Bomb:new(x, y, timer)
     self.timer = timer
     self.max_timer = timer
     self.alive = true
+    self.movable = true
     self.text = love.graphics.newText(font, tostring(timer))
 end
 
@@ -28,11 +30,23 @@ function Bomb:draw()
     love.graphics.arc("line", "open", self.drawn_position.x + tile_width / 2, self.drawn_position.y + tile_width / 2, tile_width / 2 - 2, 0, percent, 100)
 end
 
-function Bomb:tick()
+function Bomb:tick(objects)
     self.timer = self.timer - 1
     self.text:set(tostring(self.timer))
     if self.timer == 0 then
+        self:explode(objects)
         self.alive = false
+    end
+end
+
+function Bomb:explode(objects)
+    for _, direction in pairs(directions) do
+        local to_explode = self.position + direction
+        for _, object in ipairs(objects) do
+            if object.position == to_explode then
+                object.alive = false
+            end
+        end
     end
 end
 

@@ -2,19 +2,23 @@ local Player = require "source.player"
 local Bomb = require "source.bomb"
 local Box = require "source.box"
 local Level = require "source.level"
+local utilities = require "source.utilities"
 local flux = require "source.lib.flux"
 local game = {}
-
-local directions = {down = Vec2(0, 1), left = Vec2(-1, 0), right = Vec2(1, 0), up = Vec2(0, -1)}
 
 local level = Level("source/levels/level1")
 local player = level.player
 
 local function move_object(object, direction)
+    if not object.movable then
+        return false
+    end
+
     local new_position = object.position + direction
     if level:tile_at(new_position) == 1 or functional.any(level.objects, function(object) return object.position == new_position end) then
         return false
     end
+
     object:move(new_position)
     return true
 end
@@ -69,7 +73,7 @@ local function turn(direction)
 
     local moved = true
     for _, object in ipairs(level.objects) do
-        object:tick()
+        object:tick(level.objects)
         if object.alive and object.position == new_position then
             moved = move_object(object, direction)
             break
@@ -82,8 +86,8 @@ local function turn(direction)
 end
 
 function game:keypressed(key)
-    if directions[key] then
-        turn(directions[key])
+    if utilities.directions[key] then
+        turn(utilities.directions[key])
     elseif key == "r" then
         love.event.quit("restart")
     elseif key == "escape" then
