@@ -45,7 +45,7 @@ end
 function Editor.open_level(path)
 	local filename = path:match("^.+/(.+)$")
 	filename = filename:sub(0, -5)
-	local data = require(filename)
+	local data = NativeFS.load(path)()
 	Editor.new_level(data)
 
 	local cl = Editor.current_level
