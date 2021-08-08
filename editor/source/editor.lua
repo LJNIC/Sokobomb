@@ -196,13 +196,6 @@ function Editor.draw()
 	end
 end
 
-function Editor.translate_mouse(mx, my)
-	local ox, oy = Editor.get_gtid_translation()
-	local tmx = mx - ox * zoom
-	local tmy = my - oy * zoom
-	return tmx, tmy
-end
-
 function Editor.get_gtid_translation()
 	local ww, wh = love.graphics.getDimensions()
 	local cl = Editor.current_level
@@ -212,6 +205,13 @@ function Editor.get_gtid_translation()
 	local ox = (ww * 0.5) - (cols * tile_size * 0.5 * zoom)
 	local oy = (wh * 0.5) - (rows * tile_size * 0.5 * zoom)
 	return ox, oy
+end
+
+function Editor.translate_mouse(mx, my)
+	local ox, oy = Editor.get_gtid_translation()
+	local tmx = (mx - ox) / zoom
+	local tmy = (my - oy) / zoom
+	return tmx, tmy
 end
 
 function Editor.draw_grid()
