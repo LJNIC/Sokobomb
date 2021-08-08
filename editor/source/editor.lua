@@ -32,8 +32,8 @@ function Editor.new_level(data)
 	local tile_size = Editor.current_level.tile_size
 	local rows = Editor.current_level.rows
 	local cols = Editor.current_level.cols
-	for y = 0, rows - 1 do
-		for x = 0, cols - 1 do
+	for y = 1, rows do
+		for x = 1, cols do
 			local cell = Cell(x, y, tile_size)
 			insert(Editor.current_level.cells, cell)
 		end
