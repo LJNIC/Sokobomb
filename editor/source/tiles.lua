@@ -60,6 +60,22 @@ function Tiles.init()
 end
 
 function Tiles.draw()
+	if Slab.IsKeyPressed("1") then
+		active_tile_index = 1
+	elseif Slab.IsKeyPressed("2") then
+		active_tile_index = 2
+	elseif Slab.IsKeyPressed("3") then
+		active_tile_index = 3
+	elseif Slab.IsKeyPressed("4") then
+		active_tile_index = 4
+	elseif Slab.IsKeyPressed("5") then
+		active_tile_index = 5
+	elseif Slab.IsKeyPressed("6") then
+		active_tile_index = 6
+	elseif Slab.IsKeyPressed("escape") then
+		active_tile_index = 0
+	end
+
 	Slab.BeginWindow("tiles", {
 		Title = "Tiles",
 	})

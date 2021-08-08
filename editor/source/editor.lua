@@ -69,6 +69,18 @@ function Editor.save(is_readable)
 	end
 	local data = Editor.current_level:serialize()
 	local filename = data.metadata.name .. ".lua"
+
+	if love.filesystem.getInfo(filename) then
+		local btn = love.window.showMessageBox("Warning",
+			"File already exists. Overwrite it?",
+			{"OK", "Cancel", escapebutton = 2},
+			"warning")
+
+		if btn == 2 then
+			return
+		end
+	end
+
 	local serialized = Serpent.dump(data, opt)
 	local success, message = love.filesystem.write(filename, serialized)
 	Dialog.open_saved(filename, success, message, serialized)
