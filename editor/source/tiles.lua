@@ -13,9 +13,10 @@ local tiles = {
 		name = "Player",
 		color = {0.11, 0.75, 0.69},
 		is_player = true,
-		kind = "player"
+		kind = "objects"
 	},
 	{
+		tile_n = 1,
 		symbol = "#",
 		name = "Wall",
 		color = {1, 0, 0},
@@ -23,6 +24,7 @@ local tiles = {
 		kind = "tiles"
 	},
 	{
+		tile_n = 2,
 		symbol = "G",
 		name = "Goal",
 		color = {0, 1, 0},
@@ -34,14 +36,14 @@ local tiles = {
 		name = "Destructible Wall",
 		color = {0, 0, 1},
 		is_d_wall = true,
-		kind = "tiles"
+		kind = "objects"
 	},
 	{
 		symbol = "b",
 		name = "Box",
 		color = {0.57, 0.24, 0.11},
 		is_box = true,
-		kind = "boxes"
+		kind = "objects"
 	},
 	{
 		symbol = "B",
@@ -49,7 +51,7 @@ local tiles = {
 		color = {0, 0, 0},
 		timer = 5,
 		is_bomb = true,
-		kind = "bombs"
+		kind = "objects"
 	},
 }
 

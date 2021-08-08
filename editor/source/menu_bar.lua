@@ -22,10 +22,16 @@ function MenuBar.draw()
 				Slab.EndMenu()
 			end
 
-			if Slab.MenuItem("Save", {
+			if Slab.BeginMenu("Save", {
 				Enabled = Editor.current_level ~= nil,
 			}) then
-				Editor.save()
+				if Slab.MenuItem("Readable") then
+					Editor.save(true)
+				end
+				if Slab.MenuItem("Compact") then
+					Editor.save(false)
+				end
+				Slab.EndMenu()
 			end
 
 			if Slab.MenuItem("Restart") then
@@ -40,7 +46,8 @@ function MenuBar.draw()
 
 		if Slab.BeginMenu("Shortcuts") then
 			Slab.MenuItem("ctrl + n > New Level")
-			Slab.MenuItem("ctrl + s > Save Level")
+			Slab.MenuItem("ctrl + s > Save Level (compact)")
+			Slab.MenuItem("ctrl + shift + s > Save Level (readable)")
 			Slab.MenuItem("left click in grid > Place Tile")
 			Slab.MenuItem("right click in grid > Open Context Menu")
 			Slab.MenuItem("shift + left click in grid > Continuous Place Tile")
