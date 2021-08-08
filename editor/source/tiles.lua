@@ -123,6 +123,22 @@ function Tiles.draw()
 	Slab.EndWindow()
 end
 
+function Tiles.get_tile_data(tile_n)
+	for _, v in ipairs(tiles) do
+		if v.tile_n and (v.tile_n == tile_n) then
+			return v
+		end
+	end
+end
+
+function Tiles.get_obj_data(symbol)
+	for _, v in ipairs(tiles) do
+		if v.symbol == symbol then
+			return v
+		end
+	end
+end
+
 function Tiles.get_active_tile()
 	return tiles[active_tile_index]
 end

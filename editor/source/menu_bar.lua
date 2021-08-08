@@ -9,12 +9,20 @@ local MenuBar = {}
 function MenuBar.draw()
 	local title = Editor.current_level and Editor.current_level.name or ""
 
+	if Slab.IsKeyDown("lctrl") and Slab.IsKeyPressed("o") then
+		NewLevel.open_fd()
+	end
+
 	if Slab.BeginMainMenuBar() then
 		if Slab.BeginMenu(title, {Enabled = false}) then
 			Slab.EndMenu()
 		end
 
 		if Slab.BeginMenu("Menu") then
+			if Slab.MenuItem("Open Level") then
+				NewLevel.open_fd()
+			end
+
 			if Slab.BeginMenu("New") then
 				if Slab.MenuItem("Level") then
 					Slab.OpenDialog("NewLevelDialog")
@@ -45,6 +53,7 @@ function MenuBar.draw()
 		end
 
 		if Slab.BeginMenu("Shortcuts") then
+			Slab.MenuItem("ctrl + o > Open Level")
 			Slab.MenuItem("ctrl + n > New Level")
 			Slab.MenuItem("ctrl + s > Save Level (compact)")
 			Slab.MenuItem("ctrl + shift + s > Save Level (readable)")

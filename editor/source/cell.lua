@@ -46,12 +46,16 @@ function Cell:serialize()
 	return n, s, kind
 end
 
-function Cell:set_tile(tile, fnt)
+function Cell:set_tile(tile, fnt, data)
 	self.fnt = fnt
 	self.tile = tablex.copy(tile, {})
 
 	if self.tile.is_bomb then
-		Dialog.open_bomb_timer(self)
+		if data then
+			self.tile.timer = data.timer
+		else
+			Dialog.open_bomb_timer(self)
+		end
 	end
 end
 

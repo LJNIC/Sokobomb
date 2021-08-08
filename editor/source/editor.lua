@@ -22,7 +22,8 @@ local zoom = 1
 local zoom_factor = 0.15
 local fnt_tile
 
-function Editor.new_level(data)
+function Editor.new_level(t)
+	local data = t.metadata or t
 	Editor.current_level = Level(data)
 	fnt_tile = love.graphics.newFont(data.tile_size)
 	fnt_tile:setFilter("nearest", "nearest")
@@ -38,6 +39,35 @@ function Editor.new_level(data)
 			insert(Editor.current_level.cells, cell)
 		end
 	end
+end
+
+function Editor.open_level(path)
+	local filename = path:match("^.+/(.+)$")
+	filename = filename:sub(0, -5)
+	local data = require(filename)
+	Editor.new_level(data)
+
+	local cl = Editor.current_level
+
+	for y, v in ipairs(data.tiles) do
+		for x, t in ipairs(v) do
+			if t ~= 0 then
+				local index = (y - 1) * cl.rows + x
+				local c = cl.cells[index]
+				local ac = Tiles.get_tile_data(t)
+				c:set_tile(ac, fnt_tile)
+			end
+		end
+	end
+
+	for _, v in ipairs(data.objects) do
+		local index = (v.y - 1) * cl.rows + v.x
+		local c = cl.cells[index]
+		local ac = Tiles.get_obj_data(v.data.symbol)
+		c:set_tile(ac, fnt_tile, v.data)
+	end
+
+	package.loaded[filename] = nil
 end
 
 function Editor.interact_cell(mx, my, mb)
