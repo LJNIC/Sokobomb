@@ -3,7 +3,7 @@
 	url = https://github.com/1bardesign/batteries/
 [submodule "editor/lib/Slab"]
 	path = editor/lib/Slab
-	url = https://github.com/flamendless/Slab
+	url = https://github.com/coding-jackalope/Slab.git
 [submodule "editor/lib/batteries"]
 	path = editor/lib/batteries
 	url = https://github.com/1bardesign/batteries/
