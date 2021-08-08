@@ -36,7 +36,7 @@ function game:draw()
     level:each_tile(
         function(x, y, tile) 
             if tile == 1 then
-                love.graphics.ellipse("line", x * tile_width + 16, y * tile_width + 16, 7, 7)
+                love.graphics.ellipse("line", x * tile_width + 16, y * tile_width + 16, 7, 7, 100)
             end
         end
     )
