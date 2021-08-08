@@ -61,20 +61,28 @@ function Editor.interact_cell(mx, my, mb)
 	end
 end
 
-function Editor.save()
+function Editor.save(is_readable)
 	if not Editor.current_level then return end
+	local opt
+	if is_readable then
+		opt = {compact = true, indent = "\t"}
+	end
 	local data = Editor.current_level:serialize()
 	local filename = data.metadata.name .. ".lua"
-	local serialized = Serpent.dump(data, {compact = false, indent = "\t"})
+	local serialized = Serpent.dump(data, opt)
 	local success, message = love.filesystem.write(filename, serialized)
+	print(serialized)
 	Dialog.open_saved(filename, success, message, serialized)
 end
 
 function Editor.update(dt)
 	if not Editor.current_level then return end
 
-	if Slab.IsKeyDown("lctrl") and Slab.IsKeyPressed("s") then
-		Editor.save()
+	if Slab.IsKeyDown("lctrl") and Slab.IsKeyDown("lshift") and
+		Slab.IsKeyPressed("s") then
+		Editor.save(true)
+	elseif Slab.IsKeyDown("lctrl") and Slab.IsKeyPressed("s") then
+		Editor.save(false)
 	end
 
 	if not (Tiles.get_mode() == "Continuous") then return end
