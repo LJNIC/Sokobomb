@@ -1,28 +1,40 @@
+local Box = require "source.box"
+local Bomb = require "source.bomb"
+local Player = require "source.player"
 local Object = require "source.lib.classic"
 
 local Level = Object:extend()
 
-function Level:new()
-    self.tiles = functional.generate(16, function(x) return functional.generate(16, function(y) return 0 end) end)
-    self.tiles[3][3] = 1
-    self.tiles[7][3] = 1
-    self.tiles[3][7] = 1
-    self.tiles[9][6] = 1
+function Level:new(file_name)
+    local data = require(file_name)
+    self.width = data.metadata.cols
+    self.height = data.metadata.rows
 
-    self.width = 16
-    self.height = 16
+    self.tiles = data.tiles
+
+    self.objects = {}
+    for _, object in ipairs(data.objects) do
+        local to_insert
+        if object.data.is_box then
+            table.insert(self.objects, Box(object.x, object.y))
+        elseif object.data.is_bomb then
+            table.insert(self.objects, Bomb(object.x, object.y, object.data.timer))
+        elseif object.data.is_player then
+            self.player = Player(object.x, object.y)
+        end
+    end
 end
 
 function Level:tile_at(position_or_x, y)
     local x = y == nil and position_or_x.x or position_or_x
     local y = y == nil and position_or_x.y or y
 
-    return self.tiles[x] and self.tiles[x][y] or 1
+    return self.tiles[y] and self.tiles[y][x] or 1
 end
 
 function Level:each_tile(f)
-    for x = 1, self.width do
-        for y = 1, self.height do
+    for y = 1, self.height do
+        for x = 1, self.width do
             f(x, y, self:tile_at(x, y))
         end
     end
