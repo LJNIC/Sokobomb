@@ -7,13 +7,12 @@ local game = {}
 
 local directions = {down = Vec2(0, 1), left = Vec2(-1, 0), right = Vec2(1, 0), up = Vec2(0, -1)}
 
-local player = Player(1, 1)
-local objects = {Box(5, 7), Box(6, 7), Bomb(4, 4, 9)}
-local level = Level()
+local level = Level("source/levels/level1")
+local player = level.player
 
 local function move_object(object, direction)
     local new_position = object.position + direction
-    if level:tile_at(new_position) == 1 or functional.any(objects, function(object) return object.position == new_position end) then
+    if level:tile_at(new_position) == 1 or functional.any(level.objects, function(object) return object.position == new_position end) then
         return false
     end
     object:move(new_position)
@@ -43,7 +42,7 @@ function game:draw()
 
     player:draw()
 
-    for _, object in ipairs(objects) do
+    for _, object in ipairs(level.objects) do
         if object.alive then
             object:draw()
         end
@@ -69,7 +68,7 @@ local function turn(direction)
     end
 
     local moved = true
-    for _, object in ipairs(objects) do
+    for _, object in ipairs(level.objects) do
         object:tick()
         if object.alive and object.position == new_position then
             moved = move_object(object, direction)
