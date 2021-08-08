@@ -10,3 +10,6 @@
 [submodule "editor/lib/serpent"]
 	path = editor/lib/serpent
 	url = https://github.com/pkulchenko/serpent
+[submodule "editor/lib/nativefs"]
+	path = editor/lib/nativefs
+	url = https://github.com/megagrump/nativefs

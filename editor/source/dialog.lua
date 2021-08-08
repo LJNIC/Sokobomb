@@ -17,7 +17,7 @@ end
 
 function Dialog.open_saved(filename, success, msg, ser)
 	if success then
-		messages[1] = "File saved to: " .. love.filesystem.getSaveDirectory() .. "/" .. filename
+		messages[1] = "File saved to: " .. filename
 		serialized = ser
 	else
 		messages[1] = "Error: " .. msg

@@ -35,7 +35,7 @@ function NewLevel.draw()
 
 	if is_open_fd then
 		local res = Slab.FileDialog({
-			Directory = love.filesystem.getSaveDirectory(),
+			Directory = love.filesystem.getWorkingDirectory() .. "/levels",
 			Type = "openfile"
 		})
 		if res.Button ~= "" then

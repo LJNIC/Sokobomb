@@ -1,3 +1,4 @@
+local NativeFS = require("lib.nativefs")
 local Serpent = require("lib.serpent.src.serpent")
 local Slab = require("lib.Slab")
 
@@ -93,12 +94,19 @@ end
 
 function Editor.save(is_readable)
 	if not Editor.current_level then return end
+
+	local base = NativeFS.getWorkingDirectory() .. "/levels/"
+	if not NativeFS.getInfo(base) then
+		NativeFS.createDirectory(base)
+	end
+
 	local opt
 	if is_readable then
 		opt = {compact = true, indent = "\t"}
 	end
 	local data = Editor.current_level:serialize()
 	local filename = data.metadata.name .. ".lua"
+	filename = base .. filename
 
 	if love.filesystem.getInfo(filename) then
 		local btn = love.window.showMessageBox("Warning",
@@ -112,7 +120,7 @@ function Editor.save(is_readable)
 	end
 
 	local serialized = Serpent.dump(data, opt)
-	local success, message = love.filesystem.write(filename, serialized)
+	local success, message = NativeFS.write(filename, serialized)
 	Dialog.open_saved(filename, success, message, serialized)
 end
 
