@@ -7,21 +7,6 @@ local flux = require "source.lib.flux"
 local game = {}
 
 local level = Level("source/levels/level1")
-local player = level.player
-
-local function move_object(object, direction)
-    if not object.movable then
-        return false
-    end
-
-    local new_position = object.position + direction
-    if level:tile_at(new_position) == 1 or functional.any(level.objects, function(object) return object.position == new_position end) then
-        return false
-    end
-
-    object:move(new_position)
-    return true
-end
 
 love.keyboard.setKeyRepeat(true)
 
@@ -44,7 +29,7 @@ function game:draw()
         end
     )
 
-    player:draw()
+    level.player:draw()
 
     for _, object in ipairs(level.objects) do
         if object.alive then
@@ -56,12 +41,27 @@ function game:draw()
     love.graphics.rectangle("line", tile_width - 2, tile_width - 2, tile_width * level.width + 4, tile_width * level.height + 4)
 end
 
+-- Tries to move an object, returning whether the object was moved or not
+local function move_object(object, direction)
+    if not object.movable then
+        return false
+    end
+
+    local new_position = object.position + direction
+    if level:tile_at(new_position) == 1 or functional.any(level.objects, function(object) return object.position == new_position end) then
+        return false
+    end
+
+    object:move(new_position)
+    return true
+end
+
 local function turn(direction)
-    if player.moving then
+    if level.player.moving then
         return
     end
 
-    local new_position = player.position + direction
+    local new_position = level.player.position + direction
 
     if new_position.x < 1 or new_position.x > level.width or new_position.y < 1 or new_position.y > level.height then
         return
@@ -73,16 +73,20 @@ local function turn(direction)
 
     local moved = true
     for _, object in ipairs(level.objects) do
-        object:tick(level.objects)
         if object.alive and object.position == new_position then
             moved = move_object(object, direction)
-            break
         end
     end
 
-    if moved then
-        player:move(new_position)
+    if not moved then
+        return
     end
+
+    for _, object in ipairs(level.objects) do
+        object:tick(level.objects)
+    end
+
+    level.player:move(new_position)
 end
 
 function game:keypressed(key)
