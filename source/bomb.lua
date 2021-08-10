@@ -50,6 +50,12 @@ function Bomb:explode(objects)
     end
 end
 
+function Bomb:undo(other_bomb)
+    self.timer = other_bomb.timer
+    self.alive = other_bomb.alive
+    self:move(other_bomb.position)
+end
+
 function Bomb:copy()
     local copy = Bomb(self.position.x, self.position.y, self.timer)
     copy.alive = self.alive

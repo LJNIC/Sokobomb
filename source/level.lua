@@ -26,7 +26,27 @@ function Level:new(file_name)
             self.player = Player(x, y)
         end
     end
-    table.insert(self.objects, Bomb(3, 7, 5))
+
+    self.stack = {{ player = self.player, objects = self.objects }}
+end
+
+function Level:save()
+    self.saved_state = { player = self.player:copy(), objects = table.copy(self.objects, true) }
+end
+
+function Level:push()
+    table.insert(self.stack, self.saved_state)
+end
+
+function Level:undo()
+    if #self.stack > 1 then
+        local top = table.remove(self.stack)
+
+        self.player:move(top.player.position)
+        for i, object in ipairs(self.objects) do
+            object:undo(top.objects[i])
+        end
+    end
 end
 
 function Level:tile_at(position_or_x, y)

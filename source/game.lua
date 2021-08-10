@@ -6,7 +6,7 @@ local utilities = require "source.utilities"
 local flux = require "source.lib.flux"
 local game = {}
 
-local level = Level("source/levels/level1")
+local level = Level("levels/level1")
 
 love.keyboard.setKeyRepeat(true)
 
@@ -42,7 +42,7 @@ function game:draw()
 end
 
 -- Tries to move an object, returning whether the object was moved or not
-local function move_object(object, direction)
+local function try_move_object(object, direction)
     if not object.movable then
         return false
     end
@@ -71,10 +71,12 @@ local function turn(direction)
         return
     end
 
+    -- Save the current level's state
+    level:save()
     local moved = true
     for _, object in ipairs(level.objects) do
         if object.alive and object.position == new_position then
-            moved = move_object(object, direction)
+            moved = try_move_object(object, direction)
         end
     end
 
@@ -87,11 +89,15 @@ local function turn(direction)
     end
 
     level.player:move(new_position)
+    -- If a turn was done, we push the saved level state onto the stack
+    level:push()
 end
 
 function game:keypressed(key)
     if utilities.directions[key] then
         turn(utilities.directions[key])
+    elseif key == "z" then
+        level:undo()
     elseif key == "r" then
         love.event.quit("restart")
     elseif key == "escape" then

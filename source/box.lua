@@ -17,6 +17,11 @@ function Box:draw()
     love.graphics.rectangle("line", corner.x, corner.y, self.width, self.width)
 end
 
+function Box:undo(other_box)
+    self.alive = other_box.alive
+    self:move(other_box.position)
+end
+
 function Box:copy()
     local copy = Box(self.position.x, self.position.y)
     copy.alive = self.alive
