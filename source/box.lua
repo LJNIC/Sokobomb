@@ -1,20 +1,20 @@
 local Base = require "source.base"
 
 local Box = Base:extend()
+Box.offset = Vec2(4, 4)
+Box.width = 24
 
 function Box:new(x, y)
     Box.super.new(self, x, y)
-    self.offset = Vec2(4, 4)
-    self.width = 24
     self.alive = true
     self.movable = true
 end
 
 function Box:draw()
-    local corner = self.drawn_position + self.offset
-    love.graphics.line(corner.x, corner.y, corner.x + self.width, corner.y + self.width)
-    love.graphics.line(corner.x + self.width, corner.y, corner.x, corner.y + self.width)
-    love.graphics.rectangle("line", corner.x, corner.y, self.width, self.width)
+    local cornerX, cornerY = self.drawn_position.x + Box.offset.x, self.drawn_position.y + Box.offset.y
+    love.graphics.line(cornerX, cornerY, cornerX + Box.width, cornerY + Box.width)
+    love.graphics.line(cornerX + Box.width, cornerY, cornerX, cornerY + Box.width)
+    love.graphics.rectangle("line", cornerX, cornerY, Box.width, Box.width)
 end
 
 function Box:undo(other_box)

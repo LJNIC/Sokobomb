@@ -49,9 +49,43 @@ function Level:undo()
     end
 end
 
-function Level:tile_at(position_or_x, y)
-    local x = y == nil and position_or_x.x or position_or_x
-    local y = y == nil and position_or_x.y or y
+
+local function draw_tile(x, y, tile)
+    if tile == 1 then
+        love.graphics.ellipse("line", x * tile_width + 16, y * tile_width + 16, 7, 7, 100)
+    elseif tile == 2 then
+        local cornerX, cornerY = x * tile_width + Box.offset.x, y * tile_width + Box.offset.y
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.setLineWidth(4)
+        love.graphics.line(cornerX, cornerY, cornerX + Box.width, cornerY + Box.width)
+        love.graphics.line(cornerX + Box.width, cornerY, cornerX, cornerY + Box.width)
+        love.graphics.rectangle("line", cornerX, cornerY, Box.width, Box.width)
+        love.graphics.setColor(1, 1, 1)
+    end
+end
+
+function Level:draw()
+    self:each_tile(draw_tile)
+    self.player:draw()
+
+    for _, object in ipairs(self.objects) do
+        if object.alive then
+            object:draw()
+        end
+    end
+end
+
+function Level:tile_at(base_position_x, y)
+    local x = base_position_x
+    local y = y
+
+    if y == nil and base_position_x.position then
+        x = base_position_x.position.x
+        y = base_position_x.position.y
+    elseif y == nil and base_position_x.x then
+        x = base_position_x.x
+        y = base_position_x.y
+    end
 
     return self.tiles[y] and self.tiles[y][x] or 1
 end

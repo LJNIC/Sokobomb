@@ -12,6 +12,7 @@ end
 function Base:tick()
 end
 
+
 function Base:move(new_position)
     self.position = new_position
     local new_drawn_position = new_position * tile_width

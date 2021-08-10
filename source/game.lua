@@ -4,12 +4,13 @@ local Box = require "source.box"
 local GameManager = require "source.game_manager"
 local Transition = require "source.transition"
 local flux = require "source.lib.flux"
-local game = {}
+local utilities = require "source.utilities"
 
-love.keyboard.setKeyRepeat(true)
+local game = {}
 
 function game:enter()
 	GameManager:enter(1)
+    love.keyboard.setKeyRepeat(true)
 end
 
 function game:update(dt)
@@ -20,17 +21,35 @@ function game:draw()
     if Transition.flag then
         love.graphics.setShader(Transition.shader)
     end
-    GameManager:draw()
+
+    local width, height = love.graphics.getDimensions()
+    local level = GameManager.level
+    local x = width / 2 - (level.width / 2) * tile_width - tile_width - 4
+    local y = height / 2 - (level.height / 2) * tile_width - tile_width - 4
+
+    love.graphics.push()
+    love.graphics.translate(x, y)
+
+    level:draw()
+
+    love.graphics.setLineWidth(2)
+    love.graphics.rectangle("line", tile_width - 2, tile_width - 2, tile_width * level.width + 4, tile_width * level.height + 4)
+    love.graphics.pop()
+
     love.graphics.setShader()
 end
 
 function game:keypressed(key)
     if Transition.flag then return end
-    GameManager:keypressed(key)
-    if key == "r" then
-        love.event.quit("restart")
+
+    if utilities.directions[key] then
+        GameManager:turn(utilities.directions[key])
     elseif key == "n" then
         GameManager:go_to_next_level()
+    elseif key == "z" then
+        GameManager.level:undo()
+    elseif key == "r" then
+        GameManager:reload()
     elseif key == "escape" then
         love.event.quit()
     end

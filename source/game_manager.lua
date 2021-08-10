@@ -1,3 +1,4 @@
+local Box = require "source.box"
 local utilities = require "source.utilities"
 local Level = require "source.level"
 local Transition = require "source.transition"
@@ -9,6 +10,10 @@ local GameManager = {
 
 local max_level = #(love.filesystem.getDirectoryItems("levels"))
 
+function GameManager:reload()
+    self:enter(self.level_number)
+end
+
 function GameManager:enter(level_number)
     level_number = math.wrap(level_number, 1, max_level + 1)
     self.level_number = level_number
@@ -19,34 +24,6 @@ function GameManager:go_to_next_level(duration)
     Transition:fade_in(duration, function()
         self:enter(self.level_number + 1)
     end)
-end
-
-local function tile_draw(x, y, tile)
-    if tile == 1 then
-        love.graphics.ellipse("line", x * tile_width + 16, y * tile_width + 16, 7, 7, 100)
-    end
-end
-
-function GameManager:draw()
-    local width, height = love.graphics.getDimensions()
-    local x = width / 2 - (self.level.width / 2) * tile_width - tile_width - 4
-    local y = height / 2 - (self.level.height / 2) * tile_width - tile_width - 4
-
-    love.graphics.push()
-    love.graphics.translate(x, y)
-    self.level:each_tile(tile_draw)
-    self.level.player:draw()
-
-    for _, object in ipairs(self.level.objects) do
-        if object.alive then
-            object:draw()
-        end
-    end
-
-    love.graphics.setLineWidth(2)
-    love.graphics.rectangle("line", tile_width - 2, tile_width - 2,
-        tile_width * self.level.width + 4, tile_width * self.level.height + 4)
-    love.graphics.pop()
 end
 
 -- Tries to move an object, returning whether the object was moved or not
@@ -62,6 +39,11 @@ function GameManager:try_move_object(object, direction)
 
     object:move(new_position)
     return true
+end
+
+function GameManager:check_if_won() 
+    local alive_boxes = functional.filter(self.level.objects, function(o) return o:is(Box) and o.alive end)
+    return functional.all(alive_boxes, function(box) return self.level:tile_at(box) == 2 end)
 end
 
 function GameManager:turn(direction)
@@ -99,14 +81,6 @@ function GameManager:turn(direction)
     self.level.player:move(new_position)
     -- If a turn was done, we push the saved level state onto the stack
     self.level:push()
-end
-
-function GameManager:keypressed(key)
-    if utilities.directions[key] then
-        self:turn(utilities.directions[key])
-    elseif key == "z" then
-        self.level:undo()
-    end
 end
 
 return GameManager
