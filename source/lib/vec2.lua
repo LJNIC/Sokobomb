@@ -142,7 +142,7 @@ end
 
 -- copies V into SELF.
 -- (vec v) -> self
-function vec:copy(v)
+function vec:copy_into(v)
   self.x = v.x
   self.y = v.y
   return self
@@ -150,7 +150,7 @@ end
 
 -- copies SELF into a new vec.
 -- () -> vec
-function vec:clone()
+function vec:copy()
   return vec(self.x, self.y)
 end
 

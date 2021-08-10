@@ -19,6 +19,7 @@ function Bomb:draw()
     love.graphics.setFont(font)
     love.graphics.setLineWidth(2)
 
+    self.text:set(tostring(self.timer))
     local width, height = self.text:getDimensions()
     love.graphics.draw(self.text, math.floor(self.drawn_position.x + (tile_width / 2 - width / 2)), math.floor(self.drawn_position.y + (tile_width / 2 - height / 2)))
 
@@ -32,7 +33,6 @@ end
 
 function Bomb:tick(objects)
     self.timer = self.timer - 1
-    self.text:set(tostring(self.timer))
     if self.timer == 0 then
         self:explode(objects)
         self.alive = false
@@ -48,6 +48,13 @@ function Bomb:explode(objects)
             end
         end
     end
+end
+
+function Bomb:copy()
+    local copy = Bomb(self.position.x, self.position.y, self.timer)
+    copy.alive = self.alive
+
+    return copy
 end
 
 return Bomb

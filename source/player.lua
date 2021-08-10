@@ -14,4 +14,8 @@ function Player:draw()
     love.graphics.rectangle("line", self.drawn_position.x + self.offset.x, self.drawn_position.y + self.offset.y, self.width, self.width)
 end
 
+function Player:copy()
+    return Player(self.position.x, self.position.y)
+end
+
 return Player
