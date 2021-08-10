@@ -7,6 +7,8 @@ local flux = require "source.lib.flux"
 local game = {}
 
 local level = Level("levels/level1")
+local level_number = 1
+local max_level = #(love.filesystem.getDirectoryItems("levels"))
 
 love.keyboard.setKeyRepeat(true)
 
@@ -100,6 +102,9 @@ function game:keypressed(key)
         level:undo()
     elseif key == "r" then
         love.event.quit("restart")
+    elseif key == "n" then
+        level_number = math.wrap(level_number + 1, 1, max_level + 1)
+        level = Level("levels/level" .. tostring(level_number))
     elseif key == "escape" then
         love.event.quit()
     end
