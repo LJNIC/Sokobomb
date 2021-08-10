@@ -4,6 +4,7 @@ local Level = class()
 
 function Level:new(data)
 	tablex.copy(data, self)
+	self.orig_name = self.name
 	self.cells = {}
 	print("new level created:")
 	pretty.print(self)

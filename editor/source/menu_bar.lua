@@ -7,7 +7,7 @@ local NewLevel = require("source.new_level")
 local MenuBar = {}
 
 function MenuBar.draw()
-	local title = Editor.current_level and Editor.current_level.name or ""
+	local title = Editor.current_level and Editor.current_level.orig_name or ""
 
 	if Slab.IsKeyDown("lctrl") and Slab.IsKeyPressed("o") then
 		NewLevel.open_fd()

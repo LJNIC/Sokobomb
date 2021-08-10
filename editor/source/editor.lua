@@ -152,7 +152,24 @@ function Editor.draw()
 	Slab.BeginWindow("settings", {
 		Title = "Settings",
 	})
-	if Slab.BeginTree("Grid Settings") then
+	if Slab.BeginTree("Level") then
+		Slab.Indent()
+		if Slab.Input("Name", {
+			Text = Editor.current_level.name,
+		}) then
+			Editor.current_level.name = Slab.GetInputText()
+		end
+		Slab.SameLine()
+		if Slab.Button("OK") then
+			Editor.current_level.orig_name = Editor.current_level.name
+		end
+		Slab.Unindent()
+		Slab.EndTree()
+	end
+
+	Slab.Separator()
+
+	if Slab.BeginTree("Grid") then
 		Slab.Indent()
 
 		Slab.Text("Cell color")
