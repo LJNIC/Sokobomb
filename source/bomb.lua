@@ -9,6 +9,7 @@ function Bomb:new(x, y, timer)
     Bomb.super.new(self, x, y)
     self.offset = Vec2(10, 3)
     self.timer = timer
+    self.tween_timer = timer
     self.max_timer = timer
     self.alive = true
     self.movable = true
@@ -19,7 +20,7 @@ function Bomb:draw()
     love.graphics.setFont(font)
     love.graphics.setLineWidth(2)
 
-    self.text:set(tostring(self.timer))
+    self.text:set(tostring(math.round(math.max(self.tween_timer, 0))))
     local width, height = self.text:getDimensions()
     love.graphics.draw(self.text, math.floor(self.drawn_position.x + (tile_width / 2 - width / 2)), math.floor(self.drawn_position.y + (tile_width / 2 - height / 2)))
 
@@ -33,6 +34,7 @@ end
 
 function Bomb:tick(objects)
     self.timer = self.timer - 1
+    flux.to(self, 0.2, {tween_timer = self.tween_timer - 1})
     if self.timer == 0 then
         self:explode(objects)
         self.alive = false
@@ -51,7 +53,7 @@ function Bomb:explode(objects)
 end
 
 function Bomb:undo(other_bomb)
-    self.timer = other_bomb.timer
+    flux.to(self, 0.2, {timer = other_bomb.timer})
     self.alive = other_bomb.alive
     self:move(other_bomb.position)
 end
