@@ -41,7 +41,7 @@ function GameManager:try_move_object(object, direction)
     return true
 end
 
-function GameManager:check_if_won() 
+function GameManager:has_won() 
     local alive_boxes = functional.filter(self.level.objects, function(o) return o:is(Box) and o.alive end)
     return functional.all(alive_boxes, function(box) return self.level:tile_at(box) == 2 end)
 end
@@ -81,6 +81,10 @@ function GameManager:turn(direction)
     self.level.player:move(new_position)
     -- If a turn was done, we push the saved level state onto the stack
     self.level:push()
+
+    if self:has_won() then
+        self:go_to_next_level()
+    end
 end
 
 return GameManager
