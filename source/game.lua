@@ -9,7 +9,7 @@ local utilities = require "source.utilities"
 local game = {}
 
 function game:enter()
-	GameManager:enter(1)
+    GameManager:enter(1)
     love.keyboard.setKeyRepeat(true)
 end
 
@@ -18,14 +18,11 @@ function game:update(dt)
 end
 
 function game:draw()
-    if Transition.flag then
-        love.graphics.setShader(Transition.shader)
-    end
-
     local width, height = love.graphics.getDimensions()
     local level = GameManager.level
     local x = width / 2 - (level.width / 2) * tile_width - tile_width - 4
     local y = height / 2 - (level.height / 2) * tile_width - tile_width - 4
+    Transition.shader:send("translate", {x, y})
 
     love.graphics.push()
     love.graphics.translate(x, y)
@@ -35,8 +32,6 @@ function game:draw()
     love.graphics.setLineWidth(2)
     love.graphics.rectangle("line", tile_width - 2, tile_width - 2, tile_width * level.width + 4, tile_width * level.height + 4)
     love.graphics.pop()
-
-    love.graphics.setShader()
 end
 
 function game:keypressed(key)

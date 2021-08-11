@@ -1,3 +1,4 @@
+local flux = require "source.lib.flux"
 local Base = require "source.base"
 
 local Box = Base:extend()

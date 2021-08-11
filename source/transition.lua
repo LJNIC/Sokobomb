@@ -18,7 +18,6 @@ function Transition:fade_in(duration, fn)
     }):onupdate(function()
         self.shader:send("pct", self.pct)
     end):oncomplete(function()
-        -- self.flag = false
         fn()
         self:fade_out(duration)
     end)
