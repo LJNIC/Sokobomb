@@ -5,6 +5,8 @@ local Breakable = require "source.breakable"
 local Object = require "source.lib.classic"
 
 local Level = Object:extend()
+Level.tile_types = { [0] = "floor", [1] = "wall", [2] = "goal", [3] = "border" }
+local tile_types = Level.tile_types
 
 function Level:new(file_name)
     local data = require(file_name)
@@ -51,9 +53,9 @@ end
 
 
 local function draw_tile(x, y, tile)
-    if tile == 1 then
+    if tile == "wall" then
         love.graphics.ellipse("line", x * tile_width + 16, y * tile_width + 16, 7, 7, 100)
-    elseif tile == 2 then
+    elseif tile == "goal" then
         local cornerX, cornerY = x * tile_width + Box.offset.x, y * tile_width + Box.offset.y
         love.graphics.setColor(0.5, 0.5, 0.5)
         love.graphics.setLineWidth(4)
@@ -75,6 +77,10 @@ function Level:draw()
     end
 end
 
+function Level:tile_is_walkable(base_position_x, y)
+    return self:tile_at(base_position_x, y) ~= "wall"
+end
+
 function Level:tile_at(base_position_x, y)
     local x = base_position_x
     local y = y
@@ -87,7 +93,7 @@ function Level:tile_at(base_position_x, y)
         y = base_position_x.y
     end
 
-    return self.tiles[y] and self.tiles[y][x] or 1
+    return tile_types[self.tiles[y] and self.tiles[y][x] or 1]
 end
 
 function Level:each_tile(f)
