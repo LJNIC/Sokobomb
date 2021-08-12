@@ -50,19 +50,16 @@ function Editor.open_level(path)
 
 	local cl = Editor.current_level
 
-	for y, v in ipairs(data.tiles) do
-		for x, t in ipairs(v) do
-			if t ~= 0 then
-				local index = (y - 1) * cl.rows + x
-				local c = cl.cells[index]
-				local ac = Tiles.get_tile_data(t)
-				c:set_tile(ac, fnt_tile)
-			end
+	for i, t in ipairs(data.tiles) do
+		if t ~= 0 then
+			local c = cl.cells[i]
+			local ac = Tiles.get_tile_data(t)
+			c:set_tile(ac, fnt_tile)
 		end
 	end
 
 	for _, v in ipairs(data.objects) do
-		local index = (v.y - 1) * cl.rows + v.x
+		local index = ((v.y - 1) * cl.cols) + v.x
 		local c = cl.cells[index]
 		local ac = Tiles.get_obj_data(v.data.symbol)
 		c:set_tile(ac, fnt_tile, v.data)

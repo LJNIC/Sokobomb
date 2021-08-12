@@ -21,7 +21,7 @@ function NewLevel.draw()
 	}) then
 		LevelData.draw_get_sizes()
 		Slab.Separator()
-		if Slab.Button("Create") or Slab.IsKeyPressed("return") then
+		if Slab.Button("Create") then
 			Editor.new_level(LevelData.get_data())
 			Slab.CloseDialog()
 		end
