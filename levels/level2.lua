@@ -1,1 +1,0 @@
-do local _={metadata={tile_size=32,rows=5,name="level2",cols=8},tiles={{0,0,0,0,0,0,0,0},{0,0,0,2,0,0,0,0},{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0},{0,0,0,0,0,0,0,0}},objects={{x=7,data={is_box=true,symbol="b",kind="objects"},py=64,y=2,px=224},{x=8,data={is_player=true,symbol="P",kind="objects"},py=64,y=2,px=256}}};return _;end

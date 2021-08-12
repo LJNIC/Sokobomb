@@ -51,8 +51,7 @@ function Level:undo()
     end
 end
 
-
-local function draw_tile(x, y, tile)
+function Level:draw_tile(x, y, tile)
     if tile == "wall" then
         love.graphics.ellipse("line", x * tile_width + 16, y * tile_width + 16, 7, 7, 100)
     elseif tile == "goal" then
@@ -67,8 +66,13 @@ local function draw_tile(x, y, tile)
 end
 
 function Level:draw()
-    self:each_tile(draw_tile)
     self.player:draw()
+
+    for y = 1, self.height do
+        for x = 1, self.width do
+            self:draw_tile(x, y, self:tile_at(x, y))
+        end
+    end
 
     for _, object in ipairs(self.objects) do
         if object.alive then
@@ -93,15 +97,10 @@ function Level:tile_at(base_position_x, y)
         y = base_position_x.y
     end
 
-    return tile_types[self.tiles[y] and self.tiles[y][x] or 1]
+    return tile_types[self.tiles[(y - 1) * self.width + x]]
 end
 
 function Level:each_tile(f)
-    for y = 1, self.height do
-        for x = 1, self.width do
-            f(x, y, self:tile_at(x, y))
-        end
-    end
 end
 
 return Level
