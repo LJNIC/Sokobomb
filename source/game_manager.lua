@@ -33,7 +33,8 @@ function GameManager:try_move_object(object, direction)
     end
 
     local new_position = object.position + direction
-    if self.level:tile_at(new_position) == 1 or functional.any(self.level.objects, function(object) return object.position == new_position end) then
+    local object_at_position = functional.any(self.level.objects, function(object) return object.position == new_position end)
+    if not self.level:tile_is_walkable(new_position) or object_at_position then
         return false
     end
 
@@ -43,28 +44,30 @@ end
 
 function GameManager:has_won() 
     local alive_boxes = functional.filter(self.level.objects, function(o) return o:is(Box) and o.alive end)
-    return functional.all(alive_boxes, function(box) return self.level:tile_at(box) == 2 end)
+    return functional.all(alive_boxes, function(box) return self.level:tile_at(box) == "goal" end)
 end
 
 function GameManager:turn(direction)
-    if self.level.player.moving then
+    local level = self.level
+
+    if level.player.moving then
         return
     end
 
-    local new_position = self.level.player.position + direction
+    local new_position = level.player.position + direction
 
-    if new_position.x < 1 or new_position.x > self.level.width or new_position.y < 1 or new_position.y > self.level.height then
+    if new_position.x < 1 or new_position.x > level.width or new_position.y < 1 or new_position.y > level.height then
         return
     end
 
-    if self.level:tile_at(new_position) == 1 then
+    if not level:tile_is_walkable(new_position) then
         return
     end
 
     -- Save the current level's state
-    self.level:save()
+    level:save()
     local moved = true
-    for _, object in ipairs(self.level.objects) do
+    for _, object in ipairs(level.objects) do
         if object.alive and object.position == new_position then
             moved = self:try_move_object(object, direction)
         end
@@ -74,13 +77,13 @@ function GameManager:turn(direction)
         return
     end
 
-    for _, object in ipairs(self.level.objects) do
-        object:tick(self.level.objects)
+    for _, object in ipairs(level.objects) do
+        object:tick(level.objects)
     end
 
-    self.level.player:move(new_position)
+    level.player:move(new_position)
     -- If a turn was done, we push the saved level state onto the stack
-    self.level:push()
+    level:push()
 
     if self:has_won() then
         self:go_to_next_level()
