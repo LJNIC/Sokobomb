@@ -29,8 +29,6 @@ function game:draw()
 
     level:draw()
 
-    love.graphics.setLineWidth(2)
-    love.graphics.rectangle("line", TILE_WIDTH - 2, TILE_WIDTH - 2, TILE_WIDTH * level.width + 4, TILE_WIDTH * level.height + 4)
     love.graphics.pop()
 end
 
