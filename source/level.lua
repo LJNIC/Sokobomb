@@ -51,24 +51,57 @@ function Level:undo()
     end
 end
 
+function Level:check_neighbor(x, y, dx, dy)
+    local di = (y - 1 + dy) * self.width + (x + dx)
+    local target = self.tiles[di]
+    return target
+end
+
+function Level:draw_wall(x, y)
+    love.graphics.setLineWidth(4)
+    local north = self:check_neighbor(x, y, 0, -1)
+    local south = self:check_neighbor(x, y, 0, 1)
+    local west = self:check_neighbor(x, y, -1, 0)
+    local east = self:check_neighbor(x, y, 1, 0)
+
+    if north == 1 then
+        love.graphics.rectangle("fill", x * tile_width, y * tile_width, tile_width, 1)
+    end
+
+    if south == 1 then
+        love.graphics.rectangle("fill", x * tile_width, y * tile_width + tile_width, tile_width, 1)
+    end
+
+    if west == 1 then
+        love.graphics.rectangle("fill", x * tile_width, y * tile_width, 1, tile_width)
+    end
+
+    if east == 1 then
+        love.graphics.rectangle("fill", x * tile_width + tile_width, y * tile_width, 1, tile_width)
+    end
+end
+
 function Level:draw_tile(x, y, tile)
-    if tile == "wall" then
-        love.graphics.ellipse("line", x * tile_width + 16, y * tile_width + 16, 7, 7, 100)
-    elseif tile == "goal" then
+    love.graphics.setColor(0.5, 0.5, 0.5)
+    love.graphics.setLineWidth(4)
+    if tile == "goal" then
         local cornerX, cornerY = x * tile_width + Box.offset.x, y * tile_width + Box.offset.y
-        love.graphics.setColor(0.5, 0.5, 0.5)
-        love.graphics.setLineWidth(4)
         love.graphics.line(cornerX, cornerY, cornerX + Box.width, cornerY + Box.width)
         love.graphics.line(cornerX + Box.width, cornerY, cornerX, cornerY + Box.width)
         love.graphics.rectangle("line", cornerX, cornerY, Box.width, Box.width)
-        love.graphics.setColor(1, 1, 1)
     end
+    love.graphics.setColor(1, 1, 1)
 end
 
 function Level:draw()
     for y = 1, self.height do
         for x = 1, self.width do
             self:draw_tile(x, y, self:tile_at(x, y))
+
+            local i = (y - 1) * self.width + x
+            if self.tiles[i] ~= 1 then
+                self:draw_wall(x, y)
+            end
         end
     end
 
