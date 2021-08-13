@@ -51,37 +51,104 @@ function Level:undo()
     end
 end
 
-function Level:check_neighbor(x, y, dx, dy)
+function Level:check_neighbor(x, y, dx, dy, recurse)
     local di = (y - 1 + dy) * self.width + (x + dx)
     local target = self.tiles[di]
-    return target
+
+    local is_single = true
+    local n_walls = {}
+    if recurse and target == 1 then
+        local nx = x + dx
+        local ny = y + dy
+        local north = self:check_neighbor(nx, ny, 0, -1)
+        local south = self:check_neighbor(nx, ny, 0, 1)
+        local west = self:check_neighbor(nx, ny, -1, 0)
+        local east = self:check_neighbor(nx, ny, 1, 0)
+
+        if north ~= 1 and south ~= 1 and west ~= 1 and east ~= 1 then
+            --meaning only a single wall tile
+            is_single = false
+        else
+            n_walls.north = north
+            n_walls.south = south
+            n_walls.west = west
+            n_walls.east = east
+        end
+    end
+
+    return target, n_walls, is_single
 end
 
 function Level:draw_wall(x, y)
     love.graphics.setLineWidth(2)
-    local north = self:check_neighbor(x, y, 0, -1)
-    local south = self:check_neighbor(x, y, 0, 1)
-    local west = self:check_neighbor(x, y, -1, 0)
-    local east = self:check_neighbor(x, y, 1, 0)
+    love.graphics.setColor(0.5, 0.5, 0.5)
+    local north, nnw, nis = self:check_neighbor(x, y, 0, -1, true)
+    local south, snw, sis = self:check_neighbor(x, y, 0, 1, true)
+    local west, wnw, wis = self:check_neighbor(x, y, -1, 0, true)
+    local east, enw, eis = self:check_neighbor(x, y, 1, 0, true)
 
     local gap = 8
     local lx = x * TILE_WIDTH
     local ly = y * TILE_WIDTH
 
     if north == 1 then
-        love.graphics.line(lx, ly - gap, lx + TILE_WIDTH, ly - gap)
+        local hgap = nis and 0 or gap
+        local nx = lx + hgap
+        local ny = ly - gap
+        local nw = lx + TILE_WIDTH - hgap
+        local nh = ly - gap
+        if nnw.west == 0 then
+            nx = lx + gap
+        end
+        if nnw.east == 0 then
+            nw = nw - gap
+        end
+        love.graphics.line(nx, ny, nw, nh)
     end
 
     if south == 1 then
-        love.graphics.line(lx, ly + TILE_WIDTH + gap, lx + TILE_WIDTH, ly + TILE_WIDTH + gap)
+        local hgap = sis and 0 or gap
+        local sx = lx + hgap
+        local sy = ly + TILE_WIDTH + gap
+        local sw = lx + TILE_WIDTH - hgap
+        local sh = ly + TILE_WIDTH + gap
+        if snw.west == 0 then
+            sx = lx + gap
+        end
+        if snw.east == 0 then
+            sw = sw - gap
+        end
+        love.graphics.line(sx, sy, sw, sh)
     end
 
     if west == 1 then
-        love.graphics.line(lx - gap, ly, lx - gap, ly + TILE_WIDTH)
+        local vgap = wis and 0 or gap
+        local wx = lx - gap
+        local wy = ly + vgap
+        local ww = lx - gap
+        local wh = ly + TILE_WIDTH - vgap
+        if wnw.north == 0 then
+            wy = ly + gap
+        end
+        if wnw.south == 0 then
+            wh = wh - gap
+        end
+        love.graphics.line(wx, wy, ww, wh)
     end
 
     if east == 1 then
-        love.graphics.line(lx + TILE_WIDTH + gap, ly, lx + TILE_WIDTH + gap, ly + TILE_WIDTH)
+        local vgap = eis and 0 or gap
+        local ex = lx + TILE_WIDTH + gap
+        local ey = ly + vgap
+        local ew = lx + TILE_WIDTH + gap
+        local eh = ly + TILE_WIDTH - vgap
+        if enw.north == 0 then
+            ey = ly + gap
+        end
+        if enw.south == 0 then
+            eh = eh - gap
+        end
+        love.graphics.line(ex, ey, ew, eh)
     end
 
     --first lg.line is the first expression (i.e, north and then west)
@@ -118,9 +185,17 @@ end
 function Level:draw()
     for y = 1, self.height do
         for x = 1, self.width do
+            local i = (y - 1) * self.width + x
             self:draw_tile(x, y, self:tile_at(x, y))
 
-            local i = (y - 1) * self.width + x
+            if DEBUG then
+                love.graphics.setLineWidth(1)
+                love.graphics.setColor(1, 0, 0, 0.5)
+                love.graphics.rectangle("line", x * TILE_WIDTH, y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH)
+                love.graphics.setColor(1, 0, 0, 1)
+                love.graphics.print(self.tiles[i], x * TILE_WIDTH, y * TILE_WIDTH)
+            end
+
             if self.tiles[i] ~= 1 then
                 self:draw_wall(x, y)
             end

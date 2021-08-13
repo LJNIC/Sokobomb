@@ -9,7 +9,7 @@ local utilities = require "source.utilities"
 local game = {}
 
 function game:enter()
-    GameManager:enter(1)
+    GameManager:enter(START_LEVEL_NUMBER)
     love.keyboard.setKeyRepeat(true)
 end
 
@@ -45,6 +45,8 @@ function game:keypressed(key)
         GameManager:reload()
     elseif key == "escape" then
         love.event.quit()
+    elseif key == "`" then
+        DEBUG = not DEBUG
     end
 end
 

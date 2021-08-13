@@ -5,7 +5,7 @@ local Transition = require "source.transition"
 
 local GameManager = {
     level = nil,
-    level_number = 0,
+    level_number = 1,
 }
 
 local max_level = #(love.filesystem.getDirectoryItems("levels"))
