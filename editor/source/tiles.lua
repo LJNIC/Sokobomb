@@ -32,14 +32,6 @@ local tiles = {
 		kind = "tiles"
 	},
 	{
-		tile_n = 3,
-		symbol = "X",
-		name = "Border",
-		color = {1, 0, 0},
-		is_border = true,
-		kind = "tiles"
-	},
-	{
 		symbol = "~",
 		name = "Destructible Wall",
 		color = {0, 0, 1},
