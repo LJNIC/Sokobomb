@@ -58,26 +58,48 @@ function Level:check_neighbor(x, y, dx, dy)
 end
 
 function Level:draw_wall(x, y)
-    love.graphics.setLineWidth(4)
+    love.graphics.setLineWidth(2)
     local north = self:check_neighbor(x, y, 0, -1)
     local south = self:check_neighbor(x, y, 0, 1)
     local west = self:check_neighbor(x, y, -1, 0)
     local east = self:check_neighbor(x, y, 1, 0)
 
+    local gap = 8
+    local lx = x * TILE_WIDTH
+    local ly = y * TILE_WIDTH
+
     if north == 1 then
-        love.graphics.rectangle("fill", x * TILE_WIDTH, y * TILE_WIDTH, TILE_WIDTH, 1)
+        love.graphics.line(lx, ly - gap, lx + TILE_WIDTH, ly - gap)
     end
 
     if south == 1 then
-        love.graphics.rectangle("fill", x * TILE_WIDTH, y * TILE_WIDTH + TILE_WIDTH, TILE_WIDTH, 1)
+        love.graphics.line(lx, ly + TILE_WIDTH + gap, lx + TILE_WIDTH, ly + TILE_WIDTH + gap)
     end
 
     if west == 1 then
-        love.graphics.rectangle("fill", x * TILE_WIDTH, y * TILE_WIDTH, 1, TILE_WIDTH)
+        love.graphics.line(lx - gap, ly, lx - gap, ly + TILE_WIDTH)
     end
 
     if east == 1 then
-        love.graphics.rectangle("fill", x * TILE_WIDTH + TILE_WIDTH, y * TILE_WIDTH, 1, TILE_WIDTH)
+        love.graphics.line(lx + TILE_WIDTH + gap, ly, lx + TILE_WIDTH + gap, ly + TILE_WIDTH)
+    end
+
+    --first lg.line is the first expression (i.e, north and then west)
+    if north == 1 and west == 1 then
+        love.graphics.line(lx - gap, ly - gap, lx + TILE_WIDTH - gap, ly - gap)
+        love.graphics.line(lx - gap, ly - gap, lx - gap, ly + TILE_WIDTH - gap)
+    end
+    if north == 1 and east == 1 then
+        love.graphics.line(lx + gap, ly - gap, lx + TILE_WIDTH + gap, ly - gap)
+        love.graphics.line(lx + TILE_WIDTH + gap, ly - gap, lx + TILE_WIDTH + gap, ly + TILE_WIDTH - gap)
+    end
+    if south == 1 and west == 1 then
+        love.graphics.line(lx - gap, ly + TILE_WIDTH + gap, lx + TILE_WIDTH - gap, ly + TILE_WIDTH + gap)
+        love.graphics.line(lx - gap, ly + gap, lx - gap, ly + TILE_WIDTH + gap)
+    end
+    if south == 1 and east == 1 then
+        love.graphics.line(lx + gap, ly + TILE_WIDTH + gap, lx + TILE_WIDTH + gap, ly + TILE_WIDTH + gap)
+        love.graphics.line(lx + TILE_WIDTH + gap, ly + gap, lx + TILE_WIDTH + gap, ly + TILE_WIDTH + gap)
     end
 end
 
