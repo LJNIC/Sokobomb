@@ -16,8 +16,8 @@ function LevelData.draw_get_sizes()
 		Slab.SetLayoutColumn(1)
 		Slab.Text("Level name")
 		Slab.Text("Tile Size")
-		Slab.Text("Rows")
-		Slab.Text("Columns")
+		Slab.Text("Height")
+		Slab.Text("Width")
 
 		Slab.SetLayoutColumn(2)
 		if Slab.Input("in_level_name", {
