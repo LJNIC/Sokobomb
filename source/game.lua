@@ -40,7 +40,7 @@ function game:keypressed(key)
     if utilities.directions[key] then
         GameManager:turn(utilities.directions[key])
     elseif key == "n" then
-        GameManager:go_to_next_level()
+        GameManager:go_to_next_level(0)
     elseif key == "z" then
         GameManager.level:undo()
     elseif key == "r" then

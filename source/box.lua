@@ -13,14 +13,10 @@ end
 
 function Box:draw()
     local cornerX, cornerY = self.drawn_position.x + Box.offset.x, self.drawn_position.y + Box.offset.y
+    love.graphics.setLineWidth(4)
     love.graphics.line(cornerX, cornerY, cornerX + Box.width, cornerY + Box.width)
     love.graphics.line(cornerX + Box.width, cornerY, cornerX, cornerY + Box.width)
     love.graphics.rectangle("line", cornerX, cornerY, Box.width, Box.width)
-end
-
-function Box:undo(other_box)
-    self.alive = other_box.alive
-    self:move(other_box.position)
 end
 
 function Box:copy()

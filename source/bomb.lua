@@ -20,7 +20,7 @@ function Bomb:draw()
     love.graphics.setFont(font)
     love.graphics.setLineWidth(2)
 
-    self.text:set(tostring(math.round(math.max(self.tween_timer, 0))))
+    self.text:set(tostring(math.round(math.max(self.tween_timer, 1))))
     local width, height = self.text:getDimensions()
     love.graphics.draw(self.text, math.floor(self.drawn_position.x + (tile_width / 2 - width / 2)), math.floor(self.drawn_position.y + (tile_width / 2 - height / 2)))
 
@@ -28,7 +28,7 @@ function Bomb:draw()
     love.graphics.circle("line", self.drawn_position.x + tile_width / 2, self.drawn_position.y + tile_width / 2, tile_width / 2 - 2, 100)
     love.graphics.setColor(1, 1, 1, 1)
 
-    local percent = self.timer / self.max_timer * (2 * math.pi)
+    local percent = self.tween_timer / self.max_timer * (2 * math.pi)
     love.graphics.arc("line", "open", self.drawn_position.x + tile_width / 2, self.drawn_position.y + tile_width / 2, tile_width / 2 - 2, 0, percent, 100)
 end
 
@@ -53,9 +53,9 @@ function Bomb:explode(objects)
 end
 
 function Bomb:undo(other_bomb)
-    flux.to(self, 0.2, {timer = other_bomb.timer})
-    self.alive = other_bomb.alive
-    self:move(other_bomb.position)
+    Bomb.super.undo(self, other_bomb)
+    self.timer = other_bomb.timer
+    flux.to(self, 0.2, {tween_timer = other_bomb.timer})
 end
 
 function Bomb:copy()

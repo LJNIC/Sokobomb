@@ -12,7 +12,7 @@ function Player:new(x, y)
 end
 
 function Player:draw()
-    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setColor(0.25, 0.5, 1, 1)
     if Transition.flag then
         Transition.shader:send("pos", {self.drawn_position.x, self.drawn_position.y})
         love.graphics.setShader(Transition.shader)
@@ -23,6 +23,7 @@ function Player:draw()
         self.drawn_position.y + self.offset.y, self.width, self.width)
 
     love.graphics.setShader()
+    love.graphics.setColor(1, 1, 1)
 end
 
 function Player:copy()

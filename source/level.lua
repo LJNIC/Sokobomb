@@ -22,7 +22,7 @@ function Level:new(file_name)
             table.insert(self.objects, Box(x, y))
         elseif object.data.is_bomb then
             table.insert(self.objects, Bomb(x, y, object.data.timer))
-        elseif object.data.is_breakable then
+        elseif object.data.is_d_wall then
             table.insert(self.objects, Breakable(x, y))
         elseif object.data.is_player then
             self.player = Player(x, y)
@@ -66,13 +66,13 @@ function Level:draw_tile(x, y, tile)
 end
 
 function Level:draw()
-    self.player:draw()
-
     for y = 1, self.height do
         for x = 1, self.width do
             self:draw_tile(x, y, self:tile_at(x, y))
         end
     end
+
+    self.player:draw()
 
     for _, object in ipairs(self.objects) do
         if object.alive then

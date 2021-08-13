@@ -3,7 +3,6 @@ local Breakable = Base:extend()
 
 function Breakable:new(x, y)
     Breakable.super.new(self, x, y)
-    self.alive = true
     self.width = 24
     self.offset = Vec2(4, 4)
     self.movable = false
@@ -14,6 +13,11 @@ function Breakable:draw()
     love.graphics.line(corner.x, corner.y + self.width / 3, corner.x + self.width, corner.y + self.width / 3)
     love.graphics.line(corner.x, corner.y + 2 * self.width / 3, corner.x + self.width, corner.y + 2 * self.width / 3)
     love.graphics.rectangle("line", corner.x, corner.y, self.width, self.width)
+end
+
+function Breakable:undo(other)
+    Breakable.super.undo(self, other)
+    self.alive = other.alive
 end
 
 function Breakable:explode()

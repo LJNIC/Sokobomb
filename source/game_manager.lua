@@ -32,9 +32,15 @@ function GameManager:try_move_object(object, direction)
         return false
     end
 
+    local level = self.level
     local new_position = object.position + direction
-    local object_at_position = functional.any(self.level.objects, function(object) return object.position == new_position end)
-    if not self.level:tile_is_walkable(new_position) or object_at_position then
+
+    if new_position.x < 1 or new_position.x > level.width or new_position.y < 1 or new_position.y > level.height then
+        return false
+    end
+
+    local object_at_position = functional.any(level.objects, function(object) return object.position == new_position end)
+    if not level:tile_is_walkable(new_position) or object_at_position then
         return false
     end
 
