@@ -65,19 +65,19 @@ function Level:draw_wall(x, y)
     local east = self:check_neighbor(x, y, 1, 0)
 
     if north == 1 then
-        love.graphics.rectangle("fill", x * tile_width, y * tile_width, tile_width, 1)
+        love.graphics.rectangle("fill", x * TILE_WIDTH, y * TILE_WIDTH, TILE_WIDTH, 1)
     end
 
     if south == 1 then
-        love.graphics.rectangle("fill", x * tile_width, y * tile_width + tile_width, tile_width, 1)
+        love.graphics.rectangle("fill", x * TILE_WIDTH, y * TILE_WIDTH + TILE_WIDTH, TILE_WIDTH, 1)
     end
 
     if west == 1 then
-        love.graphics.rectangle("fill", x * tile_width, y * tile_width, 1, tile_width)
+        love.graphics.rectangle("fill", x * TILE_WIDTH, y * TILE_WIDTH, 1, TILE_WIDTH)
     end
 
     if east == 1 then
-        love.graphics.rectangle("fill", x * tile_width + tile_width, y * tile_width, 1, tile_width)
+        love.graphics.rectangle("fill", x * TILE_WIDTH + TILE_WIDTH, y * TILE_WIDTH, 1, TILE_WIDTH)
     end
 end
 
@@ -85,7 +85,7 @@ function Level:draw_tile(x, y, tile)
     love.graphics.setColor(0.5, 0.5, 0.5)
     love.graphics.setLineWidth(4)
     if tile == "goal" then
-        local cornerX, cornerY = x * tile_width + Box.offset.x, y * tile_width + Box.offset.y
+        local cornerX, cornerY = x * TILE_WIDTH + Box.offset.x, y * TILE_WIDTH + Box.offset.y
         love.graphics.line(cornerX, cornerY, cornerX + Box.width, cornerY + Box.width)
         love.graphics.line(cornerX + Box.width, cornerY, cornerX, cornerY + Box.width)
         love.graphics.rectangle("line", cornerX, cornerY, Box.width, Box.width)

@@ -20,8 +20,8 @@ end
 function game:draw()
     local width, height = love.graphics.getDimensions()
     local level = GameManager.level
-    local x = width / 2 - (level.width / 2) * tile_width - tile_width - 4
-    local y = height / 2 - (level.height / 2) * tile_width - tile_width - 4
+    local x = width / 2 - (level.width / 2) * TILE_WIDTH - TILE_WIDTH - 4
+    local y = height / 2 - (level.height / 2) * TILE_WIDTH - TILE_WIDTH - 4
     Transition.shader:send("translate", {x, y})
 
     love.graphics.push()
@@ -30,7 +30,7 @@ function game:draw()
     level:draw()
 
     love.graphics.setLineWidth(2)
-    love.graphics.rectangle("line", tile_width - 2, tile_width - 2, tile_width * level.width + 4, tile_width * level.height + 4)
+    love.graphics.rectangle("line", TILE_WIDTH - 2, TILE_WIDTH - 2, TILE_WIDTH * level.width + 4, TILE_WIDTH * level.height + 4)
     love.graphics.pop()
 end
 
