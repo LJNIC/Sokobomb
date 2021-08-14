@@ -5,6 +5,9 @@ local GameManager = require "source.game_manager"
 local Transition = require "source.transition"
 local flux = require "source.lib.flux"
 local utilities = require "source.utilities"
+local bloom = love.graphics.newShader("shaders/bloom.glsl")
+bloom:send("canvas_size", {love.graphics.getDimensions()})
+local canvas = love.graphics.newCanvas(love.graphics.getDimensions())
 
 local game = {}
 
@@ -24,12 +27,19 @@ function game:draw()
     local y = height / 2 - (level.height / 2) * TILE_WIDTH - TILE_WIDTH - 4
     Transition.shader:send("translate", {x, y})
 
+    love.graphics.setCanvas(canvas)
+    love.graphics.clear()
     love.graphics.push()
     love.graphics.translate(x, y)
 
     level:draw()
 
     love.graphics.pop()
+    love.graphics.setCanvas()
+
+    love.graphics.setShader(bloom)
+    love.graphics.draw(canvas)
+    love.graphics.setShader()
 end
 
 function game:keypressed(key)
