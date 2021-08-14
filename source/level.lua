@@ -22,6 +22,8 @@ function Level:new(file_name)
             table.insert(self.objects, Box(x, y))
         elseif object.data.is_bomb then
             table.insert(self.objects, Bomb(x, y, object.data.timer))
+        elseif object.data.is_infinite then
+            table.insert(self.objects, Bomb(x, y, 1, true))
         elseif object.data.is_d_wall then
             table.insert(self.objects, Breakable(x, y))
         elseif object.data.is_player then
@@ -233,9 +235,6 @@ function Level:tile_at(base_position_x, y)
     end
 
     return tile_types[self.tiles[(y - 1) * self.width + x]]
-end
-
-function Level:each_tile(f)
 end
 
 return Level
