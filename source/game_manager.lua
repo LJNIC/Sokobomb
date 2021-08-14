@@ -1,4 +1,5 @@
 local Box = require "source.box"
+local Bomb = require "source.bomb"
 local utilities = require "source.utilities"
 local Level = require "source.level"
 local Transition = require "source.transition"
@@ -77,7 +78,7 @@ function GameManager:turn(direction)
 
     -- Tick and explode bombs separately because of bombs exploding bombs
     for _, bomb in ipairs(bombs) do
-        object:tick(level.objects)
+        bomb:tick(level.objects)
     end
 
     for _, bomb in ipairs(bombs) do
