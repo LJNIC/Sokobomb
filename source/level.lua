@@ -81,13 +81,13 @@ end
 
 function Level:draw_wall(x, y)
     love.graphics.setLineWidth(2)
-    love.graphics.setColor(0.5, 0.5, 0.5)
+    love.graphics.setColor(1, 1, 1)
     local north, nnw, nis = self:check_neighbor(x, y, 0, -1, true)
     local south, snw, sis = self:check_neighbor(x, y, 0, 1, true)
     local west, wnw, wis = self:check_neighbor(x, y, -1, 0, true)
     local east, enw, eis = self:check_neighbor(x, y, 1, 0, true)
 
-    local gap = 8
+    local gap = 4
     local lx = x * TILE_WIDTH
     local ly = y * TILE_WIDTH
 
@@ -212,7 +212,8 @@ function Level:draw()
 end
 
 function Level:tile_is_walkable(base_position_x, y)
-    return self:tile_at(base_position_x, y) ~= "wall"
+    local tile = self:tile_at(base_position_x, y)
+    return tile and tile ~= "wall"
 end
 
 function Level:tile_at(base_position_x, y)
@@ -225,6 +226,10 @@ function Level:tile_at(base_position_x, y)
     elseif y == nil and base_position_x.x then
         x = base_position_x.x
         y = base_position_x.y
+    end
+
+    if x < 1 or x > self.width or y < 1 or y > self.height then
+        return nil
     end
 
     return tile_types[self.tiles[(y - 1) * self.width + x]]
