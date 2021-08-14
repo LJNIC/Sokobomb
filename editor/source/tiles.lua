@@ -53,6 +53,13 @@ local tiles = {
 		is_bomb = true,
 		kind = "objects"
 	},
+	{
+		symbol = "∞",
+		name = "Infinite",
+		color = {0, 0, 0},
+		is_infinite = true,
+		kind = "objects"
+	},
 }
 
 function Tiles.init()
