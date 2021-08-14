@@ -32,20 +32,16 @@ function GameManager:try_move_object(object, direction)
         return false
     end
 
-    local level = self.level
     local new_position = object.position + direction
 
-    if new_position.x < 1 or new_position.x > level.width or new_position.y < 1 or new_position.y > level.height then
-        return false
+    local object_at_position = functional.any(self.level.objects, function(o) return o.position == new_position end)
+
+    if self.level:tile_is_walkable(new_position) and not object_at_position then
+        object:move(new_position)
+        return true
     end
 
-    local object_at_position = functional.any(level.objects, function(object) return object.position == new_position end)
-    if not level:tile_is_walkable(new_position) or object_at_position then
-        return false
-    end
-
-    object:move(new_position)
-    return true
+    return false
 end
 
 function GameManager:has_won() 
@@ -62,33 +58,37 @@ function GameManager:turn(direction)
 
     local new_position = level.player.position + direction
 
-    if new_position.x < 1 or new_position.x > level.width or new_position.y < 1 or new_position.y > level.height then
-        return
-    end
-
     if not level:tile_is_walkable(new_position) then
         return
     end
 
     -- Save the current level's state
     level:save()
-    local moved = true
-    for _, object in ipairs(level.objects) do
-        if object.alive and object.position == new_position then
-            moved = self:try_move_object(object, direction)
-        end
-    end
+    
+    -- Check if an object exists at the position and try to move it
+    local object_at_position = functional.find_match(level.objects, function(o) return o.alive and o.position == new_position end)
+    local moved = not object_at_position and true or self:try_move_object(object_at_position, direction)
 
     if not moved then
         return
     end
 
-    for _, object in ipairs(level.objects) do
+    local bombs = functional.filter(level.objects, function(o) return o:is(Bomb) end)
+
+    -- Tick and explode bombs separately because of bombs exploding bombs
+    for _, bomb in ipairs(bombs) do
         object:tick(level.objects)
     end
 
+    for _, bomb in ipairs(bombs) do
+        if bomb.timer == 0 then
+            bomb:explode(level.objects)
+        end
+    end
+
     level.player:move(new_position)
-    -- If a turn was done, we push the saved level state onto the stack
+
+    -- We know changes to the level state were made, so we push the saved level state onto the stack
     level:push()
 
     if self:has_won() then
