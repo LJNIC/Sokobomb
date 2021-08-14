@@ -99,10 +99,10 @@ function Level:draw_wall(x, y)
         local ny = ly - gap
         local nw = lx + TILE_WIDTH - hgap
         local nh = ly - gap
-        if nnw.west == 0 then
+        if nnw.west ~= 1 then
             nx = lx + gap
         end
-        if nnw.east == 0 then
+        if nnw.east ~= 1 then
             nw = nw - gap
         end
         love.graphics.line(nx, ny, nw, nh)
@@ -114,10 +114,10 @@ function Level:draw_wall(x, y)
         local sy = ly + TILE_WIDTH + gap
         local sw = lx + TILE_WIDTH - hgap
         local sh = ly + TILE_WIDTH + gap
-        if snw.west == 0 then
+        if snw.west ~= 1 then
             sx = lx + gap
         end
-        if snw.east == 0 then
+        if snw.east ~= 1 then
             sw = sw - gap
         end
         love.graphics.line(sx, sy, sw, sh)
@@ -129,10 +129,10 @@ function Level:draw_wall(x, y)
         local wy = ly + vgap
         local ww = lx - gap
         local wh = ly + TILE_WIDTH - vgap
-        if wnw.north == 0 then
+        if wnw.north ~= 1 then
             wy = ly + gap
         end
-        if wnw.south == 0 then
+        if wnw.south ~= 1 then
             wh = wh - gap
         end
         love.graphics.line(wx, wy, ww, wh)
@@ -144,10 +144,10 @@ function Level:draw_wall(x, y)
         local ey = ly + vgap
         local ew = lx + TILE_WIDTH + gap
         local eh = ly + TILE_WIDTH - vgap
-        if enw.north == 0 then
+        if enw.north ~= 1 then
             ey = ly + gap
         end
-        if enw.south == 0 then
+        if enw.south ~= 1 then
             eh = eh - gap
         end
         love.graphics.line(ex, ey, ew, eh)
