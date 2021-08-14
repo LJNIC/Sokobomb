@@ -3,7 +3,6 @@ local Serpent = require("lib.serpent.src.serpent")
 local Slab = require("lib.Slab")
 
 local Cell = require("source.cell")
-local ContextMenu = require("source.context_menu")
 local Dialog = require("source.dialog")
 local Helper = require("source.helper")
 local Level = require("source.level")
@@ -69,7 +68,6 @@ function Editor.open_level(path)
 end
 
 function Editor.interact_cell(mx, my, mb)
-	if ContextMenu.is_open then return end
 	if Dialog.is_open() then return end
 	local cl = Editor.current_level
 	local mx, my = love.mouse.getPosition()
@@ -81,8 +79,6 @@ function Editor.interact_cell(mx, my, mb)
 				c:set_tile(ac, fnt_tile)
 			elseif love.keyboard.isDown("lctrl") and mb == 2 then
 				c:remove_tile()
-			elseif c.tile and mb == 2 then
-				ContextMenu.open(c)
 			end
 			return
 		end

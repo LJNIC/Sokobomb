@@ -3,7 +3,6 @@ local Slab = require("lib.Slab")
 local Style = Slab.GetStyle()
 
 local About = require("source.about")
-local ContextMenu = require("source.context_menu")
 local Dialog = require("source.dialog")
 local Editor = require("source.editor")
 local MenuBar = require("source.menu_bar")
@@ -23,7 +22,6 @@ function love.update(dt)
 	NewLevel.draw()
 	Editor.update(dt)
 	Editor.draw()
-	ContextMenu.draw()
 	Dialog.draw()
 end
 
