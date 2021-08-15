@@ -18,13 +18,22 @@ function game:update(dt)
     flux.update(dt)
 end
 
+local draw_interface = require "source.game_interface"
 function game:draw()
     local width, height = love.graphics.getDimensions()
     local level = GameManager.level
     local x = width / 2 - (level.width / 2) * TILE_WIDTH - TILE_WIDTH - 4
     local y = height / 2 - (level.height / 2) * TILE_WIDTH - TILE_WIDTH - 4
+
+    draw_interface(GameManager.level_number)
+
+    love.graphics.push()
+        love.graphics.translate(x, y)
+        level:draw_tiles()
+    love.graphics.pop()
+
     Glow.bloom(function()
-        level:draw()
+        level:draw_objects()
     end, x, y)
 end
 
