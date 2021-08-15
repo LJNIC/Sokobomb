@@ -21,8 +21,8 @@ function GameManager:enter(level_number)
     self.level_number = level_number
     self.level = Level("levels/level" .. level_number)
 
-    local w = self.level.width * TILE_WIDTH
-    local h = self.level.height * TILE_WIDTH
+    local w = self.level.width * 1.5 * TILE_WIDTH
+    local h = self.level.height * 1.5 * TILE_WIDTH
     Glow.bloom.glow.size = {w, h}
 end
 
