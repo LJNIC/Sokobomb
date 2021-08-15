@@ -175,19 +175,24 @@ end
 function Level:draw_tile(x, y, tile)
     love.graphics.setColor(0.5, 0.5, 0.5)
     love.graphics.setLineWidth(4)
+
     if tile == "goal" then
         local cornerX, cornerY = x * TILE_WIDTH + Box.offset.x, y * TILE_WIDTH + Box.offset.y
         love.graphics.line(cornerX, cornerY, cornerX + Box.width, cornerY + Box.width)
         love.graphics.line(cornerX + Box.width, cornerY, cornerX, cornerY + Box.width)
         love.graphics.rectangle("line", cornerX, cornerY, Box.width, Box.width)
     end
+
+    if tile ~= "wall" then
+        self:draw_wall(x, y)
+    end
+
     love.graphics.setColor(1, 1, 1)
 end
 
-function Level:draw()
+function Level:draw_tiles()
     for y = 1, self.height do
         for x = 1, self.width do
-            local i = (y - 1) * self.width + x
             self:draw_tile(x, y, self:tile_at(x, y))
 
             if DEBUG then
@@ -197,13 +202,11 @@ function Level:draw()
                 love.graphics.setColor(1, 0, 0, 1)
                 love.graphics.print(self.tiles[i], x * TILE_WIDTH, y * TILE_WIDTH)
             end
-
-            if self.tiles[i] ~= 1 then
-                self:draw_wall(x, y)
-            end
         end
     end
+end
 
+function Level:draw_objects()
     self.player:draw()
 
     for _, object in ipairs(self.objects) do
