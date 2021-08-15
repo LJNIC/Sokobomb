@@ -7,6 +7,8 @@ local flux = require "source.lib.flux"
 local moonshine = require "source.lib.moonshine"
 local utilities = require "source.utilities"
 local bloom = moonshine(moonshine.effects.glow)
+bloom.glow.min_luma = 0.2 --lower is more glow
+bloom.glow.strength = 5 --higher is larger glow
 
 local game = {}
 
