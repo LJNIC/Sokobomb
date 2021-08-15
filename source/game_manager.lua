@@ -3,6 +3,7 @@ local Bomb = require "source.bomb"
 local utilities = require "source.utilities"
 local Level = require "source.level"
 local Transition = require "source.transition"
+local Glow = require "source.glow"
 
 local GameManager = {
     level = nil,
@@ -19,6 +20,10 @@ function GameManager:enter(level_number)
     level_number = math.wrap(level_number, 1, max_level + 1)
     self.level_number = level_number
     self.level = Level("levels/level" .. level_number)
+
+    local w = self.level.width * TILE_WIDTH
+    local h = self.level.height * TILE_WIDTH
+    Glow.bloom.glow.size = {w, h}
 end
 
 function GameManager:go_to_next_level(duration)
@@ -45,7 +50,7 @@ function GameManager:try_move_object(object, direction)
     return false
 end
 
-function GameManager:has_won() 
+function GameManager:has_won()
     local alive_boxes = functional.filter(self.level.objects, function(o) return o:is(Box) and o.alive end)
     return functional.all(alive_boxes, function(box) return self.level:tile_at(box) == "goal" end)
 end
@@ -65,7 +70,7 @@ function GameManager:turn(direction)
 
     -- Save the current level's state
     level:save()
-    
+
     -- Check if an object exists at the position and try to move it
     local object_at_position = functional.find_match(level.objects, function(o) return o.alive and o.position == new_position end)
     local moved = not object_at_position and true or self:try_move_object(object_at_position, direction)
