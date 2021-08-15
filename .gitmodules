@@ -13,3 +13,6 @@
 [submodule "editor/lib/nativefs"]
 	path = editor/lib/nativefs
 	url = https://github.com/megagrump/nativefs
+[submodule "source/lib/moonshine"]
+	path = source/lib/moonshine
+	url = https://github.com/vrld/moonshine

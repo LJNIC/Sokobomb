@@ -4,10 +4,9 @@ local Box = require "source.box"
 local GameManager = require "source.game_manager"
 local Transition = require "source.transition"
 local flux = require "source.lib.flux"
+local moonshine = require "source.lib.moonshine"
 local utilities = require "source.utilities"
-local bloom = love.graphics.newShader("shaders/bloom.glsl")
-bloom:send("canvas_size", {love.graphics.getDimensions()})
-local canvas = love.graphics.newCanvas(love.graphics.getDimensions())
+local bloom = moonshine(moonshine.effects.glow)
 
 local game = {}
 
@@ -20,26 +19,23 @@ function game:update(dt)
     flux.update(dt)
 end
 
-function game:draw()
+local function draw()
     local width, height = love.graphics.getDimensions()
     local level = GameManager.level
     local x = width / 2 - (level.width / 2) * TILE_WIDTH - TILE_WIDTH - 4
     local y = height / 2 - (level.height / 2) * TILE_WIDTH - TILE_WIDTH - 4
     Transition.shader:send("translate", {x, y})
 
-    love.graphics.setCanvas(canvas)
-    love.graphics.clear()
     love.graphics.push()
     love.graphics.translate(x, y)
 
     level:draw()
 
     love.graphics.pop()
-    love.graphics.setCanvas()
+end
 
-    love.graphics.setShader(bloom)
-    love.graphics.draw(canvas)
-    love.graphics.setShader()
+function game:draw()
+    bloom(draw)
 end
 
 function game:keypressed(key)
