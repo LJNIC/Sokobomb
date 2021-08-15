@@ -23,11 +23,9 @@ function game:draw()
     local level = GameManager.level
     local x = width / 2 - (level.width / 2) * TILE_WIDTH - TILE_WIDTH - 4
     local y = height / 2 - (level.height / 2) * TILE_WIDTH - TILE_WIDTH - 4
-    Glow.bloom.glow.x = x
-    Glow.bloom.glow.y = y
     Glow.bloom(function()
         level:draw()
-    end)
+    end, x, y)
 end
 
 function game:keypressed(key)
