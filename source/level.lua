@@ -97,7 +97,7 @@ function Level:draw_wall(x, y)
         local hgap = nis and 0 or gap
         local nx = lx + hgap
         local ny = ly - gap
-        local nw = lx + TILE_WIDTH - hgap
+        local nw = lx + TILE_WIDTH
         local nh = ly - gap
         if nnw.west ~= 1 then
             nx = lx + gap
@@ -110,9 +110,9 @@ function Level:draw_wall(x, y)
 
     if south == 1 then
         local hgap = sis and 0 or gap
-        local sx = lx + hgap
+        local sx = lx - hgap
         local sy = ly + TILE_WIDTH + gap
-        local sw = lx + TILE_WIDTH - hgap
+        local sw = lx + TILE_WIDTH
         local sh = ly + TILE_WIDTH + gap
         if snw.west ~= 1 then
             sx = lx + gap
@@ -126,9 +126,9 @@ function Level:draw_wall(x, y)
     if west == 1 then
         local vgap = wis and 0 or gap
         local wx = lx - gap
-        local wy = ly + vgap
+        local wy = ly - vgap
         local ww = lx - gap
-        local wh = ly + TILE_WIDTH - vgap
+        local wh = ly + TILE_WIDTH
         if wnw.north ~= 1 then
             wy = ly + gap
         end
@@ -143,7 +143,7 @@ function Level:draw_wall(x, y)
         local ex = lx + TILE_WIDTH + gap
         local ey = ly + vgap
         local ew = lx + TILE_WIDTH + gap
-        local eh = ly + TILE_WIDTH - vgap
+        local eh = ly + TILE_WIDTH
         if enw.north ~= 1 then
             ey = ly + gap
         end
