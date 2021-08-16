@@ -35,6 +35,10 @@ function game:draw()
     Glow.bloom(function()
         level:draw_objects()
     end, x, y)
+
+    if DEBUG then
+        love.graphics.print(love.timer.getFPS())
+    end
 end
 
 function game:keypressed(key)
@@ -46,6 +50,8 @@ function game:keypressed(key)
         GameManager:go_to_next_level()
     elseif key == "z" then
         GameManager.level:undo()
+    elseif key == "r" and love.keyboard.isDown("lctrl") then
+        love.event.quit("restart")
     elseif key == "r" then
         GameManager:reload()
     elseif key == "escape" then

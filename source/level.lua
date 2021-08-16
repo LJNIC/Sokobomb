@@ -82,9 +82,10 @@ function Level:check_neighbor(x, y, dx, dy, recurse)
 end
 
 function Level:draw_wall(x, y)
-    love.graphics.setLineWidth(2)
     love.graphics.setLineStyle("rough")
+    love.graphics.setLineWidth(2)
     love.graphics.setColor(1, 1, 1)
+
     local north, nnw, nis = self:check_neighbor(x, y, 0, -1, true)
     local south, snw, sis = self:check_neighbor(x, y, 0, 1, true)
     local west, wnw, wis = self:check_neighbor(x, y, -1, 0, true)
@@ -187,30 +188,31 @@ function Level:draw_wall(x, y)
         )
     end
 
-    love.graphics.setLineStyle("rough")
+    love.graphics.setLineStyle("smooth")
 end
 
 function Level:draw_tile(x, y, tile)
-    love.graphics.setColor(0.5, 0.5, 0.5)
-    love.graphics.setLineWidth(4)
-
     if tile == "goal" then
+        love.graphics.setColor(0.5, 0.5, 0.5)
+        love.graphics.setLineWidth(4)
+
         local cornerX, cornerY = x * TILE_WIDTH + Box.offset.x, y * TILE_WIDTH + Box.offset.y
         love.graphics.line(cornerX, cornerY, cornerX + Box.width, cornerY + Box.width)
         love.graphics.line(cornerX + Box.width, cornerY, cornerX, cornerY + Box.width)
         love.graphics.rectangle("line", cornerX, cornerY, Box.width, Box.width)
+
+        love.graphics.setColor(1, 1, 1)
     end
 
     if tile ~= "wall" then
         self:draw_wall(x, y)
     end
-
-    love.graphics.setColor(1, 1, 1)
 end
 
 function Level:draw_tiles()
     for y = 1, self.height do
         for x = 1, self.width do
+            local t = self:tile_at(x, y)
             self:draw_tile(x, y, self:tile_at(x, y))
 
             if DEBUG then
@@ -218,7 +220,7 @@ function Level:draw_tiles()
                 love.graphics.setColor(1, 0, 0, 0.5)
                 love.graphics.rectangle("line", x * TILE_WIDTH, y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH)
                 love.graphics.setColor(1, 0, 0, 1)
-                love.graphics.print(self.tiles[i], x * TILE_WIDTH, y * TILE_WIDTH)
+                love.graphics.print(t, x * TILE_WIDTH, y * TILE_WIDTH)
             end
         end
     end
