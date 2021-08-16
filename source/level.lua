@@ -83,6 +83,7 @@ end
 
 function Level:draw_wall(x, y)
     love.graphics.setLineWidth(2)
+    love.graphics.setLineStyle("rough")
     love.graphics.setColor(1, 1, 1)
     local north, nnw, nis = self:check_neighbor(x, y, 0, -1, true)
     local south, snw, sis = self:check_neighbor(x, y, 0, 1, true)
@@ -155,21 +156,38 @@ function Level:draw_wall(x, y)
 
     --first lg.line is the first expression (i.e, north and then west)
     if north == 1 and west == 1 then
-        love.graphics.line(lx - gap, ly - gap, lx + TILE_WIDTH - gap, ly - gap)
-        love.graphics.line(lx - gap, ly - gap, lx - gap, ly + TILE_WIDTH - gap)
+        love.graphics.line(
+            lx + TILE_WIDTH - gap, ly - gap,
+            lx - gap, ly - gap, 
+            lx - gap, ly + TILE_WIDTH - gap
+        )
     end
+
     if north == 1 and east == 1 then
-        love.graphics.line(lx + gap, ly - gap, lx + TILE_WIDTH + gap, ly - gap)
-        love.graphics.line(lx + TILE_WIDTH + gap, ly - gap, lx + TILE_WIDTH + gap, ly + TILE_WIDTH - gap)
+        love.graphics.line(
+            lx + gap, ly - gap, 
+            lx + TILE_WIDTH + gap, ly - gap,
+            lx + TILE_WIDTH + gap, ly + TILE_WIDTH - gap
+        )
     end
+
     if south == 1 and west == 1 then
-        love.graphics.line(lx - gap, ly + TILE_WIDTH + gap, lx + TILE_WIDTH - gap, ly + TILE_WIDTH + gap)
-        love.graphics.line(lx - gap, ly + gap, lx - gap, ly + TILE_WIDTH + gap)
+        love.graphics.line(
+            lx - gap, ly + gap,
+            lx - gap, ly + TILE_WIDTH + gap, 
+            lx + TILE_WIDTH - gap, ly + TILE_WIDTH + gap
+        )
     end
+
     if south == 1 and east == 1 then
-        love.graphics.line(lx + gap, ly + TILE_WIDTH + gap, lx + TILE_WIDTH + gap, ly + TILE_WIDTH + gap)
-        love.graphics.line(lx + TILE_WIDTH + gap, ly + gap, lx + TILE_WIDTH + gap, ly + TILE_WIDTH + gap)
+        love.graphics.line(
+            lx + gap, ly + TILE_WIDTH + gap, 
+            lx + TILE_WIDTH + gap, ly + TILE_WIDTH + gap,
+            lx + TILE_WIDTH + gap, ly + gap
+        )
     end
+
+    love.graphics.setLineStyle("rough")
 end
 
 function Level:draw_tile(x, y, tile)
