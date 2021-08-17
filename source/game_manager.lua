@@ -40,7 +40,7 @@ function GameManager:try_move_object(object, direction)
 
     local new_position = object.position + direction
 
-    local object_at_position = functional.any(self.level.objects, function(o) return o.position == new_position end)
+    local object_at_position = functional.any(self.level.objects, function(o) return o.alive and o.position == new_position end)
 
     if self.level:tile_is_walkable(new_position) and not object_at_position then
         object:move(new_position)
