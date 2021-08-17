@@ -227,13 +227,13 @@ function Level:draw_tiles()
 end
 
 function Level:draw_objects()
-    self.player:draw()
-
     for _, object in ipairs(self.objects) do
         if object.alive then
-            object:draw()
+            object:draw(self:tile_at(object.position))
         end
     end
+
+    self.player:draw()
 end
 
 function Level:tile_is_walkable(base_position_x, y)

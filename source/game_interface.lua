@@ -1,17 +1,17 @@
-local arrow_width = 30
+local arrow_width = 32
 
 local function draw_arrow()
-    love.graphics.line(0 + 4,arrow_width/2, arrow_width - 4,arrow_width/2)
-    love.graphics.line(arrow_width/2,0 + 4, 4,arrow_width/2, arrow_width/2,30 - 4)
+    love.graphics.line(0 + 8,arrow_width/2, arrow_width - 8,arrow_width/2)
+    love.graphics.line(arrow_width/2,0 + 8, 8,arrow_width/2, arrow_width/2,arrow_width - 8)
 end
 
 local function draw_arrows()
     local arrows_pos = Vec2(love.graphics.getWidth()/2 - 45, love.graphics.getHeight() * 3/4)
     local arrows = {
-        up = Vec2(arrows_pos.x + ((arrow_width * 3/2) - arrow_width/2), arrows_pos.y),
+        up = Vec2(arrows_pos.x + ((arrow_width * 3/2) - arrow_width/2), arrows_pos.y - 10),
         down = Vec2(arrows_pos.x + ((arrow_width  * 3/2) - arrow_width/2), arrows_pos.y + arrow_width),
-        left = Vec2(arrows_pos.x, arrows_pos.y + arrow_width),
-        right = Vec2(arrows_pos.x + (arrow_width * 2), arrows_pos.y + arrow_width)
+        left = Vec2(arrows_pos.x - 10, arrows_pos.y + arrow_width),
+        right = Vec2(arrows_pos.x + (arrow_width * 2) + 10, arrows_pos.y + arrow_width)
     }
 
     for direction, arrow in pairs(arrows) do
