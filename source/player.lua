@@ -19,8 +19,10 @@ function Player:draw()
     end
 
     love.graphics.setLineWidth(4)
-    love.graphics.rectangle("line", drawn_position.x + self.offset.x,
-        drawn_position.y + self.offset.y, self.width, self.width)
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle("fill", drawn_position.x + self.offset.x, drawn_position.y + self.offset.y, self.width, self.width)
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.rectangle("line", drawn_position.x + self.offset.x, drawn_position.y + self.offset.y, self.width, self.width)
     love.graphics.setColor(0.25, 0.5, 1, 1)
     love.graphics.setLineWidth(3)
 
