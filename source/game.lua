@@ -27,12 +27,8 @@ function game:draw()
 
     draw_interface(GameManager.level_number)
 
-    love.graphics.push()
-        love.graphics.translate(x, y)
-        level:draw_tiles()
-    love.graphics.pop()
-
     Glow.bloom(function()
+        level:draw_tiles()
         level:draw_objects()
     end, x, y)
 
@@ -47,7 +43,7 @@ function game:keypressed(key)
     if utilities.directions[key] then
         GameManager:turn(utilities.directions[key])
     elseif key == "n" then
-        GameManager:go_to_next_level()
+        GameManager:go_to_next_level(0)
     elseif key == "z" then
         GameManager.level:undo()
     elseif key == "r" and love.keyboard.isDown("lctrl") then

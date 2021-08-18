@@ -15,11 +15,6 @@ function Breakable:draw()
     love.graphics.rectangle("line", corner.x, corner.y, self.width, self.width)
 end
 
-function Breakable:undo(other)
-    Breakable.super.undo(self, other)
-    self.alive = other.alive
-end
-
 function Breakable:explode()
 end
 
