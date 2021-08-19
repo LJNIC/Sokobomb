@@ -2,8 +2,6 @@ local Slab = require("lib.Slab")
 
 local Tiles = {}
 
-local modes = {"Single", "Continuous"}
-local mode = modes[1]
 local active_tile_index = 0
 
 local tiles = {
@@ -101,30 +99,11 @@ function Tiles.draw()
 		end
 	Slab.EndListBox()
 
-	Slab.Text("Placement Mode")
-
-	if Slab.BeginComboBox("cb_mode", {Selected = mode}) then
-		for _, v in ipairs(modes) do
-			if Slab.TextSelectable(v) then
-				mode = v
-			end
-		end
-		Slab.EndComboBox()
-	end
-
-	Slab.SameLine()
-
 	if Slab.Button("Cancel", {
 		Tooltip = "Cancel placing of tiles",
 		Disabled = active_tile_index == 0,
 	}) then
 		active_tile_index = 0
-	end
-
-	if Slab.IsKeyPressed("lshift") then
-		mode = "Continuous"
-	elseif Slab.IsKeyReleased("lshift") then
-		mode = "Single"
 	end
 
 	Slab.EndWindow()
@@ -148,10 +127,6 @@ end
 
 function Tiles.get_active_tile()
 	return tiles[active_tile_index]
-end
-
-function Tiles.get_mode()
-	return mode
 end
 
 return Tiles

@@ -163,7 +163,6 @@ function Editor.update(dt)
 		Editor.save(false)
 	end
 
-	if not (Tiles.get_mode() == "Continuous") then return end
 	local mb
 	if love.mouse.isDown(1) then
 		mb = 1
@@ -380,7 +379,6 @@ end
 
 function Editor.mousepressed(mx, my, mb)
 	if not Editor.current_level then return end
-	if not (Tiles.get_mode() == "Single") then return end
 	Editor.interact_cell(mx, my, mb)
 end
 
