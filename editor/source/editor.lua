@@ -21,6 +21,7 @@ local col_hovered = {1, 1, 0, 1}
 local zoom = 1
 local zoom_factor = 0.15
 local fnt_tile
+local temp = {}
 
 function Editor.new_level(t)
 	local data = t.metadata or t
@@ -28,7 +29,22 @@ function Editor.new_level(t)
 	fnt_tile = love.graphics.newFont(data.tile_size)
 	fnt_tile:setFilter("nearest", "nearest")
 	Tiles.init()
+	Editor.fill_tiles()
+	temp.rows = Editor.current_level.rows
+	temp.cols = Editor.current_level.cols
+end
 
+function Editor.open_level(path)
+	Editor.path = path
+	local filename = path:match("^.+/(.+)$")
+	filename = filename:sub(0, -5)
+	local data = NativeFS.load(path)()
+	Editor.new_level(data)
+	Editor.fill_objects(data)
+	package.loaded[filename] = nil
+end
+
+function Editor.fill_tiles()
 	local ww, wh = love.graphics.getDimensions()
 	local tile_size = Editor.current_level.tile_size
 	local rows = Editor.current_level.rows
@@ -41,30 +57,55 @@ function Editor.new_level(t)
 	end
 end
 
-function Editor.open_level(path)
-	local filename = path:match("^.+/(.+)$")
-	filename = filename:sub(0, -5)
-	local data = NativeFS.load(path)()
-	Editor.new_level(data)
-
+function Editor.fill_objects(data)
 	local cl = Editor.current_level
+	for y = 1, cl.rows do
+		for x = 1, cl.cols do
+			local i = ((y - 1) * cl.cols) + x
+			local t = data.tiles[i]
+			local o = data.objects[i]
 
-	for i, t in ipairs(data.tiles) do
-		if t ~= 0 then
-			local c = cl.cells[i]
-			local ac = Tiles.get_tile_data(t)
-			c:set_tile(ac, fnt_tile)
+			if t ~= 0 then
+				local c = cl.cells[i]
+				if c.x <= cl.cols and c.y <= cl.rows then
+					local ac = Tiles.get_tile_data(t)
+					c:set_tile(ac, fnt_tile)
+				end
+			end
+
+			if o then
+				local index = ((o.y - 1) * cl.cols) + o.x
+				local c = cl.cells[index]
+				if c.x <= cl.cols and c.y <= cl.rows then
+					local ac = Tiles.get_obj_data(o.data.symbol)
+					c:set_tile(ac, fnt_tile, o.data)
+				end
+			end
+		end
+	end
+end
+
+function Editor.resize()
+	local cl = Editor.current_level
+	if cl.rows == temp.rows and cl.cols == temp.cols then return end
+	local dx = math.abs(cl.cols - temp.cols)
+	local dy = math.abs(cl.rows - temp.rows)
+	cl.rows = temp.rows
+	cl.cols = temp.cols
+
+	local data = {objects = {}, tiles = {}}
+	for _, c in ipairs(cl.cells) do
+		if c.tile then
+			c.data = c.tile
+			insert(data.objects, c)
+		else
+			insert(data.tiles, 0)
 		end
 	end
 
-	for _, v in ipairs(data.objects) do
-		local index = ((v.y - 1) * cl.cols) + v.x
-		local c = cl.cells[index]
-		local ac = Tiles.get_obj_data(v.data.symbol)
-		c:set_tile(ac, fnt_tile, v.data)
-	end
-
-	package.loaded[filename] = nil
+	tablex.clear(cl.cells)
+	Editor.fill_tiles()
+	Editor.fill_objects(data)
 end
 
 function Editor.interact_cell(mx, my, mb)
@@ -141,21 +182,39 @@ function Editor.update(dt)
 end
 
 function Editor.draw()
-	if not Editor.current_level then return end
+	local cl = Editor.current_level
+	if not cl then return end
 	Slab.BeginWindow("settings", {
 		Title = "Settings",
 	})
 	if Slab.BeginTree("Level") then
 		Slab.Indent()
 		if Slab.Input("Name", {
-			Text = Editor.current_level.name,
+			Text = cl.name,
 		}) then
-			Editor.current_level.name = Slab.GetInputText()
+			cl.name = Slab.GetInputText()
 		end
 		Slab.SameLine()
 		if Slab.Button("OK") then
-			Editor.current_level.orig_name = Editor.current_level.name
+			cl.orig_name = cl.name
 		end
+
+		Slab.Text("Width:")
+		Slab.SameLine()
+		if Slab.InputNumberDrag("width", temp.cols, 1, 128, 1) then
+			temp.cols = Slab.GetInputNumber()
+		end
+
+		Slab.Text("Height:")
+		Slab.SameLine()
+		if Slab.InputNumberDrag("height", temp.rows, 1, 128, 1) then
+			temp.rows = Slab.GetInputNumber()
+		end
+
+		if Slab.Button("Apply") then
+			Editor.resize()
+		end
+
 		Slab.Unindent()
 		Slab.EndTree()
 	end
@@ -283,6 +342,13 @@ function Editor.draw_grid()
 
 		love.graphics.setColor(col_lines)
 		c:draw(true) --line
+	end
+
+	if temp.cols ~= cl.cols or temp.rows ~= cl.rows then
+		love.graphics.setColor(0, 0, 1, 1)
+		love.graphics.rectangle("line", cl.tile_size, cl.tile_size,
+			temp.cols * cl.tile_size,
+			temp.rows * cl.tile_size)
 	end
 
 	love.graphics.pop()
