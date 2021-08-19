@@ -1,6 +1,8 @@
 local Dialog = require("source.dialog")
 
-local Cell = class()
+local Cell = class({
+	name = "Cell",
+})
 
 local format = string.format
 local min = math.min

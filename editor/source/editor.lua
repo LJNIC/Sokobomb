@@ -30,6 +30,8 @@ function Editor.new_level(t)
 	fnt_tile:setFilter("nearest", "nearest")
 	Tiles.init()
 	Editor.fill_tiles()
+	temp.x = 0
+	temp.y = 0
 	temp.rows = Editor.current_level.rows
 	temp.cols = Editor.current_level.cols
 end
@@ -44,11 +46,11 @@ function Editor.open_level(path)
 	package.loaded[filename] = nil
 end
 
-function Editor.fill_tiles()
+function Editor.fill_tiles(cols, rows)
 	local ww, wh = love.graphics.getDimensions()
 	local tile_size = Editor.current_level.tile_size
-	local rows = Editor.current_level.rows
-	local cols = Editor.current_level.cols
+	cols = cols or Editor.current_level.cols
+	rows = rows or Editor.current_level.rows
 	for y = 1, rows do
 		for x = 1, cols do
 			local cell = Cell(x, y, tile_size)
@@ -64,22 +66,21 @@ function Editor.fill_objects(data)
 			local i = ((y - 1) * cl.cols) + x
 			local t = data.tiles[i]
 			local o = data.objects[i]
+			local c, ac
 
 			if t ~= 0 then
-				local c = cl.cells[i]
-				if c.x <= cl.cols and c.y <= cl.rows then
-					local ac = Tiles.get_tile_data(t)
-					c:set_tile(ac, fnt_tile)
-				end
+				c = cl.cells[i]
+				ac = Tiles.get_tile_data(t)
 			end
 
 			if o then
 				local index = ((o.y - 1) * cl.cols) + o.x
-				local c = cl.cells[index]
-				if c.x <= cl.cols and c.y <= cl.rows then
-					local ac = Tiles.get_obj_data(o.data.symbol)
-					c:set_tile(ac, fnt_tile, o.data)
-				end
+				c = cl.cells[index]
+				ac = Tiles.get_obj_data(o.data.symbol)
+			end
+
+			if c and ac then
+				c:set_tile(ac, fnt_tile, o and o.data)
 			end
 		end
 	end
@@ -88,24 +89,18 @@ end
 function Editor.resize()
 	local cl = Editor.current_level
 	if cl.rows == temp.rows and cl.cols == temp.cols then return end
-	local dx = math.abs(cl.cols - temp.cols)
-	local dy = math.abs(cl.rows - temp.rows)
-	cl.rows = temp.rows
+
+	local t2d = cl:to_2d()
+	local dx = temp.cols - cl.cols
+	local dy = temp.rows - cl.rows
+	t2d = cl:resize(t2d, dx, dy)
+	local t1d = cl:to_1d(t2d)
+	cl.cells = t1d
+
 	cl.cols = temp.cols
-
-	local data = {objects = {}, tiles = {}}
-	for _, c in ipairs(cl.cells) do
-		if c.tile then
-			c.data = c.tile
-			insert(data.objects, c)
-		else
-			insert(data.tiles, 0)
-		end
-	end
-
-	tablex.clear(cl.cells)
-	Editor.fill_tiles()
-	Editor.fill_objects(data)
+	cl.rows = temp.rows
+	temp.x = 0
+	temp.y = 0
 end
 
 function Editor.interact_cell(mx, my, mb)
@@ -199,17 +194,31 @@ function Editor.draw()
 			cl.orig_name = cl.name
 		end
 
+		Slab.Separator()
+		Slab.BeginLayout("layout", {Columns = 2})
+		Slab.SetLayoutColumn(1)
+		Slab.Text("X:")
+		Slab.Text("Y:")
 		Slab.Text("Width:")
-		Slab.SameLine()
+		Slab.Text("Height:")
+
+		Slab.SetLayoutColumn(2)
+		if Slab.InputNumberDrag("x", temp.x, 0, temp.cols, 1) then
+			temp.x = Slab.GetInputNumber()
+		end
+
+		if Slab.InputNumberDrag("y", temp.y, 0, temp.rows, 1) then
+			temp.y = Slab.GetInputNumber()
+		end
+
 		if Slab.InputNumberDrag("width", temp.cols, 1, 128, 1) then
 			temp.cols = Slab.GetInputNumber()
 		end
 
-		Slab.Text("Height:")
-		Slab.SameLine()
 		if Slab.InputNumberDrag("height", temp.rows, 1, 128, 1) then
 			temp.rows = Slab.GetInputNumber()
 		end
+		Slab.EndLayout()
 
 		if Slab.Button("Apply") then
 			Editor.resize()
@@ -344,9 +353,12 @@ function Editor.draw_grid()
 		c:draw(true) --line
 	end
 
-	if temp.cols ~= cl.cols or temp.rows ~= cl.rows then
+	if temp.x ~= 0 or temp.y ~= 0 or
+		temp.cols ~= cl.cols or temp.rows ~= cl.rows then
 		love.graphics.setColor(0, 0, 1, 1)
-		love.graphics.rectangle("line", cl.tile_size, cl.tile_size,
+		love.graphics.rectangle("line",
+			(temp.x + 1) * cl.tile_size,
+			(temp.y + 1) * cl.tile_size,
 			temp.cols * cl.tile_size,
 			temp.rows * cl.tile_size)
 	end
