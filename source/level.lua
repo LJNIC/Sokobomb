@@ -229,7 +229,7 @@ end
 function Level:draw_objects()
     for _, object in ipairs(self.objects) do
         if object.alive then
-            object:draw(self:tile_at(object.position))
+            object:draw(not object.moving and self:tile_at(object.position) or nil)
         end
     end
 

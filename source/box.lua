@@ -12,10 +12,16 @@ function Box:new(x, y)
 end
 
 function Box:draw(tile_at)
-    if tile_at == "goal" then
-        love.graphics.setColor(0.5, 0.85, 0.6)
-    end
     local cornerX, cornerY = self.drawn_position.x + Box.offset.x, self.drawn_position.y + Box.offset.y
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle("fill", cornerX, cornerY, Box.width, Box.width)
+
+    if tile_at == "goal" then
+        love.graphics.setColor(0.4, 1, 0.6)
+    else 
+        love.graphics.setColor(1, 1, 1)
+    end
+
     love.graphics.setLineWidth(4)
     love.graphics.line(cornerX, cornerY, cornerX + Box.width, cornerY + Box.width)
     love.graphics.line(cornerX + Box.width, cornerY, cornerX, cornerY + Box.width)

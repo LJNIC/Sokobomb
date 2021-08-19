@@ -58,10 +58,6 @@ end
 function GameManager:turn(direction)
     local level = self.level
 
-    if level.player.moving then
-        return
-    end
-
     local new_position = level.player.position + direction
 
     if not level:tile_is_walkable(new_position) then
