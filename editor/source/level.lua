@@ -59,18 +59,26 @@ function Level:to_2d()
 	return t
 end
 
-function Level:resize(t, dx, dy)
+function Level:resize(t, ox, oy, nw, nh)
+	ox = ox or 1
+	oy = oy or 1
+	local dx = nw - self.cols
+	local dy = nh - self.rows
 	local nt = {}
 	for y = 1, self.rows + dy do
-		nt[y] = {}
+		local yt = {}
 		for x = 1, self.cols + dx do
-			if t[y] and t[y][x] then
-				nt[y][x] = t[y][x]
+			if t[oy + y] and t[oy + y][ox + x] then
+				insert(yt, t[oy + y][ox + x])
 			else
-				nt[y][x] = Cell(x, y, self.tile_size)
+				insert(yt, Cell(x, y, self.tile_size))
 			end
 		end
+		insert(nt, yt)
 	end
+
+	assert(#nt[1] == nw, "resized width does not match target width. Problem with computation")
+	assert(#nt == nh, "resized height does not match target height. Problem with computation")
 	return nt
 end
 

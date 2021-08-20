@@ -88,9 +88,7 @@ function Editor.resize()
 	if cl.rows == temp.rows and cl.cols == temp.cols then return end
 
 	local t2d = cl:to_2d()
-	local dx = temp.cols - cl.cols
-	local dy = temp.rows - cl.rows
-	t2d = cl:resize(t2d, dx, dy)
+	t2d = cl:resize(t2d, temp.x, temp.y, temp.cols, temp.rows)
 	local t1d = cl:to_1d(t2d)
 	cl.cells = t1d
 
@@ -373,6 +371,17 @@ function Editor.draw_grid()
 		love.graphics.setFont(prev_fnt)
 	end
 end
+
+-- function Editor.keypressed(key)
+-- 	if not Editor.current_level then return end
+-- 	if key == "r" then
+-- 		temp.x = 0
+-- 		temp.y = 2
+-- 		temp.cols = 7
+-- 		temp.rows = 6
+-- 		Editor.resize()
+-- 	end
+-- end
 
 function Editor.mousepressed(mx, my, mb)
 	if not Editor.current_level then return end
