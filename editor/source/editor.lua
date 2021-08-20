@@ -42,6 +42,10 @@ function Editor.new_level(t)
 	temp.y = 0
 	temp.rows = Editor.current_level.rows
 	temp.cols = Editor.current_level.cols
+	rect_select.enabled = false
+	rect_select.flag = false
+	rect_select.start_pos = vec2()
+	rect_select.end_pos = vec2()
 end
 
 function Editor.open_level(path)
@@ -99,14 +103,30 @@ function Editor.resize()
 
 	local t2d = cl:to_2d()
 	t2d = cl:resize(t2d, temp.x, temp.y, temp.cols, temp.rows)
-	local t1d = cl:to_1d(t2d)
-
-	cl.cells = t1d
-
+	cl.cells = cl:to_1d(t2d)
 	cl.cols = temp.cols
 	cl.rows = temp.rows
 	temp.x = 0
 	temp.y = 0
+end
+
+function Editor.fill()
+	local cl = Editor.current_level
+	if not cl then return end
+	if not rect_select.enabled then return end
+	local ac = Tiles.get_active_tile()
+	if not ac then return end
+
+	local t2d = cl:to_2d()
+
+	for y = temp.y + 1, temp.y + temp.rows do
+		for x = temp.x + 1, temp.x + temp.cols do
+			local c = t2d[y][x]
+			if not c.tile then
+				c:set_tile(ac, fnt_tile)
+			end
+		end
+	end
 end
 
 function Editor.interact_cell(mx, my, mb)
@@ -271,6 +291,10 @@ function Editor.draw()
 		if Slab.Button("Resize") then
 			Editor.resize()
 		end
+		Slab.SameLine()
+		if Slab.Button("Fill") then
+			Editor.fill()
+		end
 
 		Slab.Unindent()
 		Slab.EndTree()
@@ -410,17 +434,6 @@ function Editor.draw_grid()
 			temp.cols * cl.tile_size,
 			temp.rows * cl.tile_size)
 	end
-
-	-- if rect_select.flag then
-	-- 	local sp = rect_select.start_pos
-	-- 	local ep = rect_select.end_pos
-	-- 	local w = ep.x - sp.x
-	-- 	local h = ep.y - sp.y
-	-- 	love.graphics.setColor(0, 0, 1, 0.25)
-	-- 	love.graphics.rectangle("fill",
-	-- 		sp.x, sp.y,
-	-- 		w, h)
-	-- end
 
 	love.graphics.pop()
 
