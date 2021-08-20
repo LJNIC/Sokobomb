@@ -66,20 +66,17 @@ function Editor.fill_objects(data)
 			local i = ((y - 1) * cl.cols) + x
 			local t = data.tiles[i]
 			local o = data.objects[i]
-			local c, ac
 
 			if t ~= 0 then
-				c = cl.cells[i]
-				ac = Tiles.get_tile_data(t)
+				local c = cl.cells[i]
+				local ac = Tiles.get_tile_data(t)
+				c:set_tile(ac, fnt_tile)
 			end
 
 			if o then
 				local index = ((o.y - 1) * cl.cols) + o.x
-				c = cl.cells[index]
-				ac = Tiles.get_obj_data(o.data.symbol)
-			end
-
-			if c and ac then
+				local c = cl.cells[index]
+				local ac = Tiles.get_obj_data(o.data.symbol)
 				c:set_tile(ac, fnt_tile, o and o.data)
 			end
 		end
