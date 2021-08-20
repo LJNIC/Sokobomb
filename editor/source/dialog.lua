@@ -65,11 +65,13 @@ function Dialog.draw()
 			}) then
 				active_cell.tile.timer = Slab.GetInputNumber()
 			end
+			Slab.SetInputFocus("bomb_timer")
+			Slab.SetInputCursorPos(#tostring(active_cell.tile.timer))
 		Slab.EndLayout()
 
 		Slab.Separator()
 
-		if Slab.Button("Confirm") then
+		if Slab.Button("Confirm") or Slab.IsKeyPressed("return") then
 			Slab.CloseDialog()
 		end
 
