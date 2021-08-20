@@ -86,8 +86,8 @@ end
 function Editor.resize()
 	local cl = Editor.current_level
 	if cl.rows == temp.rows and cl.cols == temp.cols then return end
-	if temp.x + temp.cols > cl.cols then return end
-	if temp.y + temp.rows > cl.rows then return end
+	if (temp.x ~= 0) and temp.x + temp.cols > cl.cols then return end
+	if (temp.y ~= 0) and temp.y + temp.rows > cl.rows then return end
 
 	local t2d = cl:to_2d()
 	t2d = cl:resize(t2d, temp.x, temp.y, temp.cols, temp.rows)
