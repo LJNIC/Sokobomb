@@ -86,6 +86,8 @@ end
 function Editor.resize()
 	local cl = Editor.current_level
 	if cl.rows == temp.rows and cl.cols == temp.cols then return end
+	if temp.x + temp.cols > cl.cols then return end
+	if temp.y + temp.rows > cl.rows then return end
 
 	local t2d = cl:to_2d()
 	t2d = cl:resize(t2d, temp.x, temp.y, temp.cols, temp.rows)
@@ -197,11 +199,11 @@ function Editor.draw()
 		Slab.Text("Height:")
 
 		Slab.SetLayoutColumn(2)
-		if Slab.InputNumberDrag("x", temp.x, 0, temp.cols, 1) then
+		if Slab.InputNumberDrag("x", temp.x, 0, temp.cols - 1, 1) then
 			temp.x = Slab.GetInputNumber()
 		end
 
-		if Slab.InputNumberDrag("y", temp.y, 0, temp.rows, 1) then
+		if Slab.InputNumberDrag("y", temp.y, 0, temp.rows - 1, 1) then
 			temp.y = Slab.GetInputNumber()
 		end
 
