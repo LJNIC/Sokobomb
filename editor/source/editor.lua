@@ -110,7 +110,7 @@ function Editor.resize()
 	temp.y = 0
 end
 
-function Editor.fill()
+function Editor.fill_selected()
 	local cl = Editor.current_level
 	if not cl then return end
 	if not rect_select.enabled then return end
@@ -118,7 +118,6 @@ function Editor.fill()
 	if not ac then return end
 
 	local t2d = cl:to_2d()
-
 	for y = temp.y + 1, temp.y + temp.rows do
 		for x = temp.x + 1, temp.x + temp.cols do
 			local c = t2d[y][x]
@@ -127,6 +126,22 @@ function Editor.fill()
 			end
 		end
 	end
+	cl.cells = cl:to_1d(t2d)
+end
+
+function Editor.delete_selected()
+	local cl = Editor.current_level
+	if not cl then return end
+	if not rect_select.enabled then return end
+
+	local t2d = cl:to_2d()
+	for y = temp.y + 1, temp.y + temp.rows do
+		for x = temp.x + 1, temp.x + temp.cols do
+			local c = t2d[y][x]
+			c:remove_tile()
+		end
+	end
+	cl.cells = cl:to_1d(t2d)
 end
 
 function Editor.interact_cell(mx, my, mb)
@@ -293,7 +308,11 @@ function Editor.draw()
 		end
 		Slab.SameLine()
 		if Slab.Button("Fill") then
-			Editor.fill()
+			Editor.fill_selected()
+		end
+		Slab.SameLine()
+		if Slab.Button("Delete") then
+			Editor.delete_selected()
 		end
 
 		Slab.Unindent()
