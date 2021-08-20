@@ -8,7 +8,9 @@ local Helper = require("source.helper")
 local Level = require("source.level")
 local Tiles = require("source.tiles")
 
+local max = math.max
 local insert = table.insert
+local floor = math.floor
 
 local Editor = {
 	current_level = nil,
@@ -22,6 +24,12 @@ local zoom = 1
 local zoom_factor = 0.15
 local fnt_tile
 local temp = {}
+local rect_select = {
+	enabled = false,
+	flag = false,
+	start_pos = vec2(),
+	end_pos = vec2(),
+}
 
 function Editor.new_level(t)
 	local data = t.metadata or t
@@ -92,6 +100,7 @@ function Editor.resize()
 	local t2d = cl:to_2d()
 	t2d = cl:resize(t2d, temp.x, temp.y, temp.cols, temp.rows)
 	local t1d = cl:to_1d(t2d)
+
 	cl.cells = t1d
 
 	cl.cols = temp.cols
@@ -160,15 +169,48 @@ function Editor.update(dt)
 		Editor.save(false)
 	end
 
+	Editor.do_rect_select()
+
 	local mb
 	if love.mouse.isDown(1) then
 		mb = 1
 	elseif love.mouse.isDown(2) then
 		mb = 2
 	end
+
 	if mb then
 		local mx, my = love.mouse.getPosition()
 		Editor.interact_cell(mx, my, mb)
+	end
+end
+
+function Editor.do_rect_select()
+	if not rect_select.enabled then return end
+	local cl = Editor.current_level
+	local mx, my = love.mouse.getPosition()
+	local tmx, tmy = Editor.translate_mouse(mx, my)
+	local w, h = cl.cols * cl.tile_size, cl.rows * cl.tile_size
+
+	if love.mouse.isDown(1) then
+		if not rect_select.flag then
+			if tmx >= 0 and tmx <= w and
+				tmy >= 0 and tmy <= h then
+				rect_select.flag = true
+				rect_select.start_pos.x = tmx
+				rect_select.start_pos.y = tmy
+				local x = max(floor(rect_select.start_pos.x/cl.tile_size), 0)
+				local y = max(floor(rect_select.start_pos.y/cl.tile_size), 0)
+				temp.x = x - 1
+				temp.y = y - 1
+			end
+		else
+			rect_select.end_pos.x = tmx
+			rect_select.end_pos.y = tmy
+			local w = rect_select.end_pos.x - rect_select.start_pos.x
+			local h = rect_select.end_pos.y - rect_select.start_pos.y
+			temp.cols = max(floor(w/cl.tile_size), 1) + 1
+			temp.rows = max(floor(h/cl.tile_size), 1) + 1
+		end
 	end
 end
 
@@ -178,6 +220,11 @@ function Editor.draw()
 	Slab.BeginWindow("settings", {
 		Title = "Settings",
 	})
+	if Slab.CheckBox(rect_select.enabled, "Rectangular Selection") then
+		rect_select.enabled = not rect_select.enabled
+	end
+	Slab.Separator()
+
 	if Slab.BeginTree("Level") then
 		Slab.Indent()
 		if Slab.Input("Name", {
@@ -191,6 +238,7 @@ function Editor.draw()
 		end
 
 		Slab.Separator()
+		Slab.Text("Selection")
 		Slab.BeginLayout("layout", {Columns = 2})
 		Slab.SetLayoutColumn(1)
 		Slab.Text("X:")
@@ -199,13 +247,17 @@ function Editor.draw()
 		Slab.Text("Height:")
 
 		Slab.SetLayoutColumn(2)
-		if Slab.InputNumberDrag("x", temp.x, 0, temp.cols - 1, 1) then
-			temp.x = Slab.GetInputNumber()
-		end
+		Slab.Text(tostring(temp.x))
+		Slab.Text(tostring(temp.y))
 
-		if Slab.InputNumberDrag("y", temp.y, 0, temp.rows - 1, 1) then
-			temp.y = Slab.GetInputNumber()
-		end
+		--for some reason these mess with the rectangular selection
+		-- if Slab.InputNumberDrag("x", temp.x, 0, temp.cols - 1, 1) then
+			-- temp.x = Slab.GetInputNumber()
+		-- end
+
+		-- if Slab.InputNumberDrag("y", temp.y, 0, temp.rows - 1, 1) then
+			-- temp.y = Slab.GetInputNumber()
+		-- end
 
 		if Slab.InputNumberDrag("width", temp.cols, 1, 128, 1) then
 			temp.cols = Slab.GetInputNumber()
@@ -216,7 +268,7 @@ function Editor.draw()
 		end
 		Slab.EndLayout()
 
-		if Slab.Button("Apply") then
+		if Slab.Button("Resize") then
 			Editor.resize()
 		end
 
@@ -359,6 +411,17 @@ function Editor.draw_grid()
 			temp.rows * cl.tile_size)
 	end
 
+	-- if rect_select.flag then
+	-- 	local sp = rect_select.start_pos
+	-- 	local ep = rect_select.end_pos
+	-- 	local w = ep.x - sp.x
+	-- 	local h = ep.y - sp.y
+	-- 	love.graphics.setColor(0, 0, 1, 0.25)
+	-- 	love.graphics.rectangle("fill",
+	-- 		sp.x, sp.y,
+	-- 		w, h)
+	-- end
+
 	love.graphics.pop()
 
 	local tile = Tiles.get_active_tile()
@@ -374,20 +437,25 @@ function Editor.draw_grid()
 	end
 end
 
--- function Editor.keypressed(key)
--- 	if not Editor.current_level then return end
--- 	if key == "r" then
--- 		temp.x = 0
--- 		temp.y = 2
--- 		temp.cols = 7
--- 		temp.rows = 6
--- 		Editor.resize()
--- 	end
--- end
+function Editor.keypressed(key)
+	if not Editor.current_level then return end
+	if key == "r" then
+		rect_select.enabled = not rect_select.enabled
+		if not rect_select.enabled then
+			rect_select.flag = false
+		end
+	end
+end
 
 function Editor.mousepressed(mx, my, mb)
-	if not Editor.current_level then return end
+	local cl = Editor.current_level
+	if not cl then return end
 	Editor.interact_cell(mx, my, mb)
+	if rect_select.enabled and rect_select.flag then
+		if mb == 1 then
+			rect_select.flag = false
+		end
+	end
 end
 
 function Editor.wheelmoved(wx, wy)

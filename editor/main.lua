@@ -30,9 +30,9 @@ function love.draw()
 	Slab.Draw()
 end
 
--- function love.keypressed(key)
--- 	Editor.keypressed(key)
--- end
+function love.keypressed(key)
+	Editor.keypressed(key)
+end
 
 function love.mousepressed(mx, my, mb)
 	Editor.mousepressed(mx, my, mb)
