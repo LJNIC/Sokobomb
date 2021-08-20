@@ -113,7 +113,7 @@ function Editor.interact_cell(mx, my, mb)
 			local ac = Tiles.get_active_tile()
 			if ac and mb == 1 then
 				c:set_tile(ac, fnt_tile)
-			elseif love.keyboard.isDown("lctrl") and mb == 2 then
+			elseif mb == 2 then
 				c:remove_tile()
 			end
 			return

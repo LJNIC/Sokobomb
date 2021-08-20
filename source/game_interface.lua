@@ -36,8 +36,13 @@ end
 
 return function(level_number, turn_count)
     love.graphics.setLineWidth(2)
+
     if level_number == 1 then
         draw_arrows()
     end
+
+    love.graphics.print("R")
+    love.graphics.arc("line", "open", 50, 50, 50, 0, math.pi * 1.75, 100)
+    draw_arrow()
 end
 

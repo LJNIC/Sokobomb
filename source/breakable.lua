@@ -9,6 +9,9 @@ function Breakable:new(x, y)
 end
 
 function Breakable:draw()
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.setLineWidth(4)
+    love.graphics.setColor(0.7, 0.6, 0.2)
     local corner = self.drawn_position + self.offset
     love.graphics.line(corner.x, corner.y + self.width / 3, corner.x + self.width, corner.y + self.width / 3)
     love.graphics.line(corner.x, corner.y + 2 * self.width / 3, corner.x + self.width, corner.y + 2 * self.width / 3)
