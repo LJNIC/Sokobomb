@@ -476,7 +476,11 @@ function Editor.keypressed(key)
 		if not rect_select.enabled then
 			rect_select.flag = false
 		end
-	end
+	elseif key == "delete" or key == "backspace" then
+        Editor.delete_selected()
+    elseif key == "f" then
+        Editor.fill_selected()
+    end
 end
 
 function Editor.mousepressed(mx, my, mb)
