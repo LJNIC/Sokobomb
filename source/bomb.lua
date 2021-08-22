@@ -15,6 +15,7 @@ function Bomb:new(x, y, timer, is_infinite)
     self.movable = true
     self.text = love.graphics.newText(font, tostring(timer))
     self.infinite = is_infinite or false
+    self.opacity = 1
 end
 
 function Bomb:draw()
@@ -27,11 +28,11 @@ function Bomb:draw()
         self.text:set(tostring(math.round(math.max(self.tween_timer, 1))))
     end
 
-    love.graphics.setColor(0.5, 0.5, 0.5)
+    love.graphics.setColor(0.5, 0.5, 0.5, self.opacity)
     love.graphics.circle("line", self.drawn_position.x + TILE_WIDTH / 2, self.drawn_position.y + TILE_WIDTH / 2, TILE_WIDTH / 2 - 2, 100)
 
     local width, height = self.text:getDimensions()
-    love.graphics.setColor(227/255, 52/255, 0)
+    love.graphics.setColor(227/255, 52/255, 0, self.opacity)
     love.graphics.draw(self.text, math.floor(self.drawn_position.x + (TILE_WIDTH / 2 - width / 2)), math.floor(self.drawn_position.y + (TILE_WIDTH / 2 - height / 2)))
 
     local percent = self.infinite and (2 * math.pi) or (self.tween_timer / self.max_timer * (2 * math.pi))
@@ -41,14 +42,12 @@ end
 function Bomb:tick(objects)
     if self.infinite then return end
 
-    if self.timer > 1 then
-        self.tweener = flux.to(self, 0.2, {tween_timer = self.tween_timer - 1})
-    end
     self.timer = self.timer - 1
+    self.tweener = flux.to(self, 0.2, {tween_timer = self.timer})
 end
 
 function Bomb:explode(objects)
-    self.alive = false
+    flux.to(self, 0.2, {opacity = 0}):oncomplete(function() self.alive = false end)
     for _, direction in pairs(directions) do
         local to_explode = self.position + direction
         for _, object in ipairs(objects) do
@@ -75,6 +74,7 @@ function Bomb:undo(other_bomb)
     self.timer = other_bomb.timer
     self.infinite = other_bomb.infinite
     flux.to(self, 0.2, {tween_timer = other_bomb.timer})
+    flux.to(self, 0.2, {opacity = other_bomb.opacity})
 end
 
 function Bomb:copy()
