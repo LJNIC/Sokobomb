@@ -47,7 +47,7 @@ local tiles = {
 		symbol = "B",
 		name = "Bomb",
 		color = {0, 0, 0},
-		timer = 5,
+		timer = "",
 		is_bomb = true,
 		kind = "objects"
 	},

@@ -121,9 +121,7 @@ function Editor.fill_selected()
 	for y = temp.y + 1, temp.y + temp.rows do
 		for x = temp.x + 1, temp.x + temp.cols do
 			local c = t2d[y][x]
-			if not c.tile then
-				c:set_tile(ac, fnt_tile)
-			end
+            c:set_tile(ac, fnt_tile)
 		end
 	end
 	cl.cells = cl:to_1d(t2d)
@@ -152,7 +150,7 @@ function Editor.interact_cell(mx, my, mb)
 	for _, c in ipairs(cl.cells) do
 		if c.hovered then
 			local ac = Tiles.get_active_tile()
-			if ac and mb == 1 then
+			if not rect_select.enabled and ac and mb == 1 then
 				c:set_tile(ac, fnt_tile)
 			elseif mb == 2 then
 				c:remove_tile()
@@ -444,14 +442,16 @@ function Editor.draw_grid()
 		c:draw(true) --line
 	end
 
-	if temp.x ~= 0 or temp.y ~= 0 or
-		temp.cols ~= cl.cols or temp.rows ~= cl.rows then
+	if rect_select.enabled and (temp.x ~= 0 or temp.y ~= 0 or
+		temp.cols ~= cl.cols or temp.rows ~= cl.rows) then
 		love.graphics.setColor(0, 0, 1, 1)
+        love.graphics.setLineWidth(3)
 		love.graphics.rectangle("line",
 			(temp.x + 1) * cl.tile_size,
 			(temp.y + 1) * cl.tile_size,
 			temp.cols * cl.tile_size,
 			temp.rows * cl.tile_size)
+        love.graphics.setLineWidth(1)
 	end
 
 	love.graphics.pop()
@@ -473,6 +473,10 @@ function Editor.keypressed(key)
 	if not Editor.current_level then return end
 	if key == "r" then
 		rect_select.enabled = not rect_select.enabled
+	elseif key == "delete" or key == "backspace" then
+		Editor.delete_selected()
+	elseif key == "f" then
+		Editor.fill_selected()
 	end
 end
 
