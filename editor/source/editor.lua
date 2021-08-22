@@ -403,19 +403,19 @@ function Editor.draw()
 	end
 end
 
-function Editor.get_gtid_translation()
+function Editor.get_grid_translation()
 	local ww, wh = love.graphics.getDimensions()
 	local cl = Editor.current_level
 	local tile_size = cl.tile_size
-	local rows = cl.rows
 	local cols = cl.cols
+	local rows = cl.rows
 	local ox = (ww * 0.5) - (cols * tile_size * 0.5 * zoom)
 	local oy = (wh * 0.5) - (rows * tile_size * 0.5 * zoom)
 	return ox, oy
 end
 
 function Editor.translate_mouse(mx, my)
-	local ox, oy = Editor.get_gtid_translation()
+	local ox, oy = Editor.get_grid_translation()
 	local tmx = (mx - ox) / zoom
 	local tmy = (my - oy) / zoom
 	return tmx, tmy
@@ -424,7 +424,7 @@ end
 function Editor.draw_grid()
 	if not Editor.current_level then return end
 	local cl = Editor.current_level
-	local ox, oy = Editor.get_gtid_translation()
+	local ox, oy = Editor.get_grid_translation()
 	local mx, my = love.mouse.getPosition()
 	local tmx, tmy = Editor.translate_mouse(mx, my)
 
@@ -473,9 +473,6 @@ function Editor.keypressed(key)
 	if not Editor.current_level then return end
 	if key == "r" then
 		rect_select.enabled = not rect_select.enabled
-		if not rect_select.enabled then
-			rect_select.flag = false
-		end
 	end
 end
 
