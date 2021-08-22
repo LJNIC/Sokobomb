@@ -14,8 +14,12 @@ function game:enter()
     love.keyboard.setKeyRepeat(true)
 end
 
+local buffer = -1
 function game:update(dt)
     flux.update(dt)
+    if buffer > -1 and buffer < 0.2 then
+        buffer = buffer + dt
+    end
 end
 
 local draw_interface = require "source.game_interface"
@@ -37,11 +41,14 @@ function game:draw()
     end
 end
 
-function game:keypressed(key)
+function game:keypressed(key, scancode, is_repeat)
     if Transition.flag then return end
 
     if utilities.directions[key] then
-        GameManager:turn(utilities.directions[key])
+        if not is_repeat or buffer > 0.1 then
+            GameManager:turn(utilities.directions[key])
+            buffer = 0
+        end
     elseif key == "n" then
         GameManager:go_to_next_level(0)
     elseif key == "z" then

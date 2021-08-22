@@ -83,7 +83,7 @@ function GameManager:turn(direction)
     end
 
     for _, bomb in ipairs(bombs) do
-        if bomb.timer == 0 then
+        if bomb.alive and bomb.timer == 0 then
             bomb:explode(level.objects)
         end
     end

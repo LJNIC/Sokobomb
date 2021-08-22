@@ -51,7 +51,7 @@ function Bomb:explode(objects)
     for _, direction in pairs(directions) do
         local to_explode = self.position + direction
         for _, object in ipairs(objects) do
-            if object.position == to_explode and object ~= self then
+            if object.alive and object.position == to_explode then
                 if object:is(Bomb) then
                     object:explode_self()
                 else
@@ -63,6 +63,7 @@ function Bomb:explode(objects)
 end
 
 function Bomb:explode_self()
+    print("got exploded")
     self.infinite = false
     if self.tweener then self.tweener:stop() end
     flux.to(self, 0.2, {tween_timer = 1})
