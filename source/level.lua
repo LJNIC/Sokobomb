@@ -84,7 +84,7 @@ end
 function Level:draw_wall(x, y)
     love.graphics.setLineStyle("rough")
     love.graphics.setLineWidth(2)
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(179/255, 161/255, 230/255)
 
     local north, nnw, nis = self:check_neighbor(x, y, 0, -1, true)
     local south, snw, sis = self:check_neighbor(x, y, 0, 1, true)
