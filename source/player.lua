@@ -1,16 +1,21 @@
 local Base = require "source.base"
 local flux = require "source.lib.flux"
 local Player = Base:extend()
+local Pulse = require "source.pulse"
 
 function Player:new(x, y)
     Player.super.new(self, x, y)
     self.offset = Vec2(4, 4)
     self.width = 24
     self.moving = false
+    self.pulse = Pulse({0, 1, 1})
 end
 
 function Player:draw()
     local drawn_position = self.drawn_position
+
+    love.graphics.setShader(self.pulse.shader)
+    self.pulse:update(drawn_position.x, drawn_position.y, self.width, self.width)
 
     love.graphics.setLineWidth(4)
     love.graphics.setColor(0, 0, 0)
@@ -32,6 +37,7 @@ function Player:draw()
     love.graphics.polygon("line", vertices)
 
     love.graphics.setColor(1, 1, 1)
+    love.graphics.setShader()
 end
 
 function Player:copy()
