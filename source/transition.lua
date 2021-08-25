@@ -4,7 +4,7 @@ local Transition = {
     pct = 0,
     shader = love.graphics.newShader("shaders/transition.glsl"),
     flag = false,
-    tex = love.graphics.newImage("assets/transition/clock.png"),
+    tex = love.graphics.newImage("assets/transition/swipe_right.png"),
 }
 
 Transition.shader:send("tex", Transition.tex)

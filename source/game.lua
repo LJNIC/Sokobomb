@@ -31,7 +31,6 @@ function game:draw()
     local y = height / 2 - (level.height / 2) * TILE_WIDTH - TILE_WIDTH - 4
 
     if Transition.flag then
-        Transition.shader:send("translate", {x, y})
         love.graphics.setShader(Transition.shader)
     end
 

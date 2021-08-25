@@ -8,7 +8,7 @@ extern vec2 size;
 vec4 effect(vec4 color, Image texture, vec2 tex_coords, vec2 screen_coords)
 {
 	//for whole screen
-	vec2 new_uv = (screen_coords + translate)/love_ScreenSize.xy;
+	vec2 new_uv = screen_coords/love_ScreenSize.xy;
 	vec4 px = Texel(tex, new_uv);
 
 	//for singular rect
