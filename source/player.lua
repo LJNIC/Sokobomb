@@ -1,6 +1,5 @@
 local Base = require "source.base"
 local flux = require "source.lib.flux"
-local Transition = require "source.transition"
 local Player = Base:extend()
 
 function Player:new(x, y)
@@ -8,15 +7,10 @@ function Player:new(x, y)
     self.offset = Vec2(4, 4)
     self.width = 24
     self.moving = false
-    Transition.shader:send("size", {self.width, self.width})
 end
 
 function Player:draw()
     local drawn_position = self.drawn_position
-    if Transition.flag then
-        Transition.shader:send("pos", {drawn_position.x, drawn_position.y})
-        love.graphics.setShader(Transition.shader)
-    end
 
     love.graphics.setLineWidth(4)
     love.graphics.setColor(0, 0, 0)
@@ -37,7 +31,6 @@ function Player:draw()
     }
     love.graphics.polygon("line", vertices)
 
-    love.graphics.setShader()
     love.graphics.setColor(1, 1, 1)
 end
 

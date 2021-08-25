@@ -6,6 +6,7 @@ local Transition = require "source.transition"
 local flux = require "source.lib.flux"
 local utilities = require "source.utilities"
 local Glow = require "source.glow"
+local Transition = require "source.transition"
 
 local game = {}
 
@@ -29,12 +30,19 @@ function game:draw()
     local x = width / 2 - (level.width / 2) * TILE_WIDTH - TILE_WIDTH - 4
     local y = height / 2 - (level.height / 2) * TILE_WIDTH - TILE_WIDTH - 4
 
+    if Transition.flag then
+        Transition.shader:send("translate", {x, y})
+        love.graphics.setShader(Transition.shader)
+    end
+
     draw_interface(GameManager.level_number)
 
     Glow.bloom(function()
         level:draw_tiles()
         level:draw_objects()
     end, x, y)
+
+    love.graphics.setShader()
 
     if DEBUG then
         love.graphics.print(love.timer.getFPS())
