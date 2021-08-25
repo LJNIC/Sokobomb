@@ -39,7 +39,6 @@ end
 
 return function(level_number, turn_count)
     love.graphics.setLineWidth(2)
-    print(level_number)
 
     if level_number == 1 then
         draw_arrows()

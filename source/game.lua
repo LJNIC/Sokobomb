@@ -10,6 +10,8 @@ local Transition = require "source.transition"
 
 local game = {}
 
+local canvas = love.graphics.newCanvas(love.graphics.getDimensions())
+
 function game:enter()
     GameManager:enter(START_LEVEL_NUMBER)
     love.keyboard.setKeyRepeat(true)
@@ -30,17 +32,21 @@ function game:draw()
     local x = width / 2 - (level.width / 2) * TILE_WIDTH - TILE_WIDTH - 4
     local y = height / 2 - (level.height / 2) * TILE_WIDTH - TILE_WIDTH - 4
 
-    if Transition.flag then
-        love.graphics.setShader(Transition.shader)
-    end
-
-    draw_interface(GameManager.level_number)
+    love.graphics.setCanvas(canvas)
+        love.graphics.clear()
+        draw_interface(GameManager.level_number)
+    love.graphics.setCanvas()
 
     Glow.bloom(function()
         level:draw_tiles()
         level:draw_objects()
-    end, x, y)
+    end, x, y, canvas)
 
+
+    if Transition.flag then
+        love.graphics.setShader(Transition.shader)
+    end
+        love.graphics.draw(canvas)
     love.graphics.setShader()
 
     if DEBUG then
