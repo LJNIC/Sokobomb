@@ -1,4 +1,7 @@
 local arrow_width = 32
+local undo = love.graphics.newImage("assets/undo.png")
+local reset = love.graphics.newImage("assets/reset.png")
+local font = love.graphics.newFont("assets/RobotoCondensed-Regular.ttf", 36)
 
 local function draw_arrow()
     love.graphics.line(0 + 8,arrow_width/2, arrow_width - 8,arrow_width/2)
@@ -36,13 +39,28 @@ end
 
 return function(level_number, turn_count)
     love.graphics.setLineWidth(2)
+    print(level_number)
 
     if level_number == 1 then
         draw_arrows()
-    end
 
-    love.graphics.print("R")
-    love.graphics.arc("line", "open", 50, 50, 50, 0, math.pi * 1.75, 100)
-    draw_arrow()
+        local width, height = love.graphics.getDimensions()
+
+        love.graphics.push()
+            love.graphics.setFont(font)
+            love.graphics.translate(width * 1/3 + 30, height * 3/4)
+            love.graphics.scale(0.75, 0.75)
+            love.graphics.draw(undo, 0, 0)
+            love.graphics.print("Z", 15, 45)
+        love.graphics.pop()
+
+        love.graphics.push()
+            love.graphics.scale(1, 1)
+            love.graphics.translate(width * 2/3 - reset:getWidth(), height * 3/4)
+            love.graphics.scale(0.75, 0.75)
+            love.graphics.draw(reset, 0, 0)
+            love.graphics.print("R", 15, 45)
+        love.graphics.pop()
+    end
 end
 
