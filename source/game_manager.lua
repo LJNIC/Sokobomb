@@ -27,9 +27,11 @@ function GameManager:enter(level_number)
 end
 
 function GameManager:go_to_next_level(duration)
+    self.level.player:transition_out()
     Transition:fade_in(duration, function()
         self:enter(self.level_number + 1)
-    end)
+        self.level.player:transition_in()
+    end, 1.5)
 end
 
 -- Tries to move an object, returning whether the object was moved or not

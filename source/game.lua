@@ -82,8 +82,6 @@ function game:keypressed(key, scancode, is_repeat)
         love.event.quit()
     elseif key == "`" then
         DEBUG = not DEBUG
-    elseif key == "t" then
-        GameManager.level.player:transition()
     end
 end
 

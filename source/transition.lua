@@ -10,7 +10,7 @@ local Transition = {
 Transition.shader:send("tex", Transition.tex)
 Transition.shader:send("f_color", {0, 0, 0, 1})
 
-function Transition:fade_in(duration, fn)
+function Transition:fade_in(duration, fn, delay)
     self.flag = true
     self.pct = 0
     flux.to(self, duration or 1.25, {
@@ -20,7 +20,7 @@ function Transition:fade_in(duration, fn)
     end):oncomplete(function()
         fn()
         self:fade_out(duration)
-    end)
+    end):delay(delay or 0)
 end
 
 function Transition:fade_out(duration)
