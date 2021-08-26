@@ -8,7 +8,7 @@ function Player:new(x, y)
     self.offset = Vec2(4, 4)
     self.width = 24
     self.moving = false
-    self.pulse = Pulse({0, 1, 1})
+    self.pulse = Pulse()
 end
 
 function Player:draw()
