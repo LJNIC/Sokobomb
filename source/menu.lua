@@ -5,8 +5,8 @@ local menu = {}
 local title_font = love.graphics.newFont("assets/RobotoCondensed-Regular.ttf", 48)
 local menu_font = love.graphics.newFont("assets/RobotoCondensed-Regular.ttf", 32)
 
-local title = love.graphics.newText(title_font, "Sokobomb")
-local enter = love.graphics.newText(menu_font, "Press Enter")
+local title = love.graphics.newText(title_font, "sokobomb")
+local enter = love.graphics.newText(menu_font, "press enter")
 
 function menu:enter()
 end

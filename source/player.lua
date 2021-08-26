@@ -9,10 +9,52 @@ function Player:new(x, y)
     self.width = 24
     self.moving = false
     self.pulse = Pulse()
+    self.percent = 1
+end
+
+function Player:transition_in()
+    self.percent = 0
+    flux.to(self, 1.5, {percent = 1})
+end
+
+function Player:transition_out()
+    self.percent = 1
+    flux.to(self, 1.5, {percent = 0})
+end
+
+function Player:draw_transition()
+    local drawn = self.drawn_position + self.offset
+
+    love.graphics.setLineWidth(4)
+
+    if self.percent > 0 then
+        local to = (self.width * math.min(self.percent/0.25, 1))
+        love.graphics.rectangle("line", drawn.x, drawn.y, to, 0.01)
+    end
+
+    if self.percent > 0.25 then
+        local to = (self.width * math.min((self.percent - 0.25)/0.25, 1))
+        love.graphics.rectangle("line", drawn.x + self.width, drawn.y, 0.01, to)
+    end
+
+    if self.percent > 0.5 then
+        local to = (self.width * math.min((self.percent - 0.5)/0.25, 1))
+        love.graphics.rectangle("line", drawn.x + self.width, drawn.y + self.width, -to, 0.01)
+    end
+
+    if self.percent > 0.75 then
+        local to = (self.width * math.min((self.percent - 0.75)/0.25, 1))
+        love.graphics.rectangle("line", drawn.x, drawn.y + self.width, 0.01, -to)
+    end
 end
 
 function Player:draw()
     local drawn_position = self.drawn_position
+
+    if self.percent < 1 then
+        self:draw_transition()
+        return
+    end
 
     love.graphics.setShader(self.pulse.shader)
     self.pulse:update(drawn_position.x, drawn_position.y, self.width, self.width)
@@ -20,7 +62,7 @@ function Player:draw()
     love.graphics.setLineWidth(4)
     love.graphics.setColor(0, 0, 0)
     love.graphics.rectangle("fill", drawn_position.x + self.offset.x, drawn_position.y + self.offset.y, self.width, self.width)
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(0.8, 0.8, 0.8)
     love.graphics.rectangle("line", drawn_position.x + self.offset.x, drawn_position.y + self.offset.y, self.width, self.width)
     love.graphics.setColor(0, 163/255, 204/255)
     love.graphics.setLineWidth(3)
