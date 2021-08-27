@@ -27,6 +27,8 @@ function GameManager:enter(level_number)
 end
 
 function GameManager:go_to_next_level(duration)
+    love.filesystem.write("save.txt", tostring(self.level_number + 1))
+
     self.level.player:transition_out()
     Transition:fade_in(duration, function()
         self:enter(self.level_number + 1)
