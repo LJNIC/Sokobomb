@@ -6,6 +6,7 @@ local Level = class()
 
 function Level:new(data)
 	tablex.copy(data, self)
+	self.orig_filename = self.filename
 	self.orig_name = self.name
 	self.cells = {}
 	print("new level created:")
@@ -15,6 +16,7 @@ end
 function Level:serialize()
 	local data = {
 		metadata = {
+			filename = self.filename,
 			name = self.name,
 			tile_size = self.tile_size,
 			cols = self.cols,

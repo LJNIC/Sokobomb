@@ -173,7 +173,7 @@ function Editor.save(is_readable)
 		opt = {compact = true, indent = "\t"}
 	end
 	local data = Editor.current_level:serialize()
-	local filename = data.metadata.name .. ".lua"
+	local filename = data.metadata.filename .. ".lua"
 	filename = base .. filename
 
 	if love.filesystem.getInfo(filename) then
@@ -260,13 +260,24 @@ function Editor.draw()
 
 	if Slab.BeginTree("Level") then
 		Slab.Indent()
+
+		Slab.Text("Filename:")
+		if Slab.Input("Filename", {
+			Text = cl.filename,
+		}) then
+			cl.filename = Slab.GetInputText()
+		end
+
+		Slab.Text("Name:")
 		if Slab.Input("Name", {
 			Text = cl.name,
 		}) then
 			cl.name = Slab.GetInputText()
 		end
+
 		Slab.SameLine()
 		if Slab.Button("OK") then
+			cl.orig_filename = cl.filename
 			cl.orig_name = cl.name
 		end
 

@@ -5,7 +5,8 @@ local Helper = require("source.helper")
 local LevelData = {}
 
 local data = {
-	name = "Untitled",
+	filename = "Untitled",
+	name = "",
 	tile_size = 32,
 	rows = 16,
 	cols = 16,
@@ -14,12 +15,19 @@ local data = {
 function LevelData.draw_get_sizes()
 	Slab.BeginLayout("layout", {Columns = 2})
 		Slab.SetLayoutColumn(1)
-		Slab.Text("Level name")
+		Slab.Text("Level Filename")
+		Slab.Text("Level Name")
 		Slab.Text("Tile Size")
 		Slab.Text("Height")
 		Slab.Text("Width")
 
 		Slab.SetLayoutColumn(2)
+		if Slab.Input("in_level_filename", {
+			Text = data.filename,
+			ReturnOnText = true,
+		}) then
+			data.filename = Slab.GetInputText()
+		end
 		if Slab.Input("in_level_name", {
 			Text = data.name,
 			ReturnOnText = true,
