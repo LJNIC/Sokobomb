@@ -49,7 +49,7 @@ function Transition:draw()
 
         local w, h = love.graphics.getDimensions()
         local x = w * 0.5
-        local y = h * 0.5
+        local y = h * 0.25
         local ox = font:getWidth(self.text) * 0.5
         local oy = font:getHeight("") * 0.5
         love.graphics.setColor(1, 1, 1, 1)
