@@ -30,6 +30,7 @@ function GameManager:go_to_next_level(duration)
     love.filesystem.write("save.txt", tostring(self.level_number + 1))
 
     self.level.player:transition_out()
+    Transition.text = "LEVEL " .. (self.level_number + 1)
     Transition:fade_in(duration, function()
         self:enter(self.level_number + 1)
         self.level.player:transition_in()

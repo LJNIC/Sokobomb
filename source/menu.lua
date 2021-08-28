@@ -7,20 +7,20 @@ local menu_font = love.graphics.newFont("assets/RobotoCondensed-Regular.ttf", 32
 
 local title = love.graphics.newText(title_font, "sokobomb")
 
-local save_number
+local save_number = 1
 
-local new = { 
+local new = {
     text = love.graphics.newText(menu_font, "new game"),
-    action = function() 
+    action = function()
         love.filesystem.write("save.txt", 1)
-        roomy:enter(require "source.game") 
+        roomy:enter(require "source.game")
     end
 }
 local continue = {
     text = love.graphics.newText(menu_font, "continue"),
-    action = function() 
+    action = function()
         START_LEVEL_NUMBER = save_number
-        roomy:enter(require "source.game") 
+        roomy:enter(require "source.game")
     end
 }
 local exit = {
@@ -39,12 +39,11 @@ function menu:enter()
         save_number = tonumber(save)
         table.insert(actions, 1, continue)
     end
+    Transition.text = "LEVEL " .. save_number
 end
 
 function menu:draw()
-    if Transition.flag then
-        love.graphics.setShader(Transition.shader)
-    end
+    Transition:draw()
 
     for i, action in ipairs(actions) do
         if selected == i then
@@ -72,7 +71,7 @@ function menu:keypressed(key)
         selected = math.wrap(selected - 1, 1, #actions + 1)
     elseif key == "return" then
         Transition:fade_in(0.75, function()
-            actions[selected].action()    
+            actions[selected].action()
         end)
     end
 end

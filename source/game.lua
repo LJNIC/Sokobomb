@@ -6,7 +6,6 @@ local Transition = require "source.transition"
 local flux = require "source.lib.flux"
 local utilities = require "source.utilities"
 local Glow = require "source.glow"
-local Transition = require "source.transition"
 local Pulse = require "source.pulse"
 
 local game = {}
@@ -51,9 +50,7 @@ function game:draw()
     --     level:draw_objects()
     -- end, x, y, canvas)
 
-    if Transition.flag then
-        love.graphics.setShader(Transition.shader)
-    end
+    Transition:draw()
         love.graphics.draw(canvas)
     love.graphics.setShader()
 
