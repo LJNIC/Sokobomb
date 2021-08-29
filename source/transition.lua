@@ -37,7 +37,7 @@ function Transition:fade_out(duration)
         self.shader:send("pct", self.pct)
     end):oncomplete(function()
         self.flag = false
-    end)
+    end):delay(0.75)
 end
 
 function Transition:draw()

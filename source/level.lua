@@ -12,6 +12,7 @@ function Level:new(file_name)
     local data = require(file_name)
     self.width = data.metadata.cols
     self.height = data.metadata.rows
+    self.name = data.metadata.name
 
     self.tiles = data.tiles
 

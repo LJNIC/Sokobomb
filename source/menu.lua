@@ -1,5 +1,6 @@
 local flux = require "source.lib.flux"
 local Transition = require "source.transition"
+local GameManager = require "source.game_manager"
 
 local menu = {}
 local title_font = love.graphics.newFont("assets/RobotoCondensed-Regular.ttf", 48)
@@ -39,7 +40,6 @@ function menu:enter()
         save_number = tonumber(save)
         table.insert(actions, 1, continue)
     end
-    Transition.text = "LEVEL " .. save_number
 end
 
 function menu:draw()
@@ -70,6 +70,7 @@ function menu:keypressed(key)
     elseif key == "up" then
         selected = math.wrap(selected - 1, 1, #actions + 1)
     elseif key == "return" then
+        Transition.text = GameManager.levels[START_LEVEL_NUMBER].name
         Transition:fade_in(0.75, function()
             actions[selected].action()
         end)

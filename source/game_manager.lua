@@ -8,18 +8,24 @@ local Glow = require "source.glow"
 local GameManager = {
     level = nil,
     level_number = 1,
+    levels = {}
 }
 
 local max_level = #(love.filesystem.getDirectoryItems("levels"))
+
+for i = 1, max_level do
+    table.insert(GameManager.levels, Level("levels/level" .. i))
+end
+
+pretty.print(GameManager.levels)
 
 function GameManager:reload()
     self:enter(self.level_number)
 end
 
 function GameManager:enter(level_number)
-    level_number = math.wrap(level_number, 1, max_level + 1)
     self.level_number = level_number
-    self.level = Level("levels/level" .. level_number)
+    self.level = self.levels[level_number]
 
     local w = self.level.width * 1.5 * TILE_WIDTH
     local h = self.level.height * 1.5 * TILE_WIDTH
@@ -30,7 +36,7 @@ function GameManager:go_to_next_level(duration)
     love.filesystem.write("save.txt", tostring(self.level_number + 1))
 
     self.level.player:transition_out()
-    Transition.text = "LEVEL " .. (self.level_number + 1)
+    Transition.text = self.levels[self.level_number + 1].name
     Transition:fade_in(duration, function()
         self:enter(self.level_number + 1)
         self.level.player:transition_in()
