@@ -22,9 +22,9 @@ function GameManager:reload()
 end
 
 function GameManager:enter(level_number)
-    print(level_number)
     self.level_number = level_number
     self.level = self.levels[level_number]
+    self.level.player:transition_in()
 
     local w = self.level.width * 1.5 * TILE_WIDTH
     local h = self.level.height * 1.5 * TILE_WIDTH
@@ -36,10 +36,9 @@ function GameManager:go_to_next_level(duration, level_number)
     local next_level = level_number or self.level_number + 1
 
     self.level.player:transition_out()
-    Transition.text = self.levels[self.level_number + 1].name
+    Transition.text = self.levels[next_level].name
     Transition:fade_in(duration, function()
-        self:enter(self.level_number + 1)
-        self.level.player:transition_in()
+        self:enter(next_level)
     end, 1.5)
 end
 
