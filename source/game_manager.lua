@@ -18,10 +18,11 @@ for i = 1, max_level do
 end
 
 function GameManager:reload()
-    self:enter(self.level_number)
+    self.level:reset()
 end
 
 function GameManager:enter(level_number)
+    print(level_number)
     self.level_number = level_number
     self.level = self.levels[level_number]
 
@@ -30,8 +31,9 @@ function GameManager:enter(level_number)
     Glow.bloom.glow.size = {w, h}
 end
 
-function GameManager:go_to_next_level(duration)
+function GameManager:go_to_next_level(duration, level_number)
     love.filesystem.write("save.txt", tostring(self.level_number + 1))
+    local next_level = level_number or self.level_number + 1
 
     self.level.player:transition_out()
     Transition.text = self.levels[self.level_number + 1].name

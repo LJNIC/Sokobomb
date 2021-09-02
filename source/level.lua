@@ -3,6 +3,7 @@ local Bomb = require "source.bomb"
 local Player = require "source.player"
 local Breakable = require "source.breakable"
 local Object = require "source.lib.classic"
+local flux = require "source.lib.flux"
 
 local Level = Object:extend()
 Level.tile_types = { [0] = "floor", [1] = "wall", [2] = "goal", [3] = "border" }
@@ -54,6 +55,22 @@ function Level:undo()
     end
 end
 
+function Level:reset()
+    if #self.stack > 1 then
+        local timer = { t = 0 }
+        local last = 0
+        local per_turn = 1.9 / #self.stack
+        flux.to(timer, 2, { 
+            t = 2 
+        }):onupdate(function() 
+            if timer.t >= last + per_turn then
+                last = timer.t
+                self:undo()
+            end
+        end):ease("linear")
+    end
+end
+
 function Level:check_neighbor(x, y, dx, dy, recurse)
     local di = (y - 1 + dy) * self.width + (x + dx)
     local target = self.tiles[di]
@@ -85,7 +102,7 @@ end
 function Level:draw_wall(x, y)
     love.graphics.setLineStyle("rough")
     love.graphics.setLineWidth(2)
-    love.graphics.setColor(179/255, 161/255, 230/255)
+    love.graphics.setColor(48/255, 54/255, 95/255)
 
     local north, nnw, nis = self:check_neighbor(x, y, 0, -1, true)
     local south, snw, sis = self:check_neighbor(x, y, 0, 1, true)

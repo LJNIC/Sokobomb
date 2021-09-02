@@ -72,7 +72,7 @@ function Player:draw()
         x_mid, drawn_position.y + 3/4 * TILE_WIDTH - diamond_offset,
         drawn_position.x + TILE_WIDTH/4 + diamond_offset, y_mid
     }
-    --love.graphics.polygon("line", vertices)
+   -- love.graphics.polygon("line", vertices)
 
     love.graphics.setColor(1, 1, 1)
 end

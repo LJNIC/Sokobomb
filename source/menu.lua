@@ -14,14 +14,13 @@ local new = {
     text = love.graphics.newText(menu_font, "new game"),
     action = function()
         love.filesystem.write("save.txt", 1)
-        roomy:enter(require "source.game")
+        roomy:enter(require "source.game", 1)
     end
 }
 local continue = {
     text = love.graphics.newText(menu_font, "continue"),
     action = function()
-        START_LEVEL_NUMBER = save_number
-        roomy:enter(require "source.game")
+        roomy:enter(require "source.game", save_number)
     end
 }
 local exit = {
@@ -32,7 +31,6 @@ local exit = {
 local actions = { new, exit }
 
 local selected = 1
-
 
 function menu:enter()
     local save = love.filesystem.read("save.txt")
@@ -70,7 +68,7 @@ function menu:keypressed(key)
     elseif key == "up" then
         selected = math.wrap(selected - 1, 1, #actions + 1)
     elseif key == "return" then
-        Transition.text = GameManager.levels[START_LEVEL_NUMBER].name
+        Transition.text = GameManager.levels[(actions[selected] == continue and save_number) or 1].name
         Transition:fade_in(0.75, function()
             actions[selected].action()
         end)

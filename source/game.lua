@@ -12,8 +12,8 @@ local game = {}
 
 local canvas = love.graphics.newCanvas(love.graphics.getDimensions())
 
-function game:enter()
-    GameManager:enter(START_LEVEL_NUMBER)
+function game:enter(previous, start_level_number)
+    GameManager:enter(start_level_number)
     love.keyboard.setKeyRepeat(true)
 end
 

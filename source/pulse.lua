@@ -6,10 +6,10 @@ local Pulse = class({
 
 Pulse.tx = 0
 Pulse.ty = 0
-Pulse.def_min = 0.5
+Pulse.def_min = 0.65
 Pulse.def_max = 1
-Pulse.def_dur = 0.75
-Pulse.def_delay = 1
+Pulse.def_dur = 0.5
+Pulse.def_delay = 0.5
 
 function Pulse:new(min_value, max_value, duration, delay)
     self.min_value = min_value or Pulse.def_min
