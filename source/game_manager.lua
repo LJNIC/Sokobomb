@@ -17,8 +17,6 @@ for i = 1, max_level do
     table.insert(GameManager.levels, Level("levels/level" .. i))
 end
 
-pretty.print(GameManager.levels)
-
 function GameManager:reload()
     self:enter(self.level_number)
 end
