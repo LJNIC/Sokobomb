@@ -12,7 +12,6 @@ end
 
 function Player:transition_in()
     self.percent = 0
-    print("transitioning!")
     flux.to(self, 1.5, {percent = 1}):delay(1)
 end
 

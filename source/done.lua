@@ -1,8 +1,13 @@
+local flux = require "source.lib.flux"
 local Transition = require "source.transition"
 local done = {}
 
 local font = love.graphics.newFont("assets/RobotoCondensed-Regular.ttf", 32)
 local text = love.graphics.newText(font, "hey, you did it!")
+
+function done:update(dt)
+    flux.update(dt)
+end
 
 function done:draw()
     if Transition.flag then

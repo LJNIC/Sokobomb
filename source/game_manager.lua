@@ -32,14 +32,22 @@ function GameManager:enter(level_number)
 end
 
 function GameManager:go_to_next_level(duration, level_number)
-    love.filesystem.write("save.txt", tostring(self.level_number + 1))
     local next_level = level_number or self.level_number + 1
+    love.filesystem.write("save.txt", tostring(self.level_number + 1))
 
     self.level.player:transition_out()
-    Transition.text = self.levels[next_level].name
-    Transition:fade_in(duration, function()
-        self:enter(next_level)
-    end, 1.5)
+    if next_level > max_level then
+        love.filesystem.remove("save.txt")
+        Transition.text = ""
+        Transition:fade_in(duration, function() 
+            roomy:enter(require "source.done") 
+        end, 1.5)
+    else
+        Transition.text = self.levels[next_level].name
+        Transition:fade_in(duration, function()
+            self:enter(next_level)
+        end, 1.5)
+    end
 end
 
 -- Tries to move an object, returning whether the object was moved or not
