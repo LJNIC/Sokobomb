@@ -16,11 +16,7 @@ function Box:draw(tile_at)
     love.graphics.setColor(0, 0, 0)
     love.graphics.rectangle("fill", cornerX, cornerY, Box.width, Box.width)
 
-    if tile_at == "goal" then
-        love.graphics.setColor(92/255, 204/255, 150/255)
-    else
-        love.graphics.setColor(1, 1, 1)
-    end
+    love.graphics.setColor(92/255, 204/255, 150/255)
 
     love.graphics.setLineWidth(4)
     love.graphics.line(cornerX, cornerY, cornerX + Box.width, cornerY + Box.width)
