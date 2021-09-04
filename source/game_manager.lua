@@ -3,7 +3,6 @@ local Bomb = require "source.bomb"
 local utilities = require "source.utilities"
 local Level = require "source.level"
 local Transition = require "source.transition"
-local Glow = require "source.glow"
 
 local GameManager = {
     level = nil,
@@ -28,7 +27,6 @@ function GameManager:enter(level_number)
 
     local w = self.level.width * 1.5 * TILE_WIDTH
     local h = self.level.height * 1.5 * TILE_WIDTH
-    Glow.bloom.glow.size = {w, h}
 end
 
 function GameManager:go_to_next_level(duration, level_number)
