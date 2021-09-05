@@ -12,11 +12,11 @@ local NewLevel = require("source.new_level")
 function love.load()
  	 Style.API.LoadStyle("slab.style")
  	 Slab.Initialize()
+	Style.API.SetStyle("slab")
 end
 
 function love.update(dt)
 	Slab.Update(dt)
-	Style.API.SetStyle("slab")
 
 	MenuBar.draw()
 	About.draw()

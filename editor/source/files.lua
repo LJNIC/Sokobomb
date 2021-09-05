@@ -6,20 +6,22 @@ local Editor = require("source.editor")
 local Files = {}
 
 local list = {}
-list = NativeFS.getDirectoryItems("../levels/")
+local path = NativeFS.getWorkingDirectory() .. "/levels"
+
+list = NativeFS.getDirectoryItems(path)
 
 function Files.draw()
 	Slab.BeginWindow("files", {
 		Title = "Files"
 	})
 	if Slab.Button("reload") then
-		list = NativeFS.getDirectoryItems("../levels/")
+		list = NativeFS.getDirectoryItems(path)
 	end
 	Slab.Separator()
 
 	for _, f in ipairs(list) do
 		if Slab.Button(f) then
-			Editor.open_level("../levels/" .. f)
+			Editor.open_level(path .. "/" .. f)
 		end
 	end
 	Slab.EndWindow()
