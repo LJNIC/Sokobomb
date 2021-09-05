@@ -61,8 +61,9 @@ function Level:reset()
         self.resetting = true
         local timer = { t = 0 }
         local last = 0
-        local per_turn = 0.1
+        local per_turn = 0.075
         local total = (#self.stack + 1) * per_turn
+
         flux.to(timer, total, { 
             t = total
         }):onupdate(function() 
@@ -71,12 +72,11 @@ function Level:reset()
                 self:undo()
             end
         end):oncomplete(function()
+            for i,_ in ipairs(self.stack) do
+                self:undo()
+            end
             self.resetting = false
         end):ease("linear")
-
-        for i,_ in ipairs(self.stack) do
-            self:undo()
-        end
     end
 end
 
