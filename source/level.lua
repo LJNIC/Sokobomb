@@ -59,9 +59,10 @@ function Level:reset()
     if #self.stack > 1 then
         local timer = { t = 0 }
         local last = 0
-        local per_turn = 1.9 / #self.stack
-        flux.to(timer, 2, { 
-            t = 2 
+        local per_turn = 0.1
+        local total = #self.stack * per_turn
+        flux.to(timer, total, { 
+            t = total
         }):onupdate(function() 
             if timer.t >= last + per_turn then
                 last = timer.t
