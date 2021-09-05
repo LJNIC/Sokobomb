@@ -5,6 +5,7 @@ local Style = Slab.GetStyle()
 local About = require("source.about")
 local Dialog = require("source.dialog")
 local Editor = require("source.editor")
+local Files = require("source.files")
 local MenuBar = require("source.menu_bar")
 local NewLevel = require("source.new_level")
 
@@ -23,6 +24,7 @@ function love.update(dt)
 	Editor.update(dt)
 	Editor.draw()
 	Dialog.draw()
+	Files.draw()
 end
 
 function love.draw()
