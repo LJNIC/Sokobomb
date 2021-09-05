@@ -34,6 +34,7 @@ function Level:new(file_name)
     end
 
     self.stack = {{ player = self.player, objects = self.objects }}
+    self.resetting = false
 end
 
 function Level:save()
@@ -57,6 +58,7 @@ end
 
 function Level:reset()
     if #self.stack > 1 then
+        self.resetting = true
         local timer = { t = 0 }
         local last = 0
         local per_turn = 0.1
@@ -68,7 +70,13 @@ function Level:reset()
                 last = timer.t
                 self:undo()
             end
+        end):oncomplete(function()
+            self.resetting = false
         end):ease("linear")
+
+        for i,_ in ipairs(self.stack) do
+            self:undo()
+        end
     end
 end
 

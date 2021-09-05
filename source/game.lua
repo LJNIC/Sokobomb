@@ -62,7 +62,11 @@ function game:draw()
 end
 
 function game:keypressed(key, scancode, is_repeat)
+    -- if we're transitioning between levels
     if Transition.flag then return end
+
+    -- if we're resetting a level
+    if GameManager.level.resetting then return end
 
     if utilities.directions[key] then
         if not is_repeat or buffer > 0.1 then
