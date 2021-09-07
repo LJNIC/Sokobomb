@@ -5,14 +5,12 @@ local GameManager = require "source.game_manager"
 local Transition = require "source.transition"
 local flux = require "source.lib.flux"
 local utilities = require "source.utilities"
-local Pulse = require "source.pulse"
+local Glow = require "source.glow"
 
 local game = {}
 
-local canvas = love.graphics.newCanvas()
-local glowy_bits = love.graphics.newCanvas()
-local glowy_shader = love.graphics.newShader("shaders/glow.glsl")
-local GLOW_AMOUNT = 2
+local w, h = love.graphics.getDimensions()
+local canvas = love.graphics.newCanvas(w * 0.5, h * 0.5)
 
 function game:enter(previous, start_level_number)
     GameManager:enter(start_level_number)
@@ -37,24 +35,26 @@ function game:draw()
     love.graphics.setCanvas(canvas)
         love.graphics.clear()
         love.graphics.push()
+        love.graphics.scale(0.5, 0.5)
         love.graphics.translate(x, y)
         level:draw_tiles()
         level:draw_objects()
         love.graphics.pop()
-    love.graphics.setShader(glowy_shader)
-    for i = 1, GLOW_AMOUNT do
-        love.graphics.setCanvas(glowy_bits)
-        love.graphics.clear()
-        love.graphics.draw(canvas)
-        glowy_bits, canvas = canvas, glowy_bits
-    end
-    love.graphics.setShader()
-    love.graphics.setCanvas()
+    love.graphics.setBlendMode("replace")
+    Glow.draw(canvas)
 
     Transition:draw()
         draw_interface(GameManager.level_number)
-        love.graphics.draw(canvas)
+        love.graphics.setBlendMode("alpha")
+        love.graphics.push()
+        love.graphics.translate(x, y)
+        level:draw_tiles()
+        level:draw_objects()
+        love.graphics.pop()
+        love.graphics.setBlendMode("lighten", "premultiplied")
+        love.graphics.draw(canvas, 0, 0, 0, 2, 2)
     love.graphics.setShader()
+    love.graphics.setBlendMode("alpha")
 
     if DEBUG then
         love.graphics.print(love.timer.getFPS())
