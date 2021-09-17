@@ -49,6 +49,7 @@ function Editor.new_level(t)
 end
 
 function Editor.open_level(path)
+	print("opening: " .. path)
 	Editor.path = path
 	local filename = path:match("^.+/(.+)$")
 	filename = filename:sub(0, -5)
