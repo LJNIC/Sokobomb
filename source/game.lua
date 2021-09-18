@@ -88,4 +88,16 @@ function game:keypressed(key, scancode, is_repeat)
     end
 end
 
+local buttons_to_keys = {
+    a = "z",
+    b = "r",
+    dpup = "up",
+    dpdown = "down",
+    dpleft = "left",
+    dpright = "right",
+}
+function game:gamepadpressed(joystick, button)
+    self:keypressed(buttons_to_keys[button])
+end
+
 return game

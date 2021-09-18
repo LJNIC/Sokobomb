@@ -27,6 +27,7 @@ function Base:move(new_position)
 end
 
 function Base:undo(other)
+    pretty.print(other)
     self:move(other.position)
     self.alive = other.alive
 end
@@ -35,10 +36,6 @@ function Base:copy()
     local copy = Base(self.position.x, self.position.y)
     copy.alive = self.alive
     return copy
-end
-
-function Base:__tostring()
-    return self.position:__tostring()
 end
 
 return Base

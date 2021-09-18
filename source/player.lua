@@ -78,7 +78,9 @@ function Player:draw()
 end
 
 function Player:copy()
-    return Player(self.position.x, self.position.y)
+    local p = Player(self.position.x, self.position.y)
+    p.alive = self.alive
+    return p
 end
 
 return Player

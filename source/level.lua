@@ -49,7 +49,7 @@ function Level:undo()
     if #self.stack > 1 then
         local top = table.remove(self.stack)
 
-        self.player:move(top.player.position)
+        self.player:undo(top.player)
         for i, object in ipairs(self.objects) do
             object:undo(top.objects[i])
         end
@@ -260,7 +260,9 @@ function Level:draw_objects()
         end
     end
 
-    self.player:draw()
+    if self.player.alive then
+        self.player:draw()
+    end
 end
 
 function Level:tile_is_walkable(base_position_x, y)

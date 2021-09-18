@@ -50,10 +50,15 @@ function Bomb:tick(objects)
     self.tweener = flux.to(self, 0.2, {tween_timer = self.timer})
 end
 
-function Bomb:explode(objects)
+function Bomb:explode(objects, player)
     flux.to(self, 0.2, {opacity = 0}):oncomplete(function() self.alive = false end)
     for _, direction in pairs(directions) do
         local to_explode = self.position + direction
+
+        if player.position == to_explode then
+            player.alive = false
+        end
+
         for _, object in ipairs(objects) do
             if object.alive and object.position == to_explode then
                 if object:is(Bomb) and object.timer > 1 then

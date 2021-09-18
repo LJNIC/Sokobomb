@@ -10,10 +10,11 @@ local GameManager = {
     levels = {}
 }
 
-local max_level = #(love.filesystem.getDirectoryItems("levels"))
+local levels = require "levels"
+local max_level = #levels
 
-for i = 1, max_level do
-    table.insert(GameManager.levels, Level("levels/level" .. i))
+for _,level in ipairs(levels) do
+    table.insert(GameManager.levels, Level("levels/" .. level))
 end
 
 function GameManager:reload()
@@ -21,6 +22,7 @@ function GameManager:reload()
 end
 
 function GameManager:enter(level_number)
+    print(level_number)
     self.level_number = level_number
     self.level = self.levels[level_number]
     self.level.player:transition_in()
@@ -73,6 +75,7 @@ end
 
 function GameManager:turn(direction)
     local level = self.level
+    if not level.player.alive then return end
 
     local new_position = level.player.position + direction
 
@@ -91,6 +94,8 @@ function GameManager:turn(direction)
         return
     end
 
+    level.player:move(new_position)
+
     local bombs = functional.filter(level.objects, function(o) return o:is(Bomb) end)
 
     -- Tick and explode bombs separately because of bombs exploding bombs
@@ -100,11 +105,10 @@ function GameManager:turn(direction)
 
     for _, bomb in ipairs(bombs) do
         if bomb.alive and bomb.timer == 0 then
-            bomb:explode(level.objects)
+            bomb:explode(level.objects, level.player)
         end
     end
 
-    level.player:move(new_position)
 
     -- We know changes to the level state were made, so we push the saved level state onto the stack
     level:push()

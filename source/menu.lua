@@ -75,4 +75,14 @@ function menu:keypressed(key)
     end
 end
 
+local buttons_to_key = {
+    dpup = "up",
+    dpdown = "down",
+    a = "return",
+    b = "return"
+}
+function menu:gamepadpressed(joystick, button)
+    self:keypressed(buttons_to_key[button])
+end
+
 return menu
