@@ -28,16 +28,15 @@ local function reset_edit()
 end
 
 function Files.get_items()
-	list = NativeFS.getDirectoryItems(path)
-	for _, f in ipairs(list) do
-		local d = NativeFS.load(path .. f)()
-		local name = d.metadata.name
-		widest = max(widest, #name)
-		insert(items, d)
-	end
-
 	local style = Slab.GetStyle()
-	widest = widest * style.FontSize * 0.75
+	list = NativeFS.getDirectoryItems(path)
+	for i, f in ipairs(list) do
+		local d = NativeFS.load(path .. f)()
+		local name = #d.metadata.name * style.FontSize * 0.75
+		widest = max(widest, name)
+		insert(items, d)
+		backup[i] = tablex.copy(d.metadata, {})
+	end
 end
 
 function Files.draw()
@@ -109,7 +108,6 @@ function Files.draw()
 				end
 
 				if Slab.Button("Apply") then
-					backup[i] = tablex.copy(v.metadata, {})
 					v.metadata = edit.metadata
 				end
 
@@ -121,10 +119,11 @@ function Files.draw()
 
 				Slab.SameLine()
 				if Slab.Button("Save", {
-					Disabled = backup[i] == nil or v.metadata.name == backup[i].name
+					Disabled = backup[i] == nil or v.metadata.name == backup[i].name,
 				}) then
-					Files.overwrite_metadata(i, edit.metadata)
+					Files.overwrite_metadata()
 				end
+
 				Slab.Unindent()
 				Slab.Separator()
 			end
@@ -141,8 +140,15 @@ function Files.draw()
 	Slab.EndWindow()
 end
 
-function Files.overwrite_metadata(i, metadata)
-
+function Files.overwrite_metadata()
+	if not edit.flag then return end
+	local base = NativeFS.getWorkingDirectory() .. "/levels/"
+	local data = items[edit.index]
+	data.metadata = edit.metadata
+	local filename = base .. data.metadata.filename .. ".lua"
+	local serialized = Serpent.dump(data)
+	local success, message = NativeFS.write(filename, serialized)
+	print("save:", success, message)
 end
 
 Files.get_items()
