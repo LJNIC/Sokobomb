@@ -13,6 +13,18 @@ local list = {}
 local items = {}
 local path = NativeFS.getWorkingDirectory() .. "/levels/"
 local widest = 0
+local edit = {
+	flag = false,
+	item = nil,
+	index = 0,
+}
+local backup = {}
+
+local function reset_edit()
+	edit.flag = false
+	edit.item = nil
+	edit.index = 0
+end
 
 function Files.get_items()
 	list = NativeFS.getDirectoryItems(path)
@@ -34,6 +46,7 @@ function Files.draw()
 	if Slab.Button("reload") then
 		tablex.clear(list)
 		tablex.clear(items)
+		reset_edit()
 		Files.get_items()
 	end
 
@@ -58,6 +71,7 @@ function Files.draw()
 			local file = list[i]
 			Editor.open_level(path .. file)
 		end
+
 		Slab.SameLine()
 		if Slab.Button("^", {W = 32}) then
 			index = i
@@ -69,12 +83,44 @@ function Files.draw()
 			index = i
 			dir = 1
 		end
+
+		Slab.SameLine()
+		if Slab.Button("edit", {W = 36}) then
+			edit.flag = true
+			edit.item = tablex.copy(v.metadata, {})
+			edit.index = i
+		end
+
+		if edit.flag and i == edit.index then
+			Slab.Indent()
+			Slab.Text("Name:")
+			Slab.SameLine()
+			if Slab.Input("name", {
+				ReturnOnText = true,
+				Text = edit.item.name,
+			}) then
+				edit.item.name = Slab.GetInputText()
+			end
+
+			if Slab.Button("Apply") then
+				backup[i] = tablex.copy(v.metadata, {})
+				v.metadata = edit.item
+			end
+			Slab.SameLine()
+			if Slab.Button("Revert") then
+				v.metadata = backup[i]
+				edit.item = tablex.copy(backup[i], {})
+			end
+			Slab.Unindent()
+			Slab.Separator()
+		end
 	end
 
 	if index then
 		local item = table.remove(items, index)
 		local new_index = mathx.wrap(index + dir, 1, #items + 2)
 		insert(items, new_index, item)
+		reset_edit()
 	end
 
 	Slab.EndWindow()
