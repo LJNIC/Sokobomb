@@ -4,3 +4,4 @@ editor/levels/*
 love
 .editorconfig
 slab.style
+editor/levels.lua

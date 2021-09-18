@@ -1,20 +1,30 @@
 local NativeFS = require("lib.nativefs")
+local Serpent = require("lib.serpent.src.serpent")
 local Slab = require("lib.Slab")
 
 local Editor = require("source.editor")
+
+local insert = table.insert
+local max = math.max
 
 local Files = {}
 
 local list = {}
 local items = {}
 local path = NativeFS.getWorkingDirectory() .. "/levels/"
+local widest = 0
 
 function Files.get_items()
 	list = NativeFS.getDirectoryItems(path)
 	for _, f in ipairs(list) do
 		local d = NativeFS.load(path .. f)()
-		table.insert(items, d)
+		local name = d.metadata.name
+		widest = max(widest, #name)
+		insert(items, d)
 	end
+
+	local style = Slab.GetStyle()
+	widest = widest * style.FontSize
 end
 
 function Files.draw()
@@ -26,11 +36,25 @@ function Files.draw()
 		tablex.clear(items)
 		Files.get_items()
 	end
-	Slab.Separator()
 
+	Slab.SameLine()
+	if Slab.Button("export") then
+		local list = {}
+		for i, v in ipairs(items) do
+			insert(list, v.metadata.filename)
+		end
+		local serialized = Serpent.dump(list, {
+			indent = "\t",
+			compact = false,
+		})
+		local success, message = NativeFS.write("levels.lua", serialized)
+		print("export:", success, message)
+	end
+
+	Slab.Separator()
 	local index, dir
 	for i, v in ipairs(items) do
-		if Slab.Button(v.metadata.name) then
+		if Slab.Button(v.metadata.name, {W = widest}) then
 			local file = list[i]
 			Editor.open_level(path .. file)
 		end
@@ -49,13 +73,8 @@ function Files.draw()
 
 	if index then
 		local item = table.remove(items, index)
-		if index + dir > #items + 1 then
-			table.insert(items, 1, item)
-		elseif index + dir <= 0 then
-			table.insert(items, #items + 1, item)
-		else
-			table.insert(items, index + dir, item)
-		end
+		local new_index = mathx.wrap(index + dir, 1, #items + 2)
+		insert(items, new_index, item)
 	end
 
 	Slab.EndWindow()
