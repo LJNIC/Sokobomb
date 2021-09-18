@@ -1,10 +1,12 @@
-return {
-    "level1",
-    "level2",
-    "level3",
-    "level7",
-    "level5",
-    "level4",
-    "level6",
-    "level8"
+do local _ = {
+	"level1",
+	"level2",
+	"level3",
+	"level4",
+	"level5",
+	"level6",
+	"level7",
+	"level8"
 }
+return _
+end

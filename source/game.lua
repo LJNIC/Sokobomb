@@ -44,7 +44,7 @@ function game:draw()
     Glow.draw(canvas)
 
     Transition:draw()
-        draw_interface(GameManager.level_number)
+        draw_interface(GameManager.level_number, GameManager.level)
         love.graphics.setBlendMode("alpha")
         love.graphics.push()
         love.graphics.translate(x, y)

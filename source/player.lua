@@ -5,7 +5,7 @@ local Player = Base:extend()
 function Player:new(x, y)
     Player.super.new(self, x, y)
     self.offset = Vec2(4, 4)
-    self.width = 24
+    self.width = TILE_WIDTH - 8
     self.moving = false
     self.percent = 1
 end
@@ -72,7 +72,7 @@ function Player:draw()
         x_mid, drawn_position.y + 3/4 * TILE_WIDTH - diamond_offset,
         drawn_position.x + TILE_WIDTH/4 + diamond_offset, y_mid
     }
-   -- love.graphics.polygon("line", vertices)
+    --love.graphics.polygon("line", vertices)
 
     love.graphics.setColor(1, 1, 1)
 end

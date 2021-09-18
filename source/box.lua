@@ -3,7 +3,7 @@ local Base = require "source.base"
 
 local Box = Base:extend()
 Box.offset = Vec2(4, 4)
-Box.width = 24
+Box.width = TILE_WIDTH - 8
 
 function Box:new(x, y)
     Box.super.new(self, x, y)
@@ -22,6 +22,8 @@ function Box:draw(tile_at)
     love.graphics.line(cornerX, cornerY, cornerX + Box.width, cornerY + Box.width)
     love.graphics.line(cornerX + Box.width, cornerY, cornerX, cornerY + Box.width)
     love.graphics.rectangle("line", cornerX, cornerY, Box.width, Box.width)
+
+    love.graphics.setColor(1, 1, 1)
 end
 
 function Box:copy()
