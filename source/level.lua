@@ -14,6 +14,7 @@ function Level:new(file_name)
     self.width = data.metadata.cols
     self.height = data.metadata.rows
     self.name = data.metadata.name
+    self.tile_width = data.metadata.tile_size
 
     self.tiles = data.tiles
 

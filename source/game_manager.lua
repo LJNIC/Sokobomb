@@ -22,9 +22,9 @@ function GameManager:reload()
 end
 
 function GameManager:enter(level_number)
-    print(level_number)
     self.level_number = level_number
     self.level = self.levels[level_number]
+    TILE_WIDTH = self.level.tile_width
     self.level.player:transition_in()
 
     local w = self.level.width * 1.5 * TILE_WIDTH
