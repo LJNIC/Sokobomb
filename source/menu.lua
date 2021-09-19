@@ -68,7 +68,7 @@ function menu:keypressed(key)
     elseif key == "up" then
         selected = math.wrap(selected - 1, 1, #actions + 1)
     elseif key == "return" then
-        Transition.text = GameManager.levels[(actions[selected] == continue and save_number) or 1].name
+        Transition.text = (actions[selected] == exit and "") or GameManager.levels[(actions[selected] == continue and save_number) or 1].name
         Transition:fade_in(0.75, function()
             actions[selected].action()
         end)
