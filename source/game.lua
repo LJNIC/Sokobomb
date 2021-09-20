@@ -85,6 +85,16 @@ function game:keypressed(key, scancode, is_repeat)
         love.event.quit()
     elseif key == "`" then
         DEBUG = not DEBUG
+    elseif key == "e" then
+        local level = GameManager.level
+        if level then
+            for _, o in ipairs(level.objects) do
+                if o:is(Bomb) then
+                    o:create_explosion()
+                    break
+                end
+            end
+        end
     end
 end
 
