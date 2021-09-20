@@ -10,8 +10,8 @@ local MenuBar = require("source.menu_bar")
 local NewLevel = require("source.new_level")
 
 function love.load()
- 	 Style.API.LoadStyle("slab.style")
- 	 Slab.Initialize()
+	Style.API.LoadStyle("slab.style")
+	Slab.Initialize()
 	Style.API.SetStyle("slab")
 end
 

@@ -32,6 +32,7 @@ function Files.get_items()
 	local ref_t
 	if NativeFS.getInfo(root) then
 		ref_t = NativeFS.load(ref)()
+		print("found levels.lua")
 	end
 
 	local style = Slab.GetStyle()
@@ -52,8 +53,9 @@ function Files.get_items()
 
 	for i, f in ipairs(list) do
 		local d = NativeFS.load(path .. f)()
-		local name = #d.metadata.name * style.FontSize * 0.75
-		widest = max(widest, name)
+		local name = d.metadata.name
+		local length = #name * style.FontSize * 0.75
+		widest = max(widest, length)
 		insert(items, d)
 		backup[i] = tablex.copy(d.metadata, {})
 	end
@@ -148,6 +150,13 @@ function Files.draw()
 		local item = table.remove(items, index)
 		local new_index = mathx.wrap(index + dir, 1, #items + 2)
 		insert(items, new_index, item)
+
+		local b_item = table.remove(backup, index)
+		insert(backup, new_index, b_item)
+
+		local l_item = table.remove(list, index)
+		insert(list, new_index, l_item)
+
 		reset_edit()
 	end
 
