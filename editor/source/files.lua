@@ -11,7 +11,8 @@ local Files = {}
 
 local list = {}
 local items = {}
-local path = NativeFS.getWorkingDirectory() .. "/levels/"
+local root = NativeFS.getWorkingDirectory()
+local path = root .. "/levels/"
 local widest = 0
 local edit = {
 	flag = false,
@@ -27,8 +28,28 @@ local function reset_edit()
 end
 
 function Files.get_items()
+	local ref = root .. "/levels.lua"
+	local ref_t
+	if NativeFS.getInfo(root) then
+		ref_t = NativeFS.load(ref)()
+	end
+
 	local style = Slab.GetStyle()
 	list = NativeFS.getDirectoryItems(path)
+
+	if ref_t then
+		local temp = {}
+		for i, v in ipairs(ref_t) do
+			for j, v2 in ipairs(list) do
+				if stringx.starts_with(v2, v) then
+					table.insert(temp, v2)
+					break
+				end
+			end
+		end
+		list = temp
+	end
+
 	for i, f in ipairs(list) do
 		local d = NativeFS.load(path .. f)()
 		local name = #d.metadata.name * style.FontSize * 0.75
