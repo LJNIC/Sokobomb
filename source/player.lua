@@ -20,6 +20,22 @@ function Player:transition_out()
     flux.to(self, 1.5, {percent = 0}):delay(0.5)
 end
 
+function Player:drawRotatedRectangle()
+    local x = self.drawn_position.x + TILE_WIDTH/2 
+    local y = self.drawn_position.y + TILE_WIDTH/2 
+    local width = self.percent * TILE_WIDTH/4
+    local angle = self.percent * (math.pi*2 + math.pi/4)
+
+	love.graphics.push("all")
+    love.graphics.setColor(0, 163/255, 204/255)
+    love.graphics.setLineWidth(3 * self.percent)
+	love.graphics.translate(x, y)
+	love.graphics.rotate(angle)
+    love.graphics.translate(-width/2, -width/2)
+	love.graphics.rectangle("line", 0, 0, width, width)
+	love.graphics.pop()
+end
+
 function Player:draw_transition()
     local drawn = self.drawn_position + self.offset
 
@@ -45,6 +61,8 @@ function Player:draw_transition()
         local to = (self.width * math.min((self.percent - 0.75)/0.25, 1))
         love.graphics.rectangle("line", drawn.x, drawn.y + self.width, 0.01, -to)
     end
+
+    self:drawRotatedRectangle()
 end
 
 function Player:draw()
@@ -60,21 +78,8 @@ function Player:draw()
     love.graphics.rectangle("fill", drawn_position.x + self.offset.x, drawn_position.y + self.offset.y, self.width, self.width)
     love.graphics.setColor(1, 1, 1)
     love.graphics.rectangle("line", drawn_position.x + self.offset.x, drawn_position.y + self.offset.y, self.width, self.width)
-    love.graphics.setColor(0, 163/255, 204/255)
-    love.graphics.setLineWidth(3)
 
-    local x_mid = drawn_position.x + TILE_WIDTH/2
-    local y_mid = drawn_position.y + TILE_WIDTH/2
-    local diamond_offset = 2
-    local vertices = {
-        x_mid, drawn_position.y + TILE_WIDTH/4 + diamond_offset,
-        drawn_position.x + 3/4 * TILE_WIDTH - diamond_offset, y_mid,
-        x_mid, drawn_position.y + 3/4 * TILE_WIDTH - diamond_offset,
-        drawn_position.x + TILE_WIDTH/4 + diamond_offset, y_mid
-    }
-    --love.graphics.polygon("line", vertices)
-
-    love.graphics.setColor(1, 1, 1)
+    self:drawRotatedRectangle()
 end
 
 function Player:copy()

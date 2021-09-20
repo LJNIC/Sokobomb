@@ -30,17 +30,17 @@ function Bomb:draw()
         self.text:set(tostring(math.round(math.max(self.tween_timer, 1))))
     end
 
-    -- love.graphics.setColor(0.5, 0.5, 0.5, self.opacity)
     self.pulse:set_color(0.5, 0.5, 0.5, self.opacity)
     love.graphics.circle("line", self.drawn_position.x + TILE_WIDTH / 2, self.drawn_position.y + TILE_WIDTH / 2, TILE_WIDTH / 2 - 2, 100)
 
     local width, height = self.text:getDimensions()
-    -- love.graphics.setColor(227/255, 52/255, 0, self.opacity)
     self.pulse:set_color(227/255, 52/255, 0, self.opacity)
     love.graphics.draw(self.text, math.floor(self.drawn_position.x + (TILE_WIDTH / 2 - width / 2)), math.floor(self.drawn_position.y + (TILE_WIDTH / 2 - height / 2)))
 
     local percent = self.infinite and (2 * math.pi) or (self.tween_timer / self.max_timer * (2 * math.pi))
     love.graphics.arc("line", "open", self.drawn_position.x + TILE_WIDTH / 2, self.drawn_position.y + TILE_WIDTH / 2, TILE_WIDTH / 2 - 2, 0, percent, 100)
+
+    love.graphics.setColor(1, 1, 1)
 end
 
 function Bomb:tick(objects)
