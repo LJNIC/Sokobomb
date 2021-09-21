@@ -3,6 +3,7 @@ local Bomb = require "source.bomb"
 local utilities = require "source.utilities"
 local Level = require "source.level"
 local Transition = require "source.transition"
+local Themes = require "source.themes"
 
 local tick = require "source.lib.tick"
 
@@ -24,6 +25,7 @@ function GameManager:reload()
 end
 
 function GameManager:enter(level_number)
+    Themes.on_change_level(level_number)
     self.level_number = level_number
     self.level = self.levels[level_number]
     TILE_WIDTH = self.level.tile_width
@@ -41,8 +43,8 @@ function GameManager:go_to_next_level(duration, level_number)
     if next_level > max_level then
         love.filesystem.remove("save.txt")
         Transition.text = ""
-        Transition:fade_in(duration, function() 
-            roomy:enter(require "source.done") 
+        Transition:fade_in(duration, function()
+            roomy:enter(require "source.done")
         end, 1.5)
     else
         Transition.text = self.levels[next_level].name

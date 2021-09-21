@@ -1,4 +1,5 @@
 local Base = require "source.base"
+local Themes = require "source.themes"
 local flux = require "source.lib.flux"
 local Player = Base:extend()
 
@@ -21,13 +22,13 @@ function Player:transition_out()
 end
 
 function Player:drawRotatedRectangle()
-    local x = self.drawn_position.x + TILE_WIDTH/2 
-    local y = self.drawn_position.y + TILE_WIDTH/2 
+    local x = self.drawn_position.x + TILE_WIDTH/2
+    local y = self.drawn_position.y + TILE_WIDTH/2
     local width = self.percent * TILE_WIDTH/4
     local angle = self.percent * (math.pi*2 + math.pi/4)
 
 	love.graphics.push("all")
-    love.graphics.setColor(0, 163/255, 204/255)
+    Themes.set_color("player_diamond")
     love.graphics.setLineWidth(3 * self.percent)
 	love.graphics.translate(x, y)
 	love.graphics.rotate(angle)
@@ -40,7 +41,7 @@ function Player:draw_transition()
     local drawn = self.drawn_position + self.offset
 
     love.graphics.setLineWidth(4)
-    love.graphics.setColor(1, 1, 1)
+    Themes.set_color("player_outer")
 
     if self.percent > 0 then
         local to = (self.width * math.min(self.percent/0.25, 1))
@@ -74,9 +75,10 @@ function Player:draw()
     end
 
     love.graphics.setLineWidth(4)
-    love.graphics.setColor(0, 0, 0)
+    Themes.set_color("player_inner")
     love.graphics.rectangle("fill", drawn_position.x + self.offset.x, drawn_position.y + self.offset.y, self.width, self.width)
-    love.graphics.setColor(1, 1, 1)
+
+    Themes.set_color("player_outer")
     love.graphics.rectangle("line", drawn_position.x + self.offset.x, drawn_position.y + self.offset.y, self.width, self.width)
 
     self:drawRotatedRectangle()

@@ -2,6 +2,7 @@ local Box = require "source.box"
 local Bomb = require "source.bomb"
 local Player = require "source.player"
 local Breakable = require "source.breakable"
+local Themes = require "source.themes"
 local Object = require "source.lib.classic"
 local flux = require "source.lib.flux"
 
@@ -65,9 +66,9 @@ function Level:reset()
         local per_turn = 0.075
         local total = (#self.stack + 1) * per_turn
 
-        flux.to(timer, total, { 
+        flux.to(timer, total, {
             t = total
-        }):onupdate(function() 
+        }):onupdate(function()
             if timer.t >= last + per_turn then
                 last = timer.t
                 self:undo()
@@ -113,7 +114,7 @@ end
 function Level:draw_wall(x, y)
     love.graphics.setLineStyle("rough")
     love.graphics.setLineWidth(2)
-    love.graphics.setColor(48/255, 54/255, 95/255)
+    Themes.set_color("wall")
 
     local north, nnw, nis = self:check_neighbor(x, y, 0, -1, true)
     local south, snw, sis = self:check_neighbor(x, y, 0, 1, true)
@@ -188,14 +189,14 @@ function Level:draw_wall(x, y)
     if north == 1 and west == 1 then
         love.graphics.line(
             lx + TILE_WIDTH - gap, ly - gap,
-            lx - gap, ly - gap, 
+            lx - gap, ly - gap,
             lx - gap, ly + TILE_WIDTH - gap
         )
     end
 
     if north == 1 and east == 1 then
         love.graphics.line(
-            lx + gap, ly - gap, 
+            lx + gap, ly - gap,
             lx + TILE_WIDTH + gap, ly - gap,
             lx + TILE_WIDTH + gap, ly + TILE_WIDTH - gap
         )
@@ -204,14 +205,14 @@ function Level:draw_wall(x, y)
     if south == 1 and west == 1 then
         love.graphics.line(
             lx - gap, ly + gap,
-            lx - gap, ly + TILE_WIDTH + gap, 
+            lx - gap, ly + TILE_WIDTH + gap,
             lx + TILE_WIDTH - gap, ly + TILE_WIDTH + gap
         )
     end
 
     if south == 1 and east == 1 then
         love.graphics.line(
-            lx + gap, ly + TILE_WIDTH + gap, 
+            lx + gap, ly + TILE_WIDTH + gap,
             lx + TILE_WIDTH + gap, ly + TILE_WIDTH + gap,
             lx + TILE_WIDTH + gap, ly + gap
         )
@@ -222,7 +223,7 @@ end
 
 function Level:draw_tile(x, y, tile)
     if tile == "goal" then
-        love.graphics.setColor(0.5, 0.5, 0.5)
+        Themes.set_color("goal")
         love.graphics.setLineWidth(4)
 
         local cornerX, cornerY = x * TILE_WIDTH + Box.offset.x, y * TILE_WIDTH + Box.offset.y
