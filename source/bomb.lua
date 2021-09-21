@@ -1,5 +1,6 @@
 local Base = require "source.base"
 local flux = require "source.lib.flux"
+local tick = require "source.lib.tick"
 local directions = require("source.utilities").directions
 local Pulse = require "source.pulse"
 
@@ -42,8 +43,6 @@ function Bomb:draw()
     love.graphics.arc("line", "open", self.drawn_position.x + TILE_WIDTH / 2, self.drawn_position.y + TILE_WIDTH / 2, TILE_WIDTH / 2 - 2, 0, percent, 100)
 
     love.graphics.setColor(1, 1, 1)
-
-    self:draw_explosions()
 end
 
 function Bomb:tick(objects)
@@ -54,7 +53,8 @@ function Bomb:tick(objects)
 end
 
 function Bomb:explode(objects, player)
-    flux.to(self, 0.2, {opacity = 0}):oncomplete(function() self.alive = false end)
+    self.opacity = 0
+    flux.to(self, 0.8, {opacity = 0}):oncomplete(function() self.alive = false end)
     for _, direction in pairs(directions) do
         local to_explode = self.position + direction
 
@@ -64,11 +64,13 @@ function Bomb:explode(objects, player)
 
         for _, object in ipairs(objects) do
             if object.alive and object.position == to_explode then
-                if object:is(Bomb) and object.timer > 1 then
-                    object:explode_self()
-                elseif not object:is(Bomb) then
-                    object.alive = false
-                end
+                tick.delay(function()
+                    if object:is(Bomb) and object.timer > 1 then
+                        object:explode_self()
+                    elseif not object:is(Bomb) then
+                        object.alive = false
+                    end
+                end, 0.2)
             end
         end
     end
@@ -84,7 +86,6 @@ function Bomb:explode_self()
 end
 
 function Bomb:create_explosion()
-    local n = love.math.random(12, 20)
     local q = TILE_WIDTH * 0.25
 
     local x = self.drawn_position.x + TILE_WIDTH_H
@@ -99,48 +100,47 @@ function Bomb:create_explosion()
     local dir = 1
 
     --if uniform size and alpha for each direction
-    local ts = love.math.random(q, TILE_WIDTH_H)
+    local radius = TILE_WIDTH / 2
 
-    for i = 1, n do
+    for i = 1, 4 do
         dir = dir + 1
         if dir > 4 then
             dir = 1
         end
 
         local offset = dirs[dir]
-        local e = {
-            x = x, y = y, s = 0, a = 0,
-            tx = x + offset[1],
-            ty = y + offset[2],
+        local explosion = {
+            x = x, 
+            y = y, 
+            radius = 0, 
+            alpha = 0,
+            target_x = x + offset[1],
+            target_y = y + offset[2],
 
             --if uniform size and alpha for each direction
-            ts = ts,
-            ta = 1,
-
-            --if random size and alpha for each direction
-            -- ts = love.math.random(q, TILE_WIDTH_H),
-            -- ta = love.math.random(),
+            target_radius = radius,
+            target_alpha = 1,
         }
-        table.insert(self.explosions, e)
+        table.insert(self.explosions, explosion)
     end
 
     local dur_in = 0.25
-    local dur_out = 0.25
+    local dur_out = 0.5
     for _, e in ipairs(self.explosions) do
         flux.to(e, dur_in, {
-            x = e.tx,
-            y = e.ty,
-            s = e.ts,
-            a = e.ta,
+            x = e.target_x,
+            y = e.target_y,
+            radius = e.target_radius,
+            alpha = e.target_alpha,
         })
         :ease("backout")
         :oncomplete(function()
             flux.to(e, dur_out, {
-                s = 0,
-                a = 0,
+                radius = 0,
+                alpha = 0,
             }):oncomplete(function()
                 e.remove = true
-            end)
+            end):ease("quadout")
         end)
     end
 end
@@ -150,14 +150,18 @@ function Bomb:draw_explosions()
     love.graphics.setLineWidth(1)
 
     local remove = 1
-    for _, e in ipairs(self.explosions) do
-        love.graphics.setColor(1, 1, 1, e.a)
-        love.graphics.circle("fill", e.x, e.y, e.s)
+    for _, explosion in ipairs(self.explosions) do
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.circle("fill", explosion.x, explosion.y, explosion.radius)
+        love.graphics.setColor(1 * explosion.alpha, 1 * explosion.alpha, 1 * explosion.alpha)
+        love.graphics.circle("line", explosion.x, explosion.y, explosion.radius)
 
-        if e.remove then
+        if explosion.remove then
             remove = remove + 1
         end
     end
+
+    love.graphics.setColor(1, 1, 1)
 
     if remove >= #self.explosions then
         tablex.clear(self.explosions)

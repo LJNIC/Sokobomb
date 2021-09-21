@@ -76,6 +76,7 @@ function Level:reset()
             for i,_ in ipairs(self.stack) do
                 self:undo()
             end
+            self:undo()
             self.resetting = false
         end):ease("linear")
     end
@@ -258,6 +259,12 @@ function Level:draw_objects()
     for _, object in ipairs(self.objects) do
         if object.alive then
             object:draw(not object.moving and self:tile_at(object.position) or nil)
+        end
+    end
+
+    for _, object in ipairs(self.objects) do
+        if object:is(Bomb) then
+            object:draw_explosions()
         end
     end
 
