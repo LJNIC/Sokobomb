@@ -494,9 +494,14 @@ function Editor.keypressed(key)
 end
 
 function Editor.keyreleased(key)
-	if not Editor.current_level then return end
+	local cl = Editor.current_level
+	if not cl then return end
 	if Slab.IsAnyInputFocused() then return end
-	Editor.current_level:keyreleased(key)
+	for _, c in ipairs(cl.cells) do
+		if c.hovered then
+			c:keyreleased(key)
+		end
+	end
 end
 
 function Editor.mousepressed(mx, my, mb)
