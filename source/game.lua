@@ -4,6 +4,7 @@ local Box = require "source.box"
 local GameManager = require "source.game_manager"
 local Transition = require "source.transition"
 local flux = require "source.lib.flux"
+local tick = require "source.lib.tick"
 local utilities = require "source.utilities"
 local Glow = require "source.glow"
 
@@ -20,6 +21,7 @@ end
 local buffer = -1
 function game:update(dt)
     flux.update(dt)
+    tick.update(dt)
     if buffer > -1 and buffer < 0.2 then
         buffer = buffer + dt
     end

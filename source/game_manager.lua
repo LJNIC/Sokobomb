@@ -4,6 +4,8 @@ local utilities = require "source.utilities"
 local Level = require "source.level"
 local Transition = require "source.transition"
 
+local tick = require "source.lib.tick"
+
 local GameManager = {
     level = nil,
     level_number = 1,
@@ -109,13 +111,14 @@ function GameManager:turn(direction)
         end
     end
 
-
     -- We know changes to the level state were made, so we push the saved level state onto the stack
     level:push()
 
-    if self:has_won() then
-        self:go_to_next_level()
-    end
+    tick.delay(function()
+        if self:has_won() then
+            self:go_to_next_level()
+        end
+    end, 0.3)
 end
 
 return GameManager
