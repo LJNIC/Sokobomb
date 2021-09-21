@@ -5,6 +5,7 @@ local concat = table.concat
 local Dialog = {
 	opened_s = false,
 	opened_bt = false,
+	prev_set_timer = 0,
 }
 
 local active_cell
@@ -63,7 +64,9 @@ function Dialog.draw()
 			if Slab.InputNumberSlider("bomb_timer", active_cell.tile.timer, 0, 99, {
 				Precision = 0,
 			}) then
-				active_cell.tile.timer = Slab.GetInputNumber()
+				local timer = Slab.GetInputNumber()
+				active_cell.tile.timer = timer
+				Dialog.prev_set_timer = timer
 			end
 			Slab.SetInputFocus("bomb_timer")
 			Slab.SetInputCursorPos(#tostring(active_cell.tile.timer))

@@ -483,6 +483,7 @@ end
 
 function Editor.keypressed(key)
 	if not Editor.current_level then return end
+	if Slab.IsAnyInputFocused() then return end
 	if key == "r" then
 		rect_select.enabled = not rect_select.enabled
 	elseif key == "delete" or key == "backspace" then
@@ -490,6 +491,12 @@ function Editor.keypressed(key)
 	elseif key == "f" then
 		Editor.fill_selected()
 	end
+end
+
+function Editor.keyreleased(key)
+	if not Editor.current_level then return end
+	if Slab.IsAnyInputFocused() then return end
+	Editor.current_level:keyreleased(key)
 end
 
 function Editor.mousepressed(mx, my, mb)

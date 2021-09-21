@@ -36,6 +36,10 @@ function love.keypressed(key)
 	Editor.keypressed(key)
 end
 
+function love.keyreleased(key)
+	Editor.keyreleased(key)
+end
+
 function love.mousepressed(mx, my, mb)
 	Editor.mousepressed(mx, my, mb)
 end

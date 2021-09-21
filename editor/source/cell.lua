@@ -56,7 +56,12 @@ function Cell:set_tile(tile, fnt, data)
 		if data then
 			self.tile.timer = data.timer
 		else
-			Dialog.open_bomb_timer(self)
+			if love.keyboard.isDown("lshift") and Dialog.prev_set_timer ~= 0 then
+				self.tile.timer = Dialog.prev_set_timer
+				self.is_multiple_bombs = true
+			else
+				Dialog.open_bomb_timer(self)
+			end
 		end
 	end
 end
@@ -100,6 +105,14 @@ function Cell:is_hovered(mx, my)
 	self.hovered = mx > self.px and mx < self.px + self.tile_size and
 		my > self.py and my < self.py + self.tile_size
 	return self.hovered
+end
+
+function Cell:keyreleased(key)
+	if self.is_multiple_bombs then
+		if key == "lshift" then
+			Dialog.prev_set_timer = 0
+		end
+	end
 end
 
 return Cell
