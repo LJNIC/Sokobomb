@@ -44,9 +44,13 @@ function Files.get_items()
 			for j, v2 in ipairs(list) do
 				if stringx.starts_with(v2, v) then
 					table.insert(temp, v2)
+					table.remove(list, j)
 					break
 				end
 			end
+		end
+		if #list ~= 0 then
+			temp = tablex.append(temp, list)
 		end
 		list = temp
 	end
@@ -68,6 +72,7 @@ function Files.draw()
 	if Slab.Button("reload") then
 		tablex.clear(list)
 		tablex.clear(items)
+		tablex.clear(backup)
 		reset_edit()
 		Files.get_items()
 	end
@@ -84,6 +89,7 @@ function Files.draw()
 		})
 		local success, message = NativeFS.write("levels.lua", serialized)
 		print("export:", success, message)
+		pretty.print(serialized)
 	end
 
 	Slab.Separator()
@@ -171,7 +177,8 @@ function Files.overwrite_metadata()
 	local filename = base .. data.metadata.filename .. ".lua"
 	local serialized = Serpent.dump(data)
 	local success, message = NativeFS.write(filename, serialized)
-	print("save:", success, message)
+	print("overwrite metadata:", success, message)
+	pretty.print(serialized)
 end
 
 Files.get_items()
