@@ -22,6 +22,7 @@ local buffer = -1
 function game:update(dt)
     flux.update(dt)
     tick.update(dt)
+    GameManager.level:update(dt)
     if buffer > -1 and buffer < 0.2 then
         buffer = buffer + dt
     end

@@ -58,28 +58,19 @@ function Level:undo()
     end
 end
 
+function Level:update(dt)
+    if self.resetting then
+        self:undo()
+        if #self.stack <= 1 then
+            self.resetting = false
+        end
+    end
+end
+
 function Level:reset()
     if #self.stack > 1 then
         self.resetting = true
-        local timer = { t = 0 }
-        local last = 0
-        local per_turn = 0.075
-        local total = (#self.stack + 1) * per_turn
-
-        flux.to(timer, total, {
-            t = total
-        }):onupdate(function()
-            if timer.t >= last + per_turn then
-                last = timer.t
-                self:undo()
-            end
-        end):oncomplete(function()
-            for i,_ in ipairs(self.stack) do
-                self:undo()
-            end
-            self:undo()
-            self.resetting = false
-        end):ease("linear")
+        self.reset_timer = 0
     end
 end
 
