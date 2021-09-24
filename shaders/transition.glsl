@@ -21,9 +21,4 @@ vec4 effect(vec4 color, Image texture, vec2 uv, vec2 screen_coords)
 	vec4 c = mix(f_color, o_color, float(fade.r > pct));
 
 	return c * pixel * color;
-
-	/* if (fade.r > pct) */
-	/* 	return pixel * color; */
-	/* else */
-	/* 	return f_color; */
 }

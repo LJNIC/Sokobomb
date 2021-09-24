@@ -48,15 +48,15 @@ function Transition:draw()
         Transition.shader:send("o_color", col_black)
         Transition.shader:send("f_color", col_white)
 
-        local w, h = love.graphics.getDimensions()
-        local x = w * 0.5
-        local y = h * 0.25
-        local ox = font:getWidth(self.text) * 0.5
-        local oy = font:getHeight("") * 0.5
-        love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.setFont(font)
-        love.graphics.print(self.text, x, y, 0, 1, 1, ox, oy)
-        love.graphics.setColor(1, 1, 1, 1)
+        -- local w, h = love.graphics.getDimensions()
+        -- local x = w * 0.5
+        -- local y = h * 0.25
+        -- local ox = font:getWidth(self.text) * 0.5
+        -- local oy = font:getHeight("") * 0.5
+        -- love.graphics.setColor(1, 1, 1, 1)
+        -- love.graphics.setFont(font)
+        -- love.graphics.print(self.text, x, y, 0, 1, 1, ox, oy)
+        -- love.graphics.setColor(1, 1, 1, 1)
 
         Transition.shader:send("o_color", col_white)
         Transition.shader:send("f_color", col_black)

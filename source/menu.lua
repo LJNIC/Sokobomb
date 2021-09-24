@@ -50,6 +50,10 @@ function menu:enter()
 end
 
 function menu:draw()
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.draw(title, (love.graphics.getWidth() * 1/3) - title:getWidth(), love.graphics.getHeight() * 1/4)
+    Transition:draw()
+
     love.graphics.setLineWidth(30)
     local ww, wh = love.graphics.getDimensions()
     love.graphics.setColor(self.color * 227/255, self.color * 52/255, 0)
@@ -75,10 +79,6 @@ function menu:draw()
         love.graphics.draw(action.text, ww * 2/3 - radius - twidth + offset, wh / 2 - action.text:getHeight() / 2)
         love.graphics.pop()
     end
-
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.draw(title, (love.graphics.getWidth() * 1/3) - title:getWidth(), love.graphics.getHeight() * 1/4)
-    Transition:draw()
 end
 
 function menu:update(dt)
