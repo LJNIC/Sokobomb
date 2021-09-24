@@ -50,7 +50,7 @@ return function(level_number, level)
     name_text:set(level.name)
     love.graphics.draw(name_text, 54 + number_text:getWidth(), 32)
 
-    number_text:set(level_number < 10 and "0" or "" .. level_number)
+    number_text:set((level_number < 10 and "0" or "") .. level_number)
     love.graphics.draw(number_text, 32, 32)
     love.graphics.circle("line", 32 + number_text:getWidth()/2, 32 + number_text:getHeight()/2, 26)
 

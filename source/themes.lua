@@ -42,9 +42,7 @@ local palettes = {
 }
 
 local levels_palette = {
-    [1] = "default",
-    [2] = "endesga32",
-    [3] = "sad",
+    [1] = "default"
 }
 
 function Themes.on_change_level(level_number)

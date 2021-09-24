@@ -14,7 +14,7 @@ local font = love.graphics.newFont("assets/RobotoCondensed-Regular.ttf", 48)
 local col_black = {0, 0, 0, 1}
 local col_white = {1, 1, 1, 1}
 
-function Transition:fade_in(duration, fn, delay)
+function Transition:fade_in(duration, fn, delay, on_update)
     self.flag = true
     self.pct = 0
 
@@ -22,6 +22,7 @@ function Transition:fade_in(duration, fn, delay)
         pct = 1
     }):onupdate(function()
         self.shader:send("pct", self.pct)
+        if on_update then on_update(self.pct) end
     end):oncomplete(function()
         fn()
         self:fade_out(duration)

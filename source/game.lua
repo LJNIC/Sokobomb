@@ -77,7 +77,7 @@ function game:keypressed(key, scancode, is_repeat)
             buffer = 0
         end
     elseif key == "n" then
-        GameManager:go_to_next_level(1)
+        GameManager:enter(GameManager.level_number + 1)
     elseif key == "z" then
         GameManager.level:undo()
     elseif key == "r" and love.keyboard.isDown("lctrl") then
