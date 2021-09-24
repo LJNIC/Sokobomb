@@ -50,9 +50,9 @@ function menu:enter()
 end
 
 function menu:draw()
+    Transition:draw()
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(title, (love.graphics.getWidth() * 1/3) - title:getWidth(), love.graphics.getHeight() * 1/4)
-    Transition:draw()
 
     love.graphics.setLineWidth(30)
     local ww, wh = love.graphics.getDimensions()
