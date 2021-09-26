@@ -23,6 +23,60 @@ function Bomb:new(x, y, timer, is_infinite)
     self.explosions = {}
 end
 
+function Bomb:tick(objects)
+    if self.infinite then return end
+
+    self.timer = self.timer - 1
+    self.tweener = flux.to(self, 0.2, {tween_timer = self.timer})
+end
+
+function Bomb:explode(objects, player)
+    self.alive = false
+    flux.to(self, 0.8, {opacity = 0})
+    for _, direction in pairs(directions) do
+        local to_explode = self.position + direction
+
+        if player.position == to_explode then
+            player.alive = false
+        end
+
+        for _, object in ipairs(objects) do
+            if object.alive and object.position == to_explode then
+                if object:is(Bomb) and object.timer > 1 then
+                    object:explode_self()
+                elseif not object:is(Bomb) then
+                    object.alive = false
+                end
+            end
+        end
+    end
+
+    self:create_explosion()
+end
+
+function Bomb:explode_self()
+    self.infinite = false
+    if self.tweener then self.tweener:stop() end
+    flux.to(self, 0.2, {tween_timer = 1})
+    self.timer = 1
+end
+
+function Bomb:undo(other_bomb)
+    Bomb.super.undo(self, other_bomb)
+    self.timer = other_bomb.timer
+    self.infinite = other_bomb.infinite
+    flux.to(self, 0.2, {tween_timer = other_bomb.timer})
+    flux.to(self, 0.2, {opacity = 1})
+end
+
+function Bomb:copy()
+    local copy = Bomb(self.position.x, self.position.y, self.timer)
+    copy.alive = self.alive
+    copy.infinite = self.infinite
+
+    return copy
+end
+
 function Bomb:draw()
     love.graphics.setFont(font)
     love.graphics.setLineWidth(2)
@@ -46,46 +100,6 @@ function Bomb:draw()
     love.graphics.arc("line", "open", self.drawn_position.x + TILE_WIDTH / 2, self.drawn_position.y + TILE_WIDTH / 2, TILE_WIDTH / 2 - 2, 0, percent, 100)
 
     love.graphics.setColor(1, 1, 1)
-end
-
-function Bomb:tick(objects)
-    if self.infinite then return end
-
-    self.timer = self.timer - 1
-    self.tweener = flux.to(self, 0.2, {tween_timer = self.timer})
-end
-
-function Bomb:explode(objects, player)
-    self.opacity = 0
-    flux.to(self, 0.8, {opacity = 0}):oncomplete(function() self.alive = false end)
-    for _, direction in pairs(directions) do
-        local to_explode = self.position + direction
-
-        if player.position == to_explode then
-            player.alive = false
-        end
-
-        for _, object in ipairs(objects) do
-            if object.alive and object.position == to_explode then
-                tick.delay(function()
-                    if object:is(Bomb) and object.timer > 1 then
-                        object:explode_self()
-                    elseif not object:is(Bomb) then
-                        object.alive = false
-                    end
-                end, 0.2)
-            end
-        end
-    end
-
-    self:create_explosion()
-end
-
-function Bomb:explode_self()
-    self.infinite = false
-    if self.tweener then self.tweener:stop() end
-    flux.to(self, 0.2, {tween_timer = 1})
-    self.timer = 1
 end
 
 function Bomb:create_explosion()
@@ -129,20 +143,20 @@ function Bomb:create_explosion()
 
     local dur_in = 0.25
     local dur_out = 0.5
-    for _, e in ipairs(self.explosions) do
-        flux.to(e, dur_in, {
-            x = e.target_x,
-            y = e.target_y,
-            radius = e.target_radius,
-            alpha = e.target_alpha,
+    for _, explosion in ipairs(self.explosions) do
+        flux.to(explosion, dur_in, {
+            x = explosion.target_x,
+            y = explosion.target_y,
+            radius = explosion.target_radius,
+            alpha = explosion.target_alpha,
         })
         :ease("backout")
         :oncomplete(function()
-            flux.to(e, dur_out, {
+            flux.to(explosion, dur_out, {
                 radius = 0,
                 alpha = 0,
             }):oncomplete(function()
-                e.remove = true
+                explosion.remove = true
             end):ease("quadout")
         end)
     end
@@ -170,22 +184,6 @@ function Bomb:draw_explosions()
     if remove >= #self.explosions then
         tablex.clear(self.explosions)
     end
-end
-
-function Bomb:undo(other_bomb)
-    Bomb.super.undo(self, other_bomb)
-    self.timer = other_bomb.timer
-    self.infinite = other_bomb.infinite
-    flux.to(self, 0.2, {tween_timer = other_bomb.timer})
-    flux.to(self, 0.2, {opacity = other_bomb.opacity})
-end
-
-function Bomb:copy()
-    local copy = Bomb(self.position.x, self.position.y, self.timer)
-    copy.alive = self.alive
-    copy.infinite = self.infinite
-
-    return copy
 end
 
 return Bomb

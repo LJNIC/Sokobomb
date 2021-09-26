@@ -27,7 +27,6 @@ function Base:move(new_position)
 end
 
 function Base:undo(other)
-    pretty.print(other)
     self:move(other.position)
     self.alive = other.alive
 end
