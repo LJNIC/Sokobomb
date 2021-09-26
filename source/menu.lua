@@ -21,31 +21,70 @@ local menu = {
     canvas = love.graphics.newCanvas()
 }
 
+local function fade_music(percent)
+    music:setVolume(math.abs(percent - 1))
+end
+
 local new = {
     text = love.graphics.newText(menu_font, "new game"),
     action = function()
+        Transition.text = GameManager.levels[1].name
         love.filesystem.write("save.txt", 1)
-        roomy:enter(require "source.game", 1)
+        Transition:fade_in(0.75, function()
+            roomy:enter(require "source.game", 1)
+        end, nil, fade_music)
     end
 }
 local continue = {
     text = love.graphics.newText(menu_font, "continue"),
     action = function()
-        roomy:enter(require "source.game", menu.save_number)
+        Transition.text = GameManager.levels[menu.save_number].name
+        Transition:fade_in(0.75, function()
+            roomy:enter(require "source.game", menu.save_number)
+        end, nil, fade_music)
+    end
+}
+local options = {
+    text = love.graphics.newText(menu_font, "options"),
+    action = function() 
+        menu:select(1)
+        menu.actions = menu.options
     end
 }
 local exit = {
     text = love.graphics.newText(menu_font, "exit"),
-    action = function() love.event.quit() end
+    action = function() 
+        Transition.text = ""
+        Transition:fade_in(0.75, function()
+            love.event.quit() 
+        end, nil, fade_music)
+    end
 }
-menu.actions = { new, exit }
+
+local stored_size = { width = love.graphics.getWidth(), height = love.graphics.getHeight() }
+pretty.print(stored_size)
+local full_screen = {
+    text = love.graphics.newText(menu_font, "fullscreen"),
+    action = function()
+        local _, _, flags = love.window.getMode()
+        local desktop_width, desktop_height = love.window.getDesktopDimensions(flags.display)
+
+        local width = flags.fullscreen and stored_size.width or desktop_width
+        local height = flags.fullscreen and stored_size.height or desktop_height
+        print(width, height, not flags.fullscreen)
+        love.window.setMode(width, height, {fullscreen = not flags.fullscreen})
+    end
+}
+menu.main = { new, options, exit }
+menu.options = { full_screen }
+menu.actions = menu.main
 
 function menu:enter()
     love.audio.play(music)
     local save = love.filesystem.read("save.txt")
     if save then
         menu.save_number = tonumber(save)
-        table.insert(self.actions, 1, continue)
+        table.insert(self.main, 1, continue)
     end
 end
 
@@ -59,15 +98,16 @@ function menu:draw()
     love.graphics.setColor(self.color * 227/255, self.color * 52/255, 0)
 
     local radius = ww / 5
-    love.graphics.circle('line', ww * 2/3, wh / 2, radius)
+    local x, y = ww * 2/3, wh * 1/2
+    love.graphics.circle('line', x, y, radius)
 
     love.graphics.setColor(1,1,1)
 
     for i, action in ipairs(self.actions) do
         love.graphics.push()
-        love.graphics.translate(ww * 2/3, wh/2)
+        love.graphics.translate(x, y)
         love.graphics.rotate(((i-1) * -math.pi/8) + self.angle)
-        love.graphics.translate(-ww * 2/3, -wh/2)
+        love.graphics.translate(-x, -y)
 
         local twidth = action.text:getWidth()
         if i ~= self.selected then
@@ -76,7 +116,7 @@ function menu:draw()
             love.graphics.setColor(1, 1, 1, 1)
         end
         local offset = action == exit and 0 or 30
-        love.graphics.draw(action.text, ww * 2/3 - radius - twidth + offset, wh / 2 - action.text:getHeight() / 2)
+        love.graphics.draw(action.text, x - radius - twidth + offset, y - action.text:getHeight() / 2)
         love.graphics.pop()
     end
 end
@@ -106,10 +146,9 @@ function menu:keypressed(key)
         self:select(math.wrap(self.selected - 1, 1, #self.actions + 1))
     elseif key == "return" then
         local action = self.actions[self.selected]
-        Transition.text = (action == exit and "") or GameManager.levels[(action == continue and self.save_number) or 1].name
-        Transition:fade_in(0.75, function()
-            action.action()
-        end, nil, function(percent) music:setVolume(math.abs(percent - 1)) end)
+        action.action()
+    elseif self.actions == self.options and key == "escape" then
+        self.actions = menu.main
     end
 end
 
