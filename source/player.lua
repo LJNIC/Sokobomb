@@ -9,6 +9,13 @@ function Player:new(x, y)
     self.width = TILE_WIDTH - 8
     self.moving = false
     self.percent = 1
+    self.angle = math.pi/4
+end
+
+function Player:move(new_position)
+    Player.super.move(self, new_position)
+    self.angle = math.pi/4
+    flux.to(self, 0.5, {angle = math.pi + math.pi/4})
 end
 
 function Player:transition_in()
@@ -25,13 +32,15 @@ function Player:drawRotatedRectangle()
     local x = self.drawn_position.x + TILE_WIDTH/2
     local y = self.drawn_position.y + TILE_WIDTH/2
     local width = self.percent * TILE_WIDTH/4
-    local angle = self.percent * (math.pi*2 + math.pi/4)
+    if self.percent < 1 then
+        self.angle = self.percent * (math.pi*2 + math.pi/4)
+    end
 
 	love.graphics.push("all")
     Themes.set_color("player_diamond")
     love.graphics.setLineWidth(3 * self.percent)
 	love.graphics.translate(x, y)
-	love.graphics.rotate(angle)
+	love.graphics.rotate(self.angle)
     love.graphics.translate(-width/2, -width/2)
 	love.graphics.rectangle("line", 0, 0, width, width)
 	love.graphics.pop()
