@@ -21,6 +21,9 @@ local menu = {
     canvas = love.graphics.newCanvas()
 }
 
+local w, h = love.graphics.getDimensions()
+local canvas = love.graphics.newCanvas(w * 0.5, h * 0.5)
+
 local function fade_music(percent)
     music:setVolume(math.abs(percent - 1))
 end
@@ -89,19 +92,35 @@ function menu:enter()
 end
 
 function menu:draw()
+    love.graphics.setCanvas(canvas)
+        love.graphics.clear()
+        love.graphics.push()
+        love.graphics.scale(0.5, 0.5)
+        self:draw_circle()
+        love.graphics.pop()
+    love.graphics.setBlendMode("replace")
+    Glow.draw(canvas)
+
     Transition:draw()
+        love.graphics.setBlendMode("alpha")
+        love.graphics.push()
+        self:draw_circle()
+        love.graphics.pop()
+        self:draw_menu()
+        love.graphics.setBlendMode("lighten", "premultiplied")
+        love.graphics.draw(canvas, 0, 0, 0, 2, 2)
+    love.graphics.setShader()
+    love.graphics.setBlendMode("alpha")
+end
+
+function menu:draw_menu()
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(title, (love.graphics.getWidth() * 1/3) - title:getWidth(), love.graphics.getHeight() * 1/4)
 
-    love.graphics.setLineWidth(30)
-    local ww, wh = love.graphics.getDimensions()
-    love.graphics.setColor(self.color * 227/255, self.color * 52/255, 0)
-
-    local radius = ww / 5
-    local x, y = ww * 2/3, wh * 1/2
-    love.graphics.circle('line', x, y, radius)
-
     love.graphics.setColor(1,1,1)
+    local ww, wh = love.graphics.getDimensions()
+    local x, y = ww * 2/3, wh * 1/2
+    local radius = ww / 5
 
     for i, action in ipairs(self.actions) do
         love.graphics.push()
@@ -119,6 +138,16 @@ function menu:draw()
         love.graphics.draw(action.text, x - radius - twidth + offset, y - action.text:getHeight() / 2)
         love.graphics.pop()
     end
+end
+
+function menu:draw_circle()
+    love.graphics.setLineWidth(30)
+    local ww, wh = love.graphics.getDimensions()
+    love.graphics.setColor(self.color * 227/255, self.color * 52/255, 0)
+
+    local radius = ww / 5
+    local x, y = ww * 2/3, wh * 1/2
+    love.graphics.circle('line', x, y, radius)
 end
 
 function menu:update(dt)
