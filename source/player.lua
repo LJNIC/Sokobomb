@@ -18,6 +18,13 @@ function Player:move(new_position)
     flux.to(self, 0.5, {angle = math.pi + math.pi/4})
 end
 
+function Player:fake_move(direction)
+    local new_drawn_position = self.position * TILE_WIDTH + (direction * 5)
+    flux.to(self.drawn_position, 0.15, {x = new_drawn_position.x, y = new_drawn_position.y}):oncomplete(function()
+        flux.to(self.drawn_position, 0.15, {x = self.position.x * TILE_WIDTH, y = self.position.y * TILE_WIDTH})
+    end)
+end
+
 function Player:transition_in()
     self.percent = 0
     flux.to(self, 1.5, {percent = 1}):delay(1)

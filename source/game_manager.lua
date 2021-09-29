@@ -84,6 +84,7 @@ function GameManager:turn(direction)
     local new_position = level.player.position + direction
 
     if not level:tile_is_walkable(new_position) then
+        level.player:fake_move(direction)
         return
     end
 
