@@ -17,8 +17,8 @@ local Editor = {
 }
 
 local col_to_edit
-local col_lines = {1, 0, 0, 1}
-local col_cell = {1, 1, 1, 1}
+local col_lines = {22/255, 23/255, 45/255}
+local col_cell = {15/255, 17/255, 27/255}
 local col_hovered = {1, 1, 0, 1}
 local zoom = 1
 local zoom_factor = 0.15

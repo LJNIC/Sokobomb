@@ -17,7 +17,7 @@ local tiles = {
 		tile_n = 1,
 		symbol = "#",
 		name = "Wall",
-		color = {1, 0, 0},
+		color = {48/255, 54/255, 95/255},
 		is_wall = true,
 		kind = "tiles"
 	},
@@ -39,14 +39,14 @@ local tiles = {
 	{
 		symbol = "b",
 		name = "Box",
-		color = {0.57, 0.24, 0.11},
+		color = {92/255, 204/255, 150/255},
 		is_box = true,
 		kind = "objects"
 	},
 	{
 		symbol = "B",
 		name = "Bomb",
-		color = {0, 0, 0},
+		color = {227/255, 52/255, 0},
 		timer = "",
 		is_bomb = true,
 		kind = "objects"
