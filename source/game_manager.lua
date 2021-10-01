@@ -74,7 +74,7 @@ end
 
 function GameManager:has_won()
     local alive_boxes = functional.filter(self.level.objects, function(o) return o:is(Box) and o.alive end)
-    return functional.all(alive_boxes, function(box) return self.level:tile_at(box) == "goal" end)
+    return self.level.player.alive and functional.all(alive_boxes, function(box) return self.level:tile_at(box) == "goal" end)
 end
 
 function GameManager:turn(direction)
@@ -108,11 +108,13 @@ function GameManager:turn(direction)
         bomb:tick(level.objects)
     end
 
-    for _, bomb in ipairs(bombs) do
-        if bomb.alive and bomb.timer == 0 then
-            bomb:explode(level.objects, level.player)
+    tick.delay(function()
+        for _, bomb in ipairs(bombs) do
+            if bomb.alive and bomb.timer <= 0 then
+                bomb:explode(level.objects, level.player)
+            end
         end
-    end
+    end, 0.2)
 
     -- We know changes to the level state were made, so we push the saved level state onto the stack
     level:push()

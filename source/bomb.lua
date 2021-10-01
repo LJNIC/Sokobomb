@@ -102,30 +102,30 @@ function Bomb:draw()
     love.graphics.setColor(1, 1, 1)
 end
 
+
+local distance = TILE_WIDTH * 0.75
+local offsets = {
+    {0, distance},
+    {0, -distance},
+    {distance, 0},
+    {-distance, 0},
+}
+
+local short = distance * 0.75
+local diagonals = {
+    {short, short},
+    {-short, -short},
+    {-short, short},
+    {short, -short}
+}
 function Bomb:create_explosion()
     local q = TILE_WIDTH * 0.25
 
     local x = self.drawn_position.x + TILE_WIDTH_H
     local y = self.drawn_position.y + TILE_WIDTH_H
-    local d = q * 3
-    local dirs = {
-        {0, -d}, --n
-        {0, d}, --s
-        {-d, 0}, --w
-        {d, 0}, --e
-    }
-    local dir = 1
-
-    --if uniform size and alpha for each direction
     local radius = TILE_WIDTH / 2
 
-    for i = 1, 4 do
-        dir = dir + 1
-        if dir > 4 then
-            dir = 1
-        end
-
-        local offset = dirs[dir]
+    for _, offset in ipairs(offsets) do
         local explosion = {
             x = x, 
             y = y, 
@@ -137,6 +137,24 @@ function Bomb:create_explosion()
             --if uniform size and alpha for each direction
             target_radius = radius,
             target_alpha = 1,
+            color = Themes.get_color("bomb_pulse_inner", 0)
+        }
+        table.insert(self.explosions, explosion)
+    end
+
+    for _, offset in ipairs(diagonals) do
+        local explosion = {
+            x = x, 
+            y = y, 
+            radius = 0, 
+            alpha = 0,
+            target_x = x + offset[1],
+            target_y = y + offset[2],
+
+            --if uniform size and alpha for each direction
+            target_radius = radius/2,
+            target_alpha = 1,
+            color = {1, 1, 1}
         }
         table.insert(self.explosions, explosion)
     end
@@ -171,7 +189,7 @@ function Bomb:draw_explosions()
         Themes.set_color("explosion_inner")
         love.graphics.circle("fill", explosion.x, explosion.y, explosion.radius)
 
-        love.graphics.setColor(1 * explosion.alpha, 1 * explosion.alpha, 1 * explosion.alpha)
+        love.graphics.setColor(explosion.color[1] * explosion.alpha, explosion.color[2] * explosion.alpha, explosion.color[3] * explosion.alpha)
         love.graphics.circle("line", explosion.x, explosion.y, explosion.radius)
 
         if explosion.remove then
