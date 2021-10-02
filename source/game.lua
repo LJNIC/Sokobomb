@@ -9,9 +9,6 @@ local utilities = require "source.utilities"
 local Glow = require "source.glow"
 
 local game = {}
-local zoom_list = {
-    [1] = 3,
-}
 
 local w, h = love.graphics.getDimensions()
 local canvas = love.graphics.newCanvas(w * 0.5, h * 0.5)
@@ -35,7 +32,7 @@ local draw_interface = require "source.game_interface"
 function game:draw()
     local width, height = love.graphics.getDimensions()
     local level = GameManager.level
-    local zoom = zoom_list[GameManager.level_number] or 1
+    local zoom = level.zoom or 1
     local factor = 2 * zoom
 
     local x = width / factor - (level.width / factor) * TILE_WIDTH * zoom - TILE_WIDTH - 4
