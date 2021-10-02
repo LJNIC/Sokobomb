@@ -10,6 +10,7 @@ local data = {
 	tile_size = 32,
 	rows = 16,
 	cols = 16,
+	zoom = 2,
 }
 
 function LevelData.draw_get_sizes()
@@ -20,6 +21,7 @@ function LevelData.draw_get_sizes()
 		Slab.Text("Tile Size")
 		Slab.Text("Height")
 		Slab.Text("Width")
+		Slab.Text("Zoom")
 
 		Slab.SetLayoutColumn(2)
 		if Slab.Input("in_level_filename", {
@@ -37,6 +39,7 @@ function LevelData.draw_get_sizes()
 		data.tile_size = Helper.get_input_int("in_tile_size", data.tile_size)
 		data.rows = Helper.get_input_int("in_rows", data.rows)
 		data.cols = Helper.get_input_int("in_cols", data.cols)
+		data.zoom = Helper.get_input_float("in_zoom", data.zoom)
 	Slab.EndLayout()
 end
 

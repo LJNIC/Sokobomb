@@ -21,6 +21,7 @@ function Level:serialize()
 			tile_size = self.tile_size,
 			cols = self.cols,
 			rows = self.rows,
+			zoom = self.zoom,
 		},
 		objects = {},
 		tiles = {},

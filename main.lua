@@ -7,5 +7,9 @@ DEBUG = false
 
 function love.load()
     roomy:hook()
-    roomy:enter(require "source.menu")
+    if not DEBUG then
+        roomy:enter(require "source.menu")
+    else
+        roomy:enter(require "source.game", 1)
+    end
 end

@@ -131,6 +131,12 @@ function Files.draw()
 				edit.metadata.name = Slab.GetInputText()
 			end
 
+			Slab.Text("Zoom:")
+			Slab.SameLine()
+			if Slab.InputNumberDrag("zoom", edit.metadata.zoom, 1, 128, 0.1) then
+				edit.metadata.zoom = Slab.GetInputNumber()
+			end
+
 			if Slab.Button("Apply") then
 				v.metadata = edit.metadata
 			end
@@ -141,9 +147,12 @@ function Files.draw()
 				edit.metadata = tablex.copy(backup[i], {})
 			end
 
+			local can_save = backup[i] == nil
+				or (v.metadata.name == backup[i].name)
+				and (v.metadata.zoom == backup[i].zoom)
 			Slab.SameLine()
 			if Slab.Button("Save", {
-				Disabled = backup[i] == nil or v.metadata.name == backup[i].name,
+				Disabled = can_save,
 			}) then
 				Files.overwrite_metadata()
 			end

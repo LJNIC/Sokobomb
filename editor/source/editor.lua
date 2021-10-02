@@ -42,6 +42,7 @@ function Editor.new_level(t)
 	temp.y = 0
 	temp.rows = Editor.current_level.rows
 	temp.cols = Editor.current_level.cols
+	temp.zoom = Editor.current_level.zoom
 	rect_select.enabled = false
 	rect_select.flag = false
 	rect_select.start_pos = vec2()
@@ -290,6 +291,7 @@ function Editor.draw()
 		Slab.Text("Y:")
 		Slab.Text("Width:")
 		Slab.Text("Height:")
+		Slab.Text("Zoom:")
 
 		Slab.SetLayoutColumn(2)
 		Slab.Text(tostring(temp.x))
@@ -310,6 +312,11 @@ function Editor.draw()
 
 		if Slab.InputNumberDrag("height", temp.rows, 1, 128, 1) then
 			temp.rows = Slab.GetInputNumber()
+		end
+
+		if Slab.InputNumberDrag("zoom_factor", temp.zoom, 1, 128, 0.1) then
+			temp.zoom = Slab.GetInputNumber()
+			cl.zoom = temp.zoom
 		end
 		Slab.EndLayout()
 

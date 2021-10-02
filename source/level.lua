@@ -235,14 +235,6 @@ function Level:draw_tiles()
         for x = 1, self.width do
             local t = self:tile_at(x, y)
             self:draw_tile(x, y, self:tile_at(x, y))
-
-            if DEBUG then
-                love.graphics.setLineWidth(1)
-                love.graphics.setColor(1, 0, 0, 0.5)
-                love.graphics.rectangle("line", x * TILE_WIDTH, y * TILE_WIDTH, TILE_WIDTH, TILE_WIDTH)
-                love.graphics.setColor(1, 0, 0, 1)
-                love.graphics.print(t, x * TILE_WIDTH, y * TILE_WIDTH)
-            end
         end
     end
 end

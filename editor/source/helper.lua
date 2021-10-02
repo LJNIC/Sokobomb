@@ -30,4 +30,20 @@ function Helper.get_input_int(id, val)
 	return val
 end
 
+function Helper.get_input_float(id, val)
+	if Slab.Input(id, {
+		Text = tostring(val),
+		ReturnOnText = false,
+		NumbersOnly = true,
+		MinNumber = 1,
+		MaxNumber = 128,
+		Precision = 1,
+		Step = 0.1,
+	}) then
+		return Slab.GetInputNumber()
+	end
+
+	return val
+end
+
 return Helper

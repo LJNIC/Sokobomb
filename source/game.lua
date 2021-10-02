@@ -9,6 +9,9 @@ local utilities = require "source.utilities"
 local Glow = require "source.glow"
 
 local game = {}
+local zoom_list = {
+    [1] = 3,
+}
 
 local w, h = love.graphics.getDimensions()
 local canvas = love.graphics.newCanvas(w * 0.5, h * 0.5)
@@ -32,8 +35,11 @@ local draw_interface = require "source.game_interface"
 function game:draw()
     local width, height = love.graphics.getDimensions()
     local level = GameManager.level
-    local x = width / 2 - (level.width / 2) * TILE_WIDTH - TILE_WIDTH - 4
-    local y = height / 2 - (level.height / 2) * TILE_WIDTH - TILE_WIDTH - 4
+    local zoom = zoom_list[GameManager.level_number] or 1
+    local factor = 2 * zoom
+
+    local x = width / factor - (level.width / factor) * TILE_WIDTH * zoom - TILE_WIDTH - 4
+    local y = height / factor - (level.height / factor) * TILE_WIDTH * zoom - TILE_WIDTH - 4
 
     love.graphics.setCanvas(canvas)
         love.graphics.clear()
@@ -50,18 +56,19 @@ function game:draw()
         draw_interface(GameManager.level_number, GameManager.level)
         love.graphics.setBlendMode("alpha")
         love.graphics.push()
+        love.graphics.scale(zoom, zoom)
         love.graphics.translate(x, y)
         level:draw_tiles()
         level:draw_objects()
         love.graphics.pop()
         love.graphics.setBlendMode("lighten", "premultiplied")
+
+        love.graphics.push()
+        love.graphics.scale(zoom, zoom)
         love.graphics.draw(canvas, 0, 0, 0, 2, 2)
+        love.graphics.pop()
     love.graphics.setShader()
     love.graphics.setBlendMode("alpha")
-
-    if DEBUG then
-        love.graphics.print(love.timer.getFPS())
-    end
 end
 
 function game:keypressed(key, scancode, is_repeat)
