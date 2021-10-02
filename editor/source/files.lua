@@ -68,6 +68,7 @@ end
 function Files.draw()
 	Slab.BeginWindow("files", {
 		Title = "Files",
+		AutoSizeWindow = false,
 	})
 	if Slab.Button("reload") then
 		tablex.clear(list)
