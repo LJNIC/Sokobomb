@@ -13,8 +13,8 @@ do local _ = {
 	"level11",
 	"level12",
 	"level16",
-	"level15",
 	"level18",
+	"level15",
 	"racetrack",
 	"three_rooms",
 	"almost_there"
