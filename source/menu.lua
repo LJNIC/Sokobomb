@@ -47,19 +47,25 @@ local continue = {
         end, nil, fade_music)
     end
 }
+local levels = {
+    text = love.graphics.newText(menu_font, "levels"),
+    action = function()
+        roomy:enter(require "source.level_selection", menu.save_number)
+    end
+}
 local options = {
     text = love.graphics.newText(menu_font, "options"),
-    action = function() 
+    action = function()
         menu:select(1)
         menu.actions = menu.options
     end
 }
 local exit = {
     text = love.graphics.newText(menu_font, "exit"),
-    action = function() 
+    action = function()
         Transition.text = ""
         Transition:fade_in(0.75, function()
-            love.event.quit() 
+            love.event.quit()
         end, nil, fade_music)
     end
 }
@@ -78,7 +84,7 @@ local full_screen = {
         love.window.setMode(width, height, {fullscreen = not flags.fullscreen})
     end
 }
-menu.main = { new, options, exit }
+menu.main = { new, levels, options, exit }
 menu.options = { full_screen }
 menu.actions = menu.main
 

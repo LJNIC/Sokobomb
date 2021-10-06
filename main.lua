@@ -10,6 +10,7 @@ function love.load()
     if not DEBUG then
         roomy:enter(require "source.menu")
     else
-        roomy:enter(require "source.game", 1)
+        -- roomy:enter(require "source.game", 1)
+        roomy:enter(require "source.level_selection")
     end
 end
