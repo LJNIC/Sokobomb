@@ -45,6 +45,11 @@ local levels_palette = {
     [1] = "default"
 }
 
+function Themes.override_levels_palette(t)
+    assert(type(t) == "table")
+    levels_palette = t
+end
+
 function Themes.on_change_level(level_number)
     if levels_palette[level_number] then
         Themes.change_palette(levels_palette[level_number])
@@ -71,6 +76,14 @@ function Themes.set_color(id, alpha)
     assert(palettes[current][id], id .. " must exists in the current palette")
     local color = palettes[current][id]
     love.graphics.setColor(color[1], color[2], color[3], alpha or color[4])
+end
+
+function Themes.get_palettes_list()
+    local t = {}
+    for k, _ in pairs(palettes) do
+        table.insert(t, k)
+    end
+    return t
 end
 
 return Themes
