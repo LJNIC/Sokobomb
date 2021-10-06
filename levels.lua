@@ -19,7 +19,10 @@ do local _ = {
 	"racetrack",
 	"three_rooms",
 	"almost_there",
-	"tall"
+	"tall",
+	"tower",
+	"staircase",
+	"minefield"
 }
 return _
 end
