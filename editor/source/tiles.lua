@@ -58,6 +58,16 @@ local tiles = {
 		is_infinite = true,
 		kind = "objects"
 	},
+
+	--special tiles
+	{
+		symbol = "f",
+		name = "Freeze",
+		color = {2/255, 239/255, 192/255, 1},
+		is_freeze = true,
+		kind = "freeze",
+		is_special = true,
+	},
 }
 
 function Tiles.init()
@@ -89,6 +99,7 @@ function Tiles.draw()
 	Slab.Text("Tiles List")
 	Slab.BeginListBox("Tiles List", {
 		StretchW = true,
+		H = 360,
 	})
 		for i = 1, #tiles do
 			local t = tiles[i]
@@ -114,6 +125,14 @@ end
 function Tiles.get_tile_data(tile_n)
 	for _, v in ipairs(tiles) do
 		if v.tile_n and (v.tile_n == tile_n) then
+			return v
+		end
+	end
+end
+
+function Tiles.get_bottom_tile_data(t)
+	for _, v in ipairs(tiles) do
+		if t.kind == v.kind then
 			return v
 		end
 	end

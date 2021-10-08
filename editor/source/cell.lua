@@ -18,6 +18,7 @@ function Cell:new(x, y, tile_size)
 	self.py = self.y * self.tile_size
 	self.hovered = false
 	self.tile = nil
+	self.bottom_tile = nil
 end
 
 function Cell:serialize()
@@ -48,9 +49,34 @@ function Cell:serialize()
 	return n, s, kind
 end
 
+function Cell:serialize_bottom()
+	local tile, s
+	if self.bottom_tile then
+		tile = tablex.copy(self.bottom_tile, {})
+		tile.name = nil
+		tile.color = nil
+		s = {
+			x = self.x,
+			y = self.y,
+			px = self.px,
+			py = self.py,
+			symbol = self.symbol,
+			data = tile,
+		}
+	end
+
+	return s
+end
+
 function Cell:set_tile(tile, fnt, data)
 	self.fnt = fnt
-	self.tile = tablex.copy(tile, {})
+
+	if tile.is_special then
+		self.bottom_tile = tablex.copy(tile, {})
+		return
+	else
+		self.tile = tablex.copy(tile, {})
+	end
 
 	if self.tile.is_bomb then
 		if data then
@@ -67,14 +93,31 @@ function Cell:set_tile(tile, fnt, data)
 end
 
 function Cell:remove_tile()
-	self.fnt = nil
-	self.tile = nil
+	local ctrl = love.keyboard.isDown("lctrl")
+
+	if ctrl then
+		self.bottom_tile = nil
+	else
+		self.fnt = nil
+		self.tile = nil
+	end
 end
 
 function Cell:draw(line)
 	local prev_fnt = love.graphics.getFont()
 	local mode = line and "line" or "fill"
 	love.graphics.rectangle(mode, self.px, self.py, self.tile_size, self.tile_size)
+
+	if self.bottom_tile then
+		local pad = 2
+		love.graphics.setColor(self.bottom_tile.color)
+		love.graphics.rectangle("fill",
+			self.px + pad,
+			self.py + pad,
+			self.tile_size - pad * 2,
+			self.tile_size - pad * 2
+		)
+	end
 
 	if self.tile then
 		love.graphics.setFont(self.fnt)
