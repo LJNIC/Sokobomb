@@ -93,6 +93,14 @@ function Editor.fill_objects(data)
 				local ac = Tiles.get_obj_data(o.data.symbol)
 				c:set_tile(ac, fnt_tile, o and o.data)
 			end
+
+			local bottom = data.bottom_tiles[i]
+			if bottom then
+				local index = ((bottom.y - 1) * cl.cols) + bottom.x
+				local c = cl.cells[index]
+				local ac = Tiles.get_bottom_tile_data(bottom.data)
+				c:set_tile(ac, fnt_tile)
+			end
 		end
 	end
 end
