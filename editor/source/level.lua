@@ -25,7 +25,6 @@ function Level:serialize()
 		},
 		objects = {},
 		tiles = {},
-		bottom_tiles = {},
 	}
 
 	for _, c in ipairs(self.cells) do
@@ -38,7 +37,7 @@ function Level:serialize()
 
 		if c.bottom_tile then
 			local s = c:serialize_bottom()
-			insert(data.bottom_tiles, s)
+			insert(data.objects, s)
 		end
 	end
 
