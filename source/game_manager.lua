@@ -6,11 +6,12 @@ local Transition = require "source.transition"
 local Themes = require "source.themes"
 
 local tick = require "source.lib.tick"
+local flux = require "source.lib.flux"
 
 local GameManager = {
     level = nil,
     level_number = 1,
-    levels = {}
+    levels = {},
 }
 
 local levels = require "levels"
@@ -105,7 +106,7 @@ function GameManager:turn(direction)
 
     -- Tick and explode bombs separately because of bombs exploding bombs
     for _, bomb in ipairs(bombs) do
-        bomb:tick(level.objects)
+        bomb:tick(level)
     end
 
     tick.delay(function()
