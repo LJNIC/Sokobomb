@@ -4,6 +4,7 @@ local utilities = require "source.utilities"
 local Level = require "source.level"
 local Transition = require "source.transition"
 local Themes = require "source.themes"
+local audio = require "source.audio"
 
 local tick = require "source.lib.tick"
 local flux = require "source.lib.flux"
@@ -37,6 +38,7 @@ function GameManager:enter(level_number)
 end
 
 function GameManager:go_to_next_level(duration, level_number)
+    audio.pause("game", 1)
     local next_level = level_number or self.level_number + 1
     love.filesystem.write("save.txt", tostring(self.level_number + 1))
 
@@ -51,6 +53,7 @@ function GameManager:go_to_next_level(duration, level_number)
         Transition.text = self.levels[next_level].name
         Transition:fade_in(duration, function()
             self:enter(next_level)
+            audio.resume("game", 1)
         end, 1.5)
     end
 end

@@ -3,11 +3,10 @@ local Transition = require "source.transition"
 local GameManager = require "source.game_manager"
 local Bomb = require "source.bomb"
 local Glow = require "source.glow"
+local audio = require "source.audio"
 
 local title_font = love.graphics.newFont("assets/RobotoCondensed-Regular.ttf", 72)
 local menu_font = love.graphics.newFont("assets/RobotoCondensed-Regular.ttf", 42)
-local music = love.audio.newSource("assets/sokobomb_menu_b.mp3", "stream")
-music:setLooping(true)
 
 local title = love.graphics.newText(title_font, "sokobomb")
 
@@ -33,18 +32,20 @@ local new = {
     action = function()
         Transition.text = GameManager.levels[1].name
         love.filesystem.write("save.txt", 1)
+        audio.stop("menu", 1)
         Transition:fade_in(0.75, function()
             roomy:enter(require "source.game", 1)
-        end, nil, fade_music)
+        end)
     end
 }
 local continue = {
     text = love.graphics.newText(menu_font, "continue"),
     action = function()
         Transition.text = GameManager.levels[menu.save_number].name
+        audio.stop("menu", 1)
         Transition:fade_in(0.75, function()
             roomy:enter(require "source.game", menu.save_number)
-        end, nil, fade_music)
+        end)
     end
 }
 local levels = {
@@ -64,9 +65,10 @@ local exit = {
     text = love.graphics.newText(menu_font, "exit"),
     action = function()
         Transition.text = ""
+        audio.stop("menu", 1)
         Transition:fade_in(0.75, function()
             love.event.quit()
-        end, nil, fade_music)
+        end)
     end
 }
 
@@ -89,7 +91,7 @@ menu.options = { full_screen }
 menu.actions = menu.main
 
 function menu:enter()
-    love.audio.play(music)
+    audio.play("menu", { fadeDuration = 1 })
     local save = love.filesystem.read("save.txt")
     if save then
         menu.save_number = tonumber(save)
@@ -158,6 +160,7 @@ end
 
 function menu:update(dt)
     flux.update(dt)
+    audio.update(dt)
 end
 
 function menu:select(index)
