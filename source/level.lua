@@ -17,6 +17,7 @@ function Level:new(file_name)
     self.zoom = data.metadata.zoom
     self.name = data.metadata.name
     self.tile_width = data.metadata.tile_size
+    self.winnable = true 
 
     self.tiles = data.tiles
 
@@ -58,6 +59,8 @@ function Level:undo()
         for i, object in ipairs(self.objects) do
             object:undo(top.objects[i])
         end
+
+        self:update_winnable()
     end
 end
 
@@ -66,6 +69,7 @@ function Level:update(dt)
         self:undo()
         if #self.stack <= 1 then
             self.resetting = false
+            self:update_winnable()
         end
     end
 end
@@ -75,6 +79,14 @@ function Level:reset()
         self.resetting = true
         self.reset_timer = 0
     end
+end
+
+function Level:update_winnable()
+    local alive_bombs = functional.count(self.objects, function(o)
+        return o:is(Bomb) and o.alive
+    end)
+
+    self.winnable = alive_bombs > 0 and self.player.alive
 end
 
 function Level:check_neighbor(x, y, dx, dy, recurse)

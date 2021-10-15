@@ -1,3 +1,5 @@
+local GameManager = require "source.game_manager"
+
 local arrow_width = 32
 local undo = love.graphics.newImage("assets/undo.png")
 local reset = love.graphics.newImage("assets/reset.png")
@@ -39,7 +41,7 @@ local function draw_arrows()
     end
 end
 
-return function(level_number, level)
+return function()
     love.graphics.setLineWidth(2)
 
     local width, height = love.graphics.getDimensions()
@@ -47,16 +49,21 @@ return function(level_number, level)
     love.graphics.setColor(1, 1, 1)
 
     love.graphics.setFont(font)
-    name_text:set(level.name)
+    name_text:set(GameManager.level.name)
     love.graphics.draw(name_text, 54 + number_text:getWidth(), 32)
 
+    local level_number = GameManager.level_number
     number_text:set((level_number < 10 and "0" or "") .. level_number)
     love.graphics.draw(number_text, 32, 32)
     love.graphics.circle("line", 32 + number_text:getWidth()/2, 32 + number_text:getHeight()/2, 26)
 
-    if level_number > 1 then return end
+    if level_number == 1 then
+        draw_arrows()
+    end
 
-    draw_arrows()
+    if level_number > 1 and GameManager.level.winnable then
+        return 
+    end
 
     love.graphics.push()
         love.graphics.translate(width * 1/3 - undo:getWidth(), height * 4/5)

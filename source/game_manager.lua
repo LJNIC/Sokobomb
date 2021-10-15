@@ -13,6 +13,7 @@ local GameManager = {
     level = nil,
     level_number = 1,
     levels = {},
+    winnable = true
 }
 
 local levels = require "levels"
@@ -124,7 +125,9 @@ function GameManager:turn(direction)
     level:push()
 
     tick.delay(function()
+        self.level:update_winnable()
         if self:has_won() then
+            self.level.winnable = true
             self:go_to_next_level()
         end
     end, 0.3)
