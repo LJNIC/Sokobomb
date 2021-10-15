@@ -15,12 +15,12 @@ do local _ = {
 	"level16",
 	"level18",
 	"cutthroat",
+	"tower",
 	"level15",
 	"racetrack",
 	"three_rooms",
 	"almost_there",
 	"tall",
-	"tower",
 	"staircase",
 	"minefield"
 }
