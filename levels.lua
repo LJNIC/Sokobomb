@@ -22,7 +22,8 @@ do local _ = {
 	"almost_there",
 	"tall",
 	"staircase",
-	"minefield"
+	"minefield",
+	"freeze"
 }
 return _
 end
