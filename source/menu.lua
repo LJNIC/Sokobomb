@@ -6,8 +6,7 @@ local Glow = require "source.glow"
 
 local title_font = love.graphics.newFont("assets/RobotoCondensed-Regular.ttf", 72)
 local menu_font = love.graphics.newFont("assets/RobotoCondensed-Regular.ttf", 42)
-local music = love.audio.newSource("assets/sokobomb_menu_b.mp3", "stream")
-music:setLooping(true)
+local audio = require "source.audio"
 
 local title = love.graphics.newText(title_font, "sokobomb")
 
@@ -24,8 +23,8 @@ local menu = {
 local w, h = love.graphics.getDimensions()
 local canvas = love.graphics.newCanvas(w * 0.5, h * 0.5)
 
-local function fade_music(percent)
-    music:setVolume(math.abs(percent - 1))
+local function fade_music()
+    audio.stop("menu", 0.75)
 end
 
 local new = {
@@ -35,7 +34,7 @@ local new = {
         love.filesystem.write("save.txt", 1)
         Transition:fade_in(0.75, function()
             roomy:enter(require "source.game", 1)
-        end, nil, fade_music)
+        end)
     end
 }
 local continue = {
@@ -44,7 +43,8 @@ local continue = {
         Transition.text = GameManager.levels[menu.save_number].name
         Transition:fade_in(0.75, function()
             roomy:enter(require "source.game", menu.save_number)
-        end, nil, fade_music)
+        end)
+        fade_music()
     end
 }
 local levels = {
@@ -84,17 +84,26 @@ local full_screen = {
         love.window.setMode(width, height, {fullscreen = not flags.fullscreen})
     end
 }
+
+local mute = {
+   text = love.graphics.newText(menu_font, "mute"),
+   action = function()
+      audio.mute()
+   end
+}
 menu.main = { new, levels, options, exit }
-menu.options = { full_screen }
+menu.options = { full_screen, mute }
 menu.actions = menu.main
 
 function menu:enter()
-    love.audio.play(music)
     local save = love.filesystem.read("save.txt")
     if save then
         menu.save_number = tonumber(save)
-        table.insert(self.main, 1, continue)
+        if #self.main < 5 then
+            table.insert(self.main, 1, continue)
+        end
     end
+    audio.play("menu")
 end
 
 function menu:draw()
@@ -158,6 +167,7 @@ end
 
 function menu:update(dt)
     flux.update(dt)
+    audio.update(dt)
 end
 
 function menu:select(index)

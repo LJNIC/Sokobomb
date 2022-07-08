@@ -7,6 +7,7 @@ local flux = require "source.lib.flux"
 local tick = require "source.lib.tick"
 local utilities = require "source.utilities"
 local Glow = require "source.glow"
+local audio = require "source.audio"
 
 local game = {}
 
@@ -16,12 +17,14 @@ local canvas = love.graphics.newCanvas(w * 0.5, h * 0.5)
 function game:enter(previous, start_level_number)
     GameManager:enter(start_level_number)
     love.keyboard.setKeyRepeat(true)
+    audio.play("game")
 end
 
 local buffer = -1
 function game:update(dt)
     flux.update(dt)
     tick.update(dt)
+    audio.update(dt)
     GameManager.level:update(dt)
     if buffer > -1 and buffer < 0.2 then
         buffer = buffer + dt
@@ -89,7 +92,11 @@ function game:keypressed(key, scancode, is_repeat)
     elseif key == "r" then
         GameManager:reload()
     elseif key == "escape" then
-        love.event.quit()
+        audio.pause("game", 0.75)
+        Transition:fade_in(0.75, function()
+            roomy:enter(require "source.menu", 1)
+            GameManager:reload()
+        end)
     elseif key == "`" then
         DEBUG = not DEBUG
     elseif key == "e" then
