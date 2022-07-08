@@ -7,7 +7,6 @@ do local _ = {
 	"level5",
 	"level4",
 	"level6",
-	"level14",
 	"level10",
 	"level13",
 	"level11",
