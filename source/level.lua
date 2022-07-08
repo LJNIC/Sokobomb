@@ -7,7 +7,7 @@ local Object = require "source.lib.classic"
 local flux = require "source.lib.flux"
 
 local Level = Object:extend()
-Level.tile_types = { [0] = "floor", [1] = "wall", [2] = "goal", [3] = "border" }
+Level.tile_types = { [0] = "floor", [1] = "wall", [2] = "goal", [3] = "border", [4] = "freeze" }
 local tile_types = Level.tile_types
 
 function Level:new(file_name)
@@ -17,6 +17,7 @@ function Level:new(file_name)
     self.zoom = data.metadata.zoom
     self.name = data.metadata.name
     self.tile_width = data.metadata.tile_size
+    self.winnable = true 
 
     self.tiles = data.tiles
 
@@ -33,6 +34,8 @@ function Level:new(file_name)
             table.insert(self.objects, Breakable(x, y))
         elseif object.data.is_player then
             self.player = Player(x, y)
+        elseif object.data.is_freeze then
+            self.tiles[(y - 1) * self.width + x] = 4
         end
     end
 
@@ -56,6 +59,8 @@ function Level:undo()
         for i, object in ipairs(self.objects) do
             object:undo(top.objects[i])
         end
+
+        self:update_winnable()
     end
 end
 
@@ -64,6 +69,7 @@ function Level:update(dt)
         self:undo()
         if #self.stack <= 1 then
             self.resetting = false
+            self:update_winnable()
         end
     end
 end
@@ -73,6 +79,14 @@ function Level:reset()
         self.resetting = true
         self.reset_timer = 0
     end
+end
+
+function Level:update_winnable()
+    local alive_bombs = functional.count(self.objects, function(o)
+        return o:is(Bomb) and o.alive
+    end)
+
+    self.winnable = alive_bombs > 0 and self.player.alive
 end
 
 function Level:check_neighbor(x, y, dx, dy, recurse)
@@ -214,16 +228,23 @@ function Level:draw_wall(x, y)
 end
 
 function Level:draw_tile(x, y, tile)
+    local drawnX, drawnY = x * TILE_WIDTH, y * TILE_WIDTH
+
     if tile == "goal" then
         Themes.set_color("goal")
         love.graphics.setLineWidth(4)
+        local cornerX, cornerY = drawnX + Box.offset.x, drawnY + Box.offset.y
 
-        local cornerX, cornerY = x * TILE_WIDTH + Box.offset.x, y * TILE_WIDTH + Box.offset.y
         love.graphics.line(cornerX, cornerY, cornerX + Box.width, cornerY + Box.width)
         love.graphics.line(cornerX + Box.width, cornerY, cornerX, cornerY + Box.width)
         love.graphics.rectangle("line", cornerX, cornerY, Box.width, Box.width)
 
         love.graphics.setColor(1, 1, 1)
+    end
+
+    if tile == "freeze" then
+        love.graphics.setColor(0, 81/255, 102/255)
+        love.graphics.circle("line", drawnX + TILE_WIDTH/2, drawnY + TILE_WIDTH/2, TILE_WIDTH/2 - 2)
     end
 
     if tile ~= "wall" then
@@ -243,7 +264,7 @@ end
 function Level:draw_objects()
     for _, object in ipairs(self.objects) do
         if object.alive then
-            object:draw(not object.moving and self:tile_at(object.position) or nil)
+            object:draw(self:tile_at(object.position))
         end
     end
 

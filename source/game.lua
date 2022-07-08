@@ -6,6 +6,7 @@ local Transition = require "source.transition"
 local flux = require "source.lib.flux"
 local tick = require "source.lib.tick"
 local utilities = require "source.utilities"
+local audio = require "source.audio"
 local Glow = require "source.glow"
 local audio = require "source.audio"
 
@@ -15,6 +16,7 @@ local w, h = love.graphics.getDimensions()
 local canvas = love.graphics.newCanvas(w * 0.5, h * 0.5)
 
 function game:enter(previous, start_level_number)
+    audio.play("game", { fadeDuration = 1 })
     GameManager:enter(start_level_number)
     love.keyboard.setKeyRepeat(true)
     audio.play("game")
